@@ -1,0 +1,21 @@
+# Dependencies & caches
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# MSBuild and build artifacts
+bin/
+obj/
+*.binlog
+
+# Temporary and scratch files
+scratch/
+*.log
+t.log
+scripts/*.log
+
+# Operating System files
+.DS_Store
+Thumbs.db
+desktop.ini

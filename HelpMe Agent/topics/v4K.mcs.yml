@@ -1,0 +1,316 @@
+mcs.metadata:
+  componentName: แจ้งปัญหา ส่งเรื่องต่อ
+kind: AdaptiveDialog
+modelDescription: |-
+  ใช้เมื่อผู้ใช้ต้องการแจ้งปัญหาการใช้งานระบบและเปิดเคสให้เจ้าหน้าที่
+  ขอปลดล็อกบัญชีหรือรีเซ็ตรหัสผ่าน หรือขอความช่วยเหลือเกี่ยวกับระบบงานภายใน
+beginDialog:
+  kind: OnRecognizedIntent
+  id: main
+  intent:
+    triggerQueries:
+      - แจ้งปัญหา
+      - ขอแจ้งปัญหา
+      - เปิดเคส
+      - ขอเปิดเคส
+      - ขอความช่วยเหลือ
+      - แจ้งปัญหาการใช้งานระบบ
+      - ขอปลดล็อคบัญชี
+      - ปลดล็อค user
+      - ลืมรหัสผ่าน
+      - ขอรีเซ็ตรหัสผ่าน
+      - สอบถามวิธีใช้งานระบบ
+
+  actions:
+    - kind: Question
+      id: Question_cCUvt1
+      variable: Topic.ActionChoice
+      prompt: วันนี้อยากให้ผมช่วยเรื่องอะไรดีครับ 😊 เลือกจากด้านล่างได้เลยครับ
+      entity:
+        kind: EmbeddedEntity
+        definition:
+          kind: ClosedListEntity
+          optionSetName: ActionChoiceOptions
+          items:
+            - id: "🔧 แจ้งปัญหาระบบ ( ใช้งานไม่ได้ ) "
+              displayName: "🔧 แจ้งปัญหาระบบ ( ใช้งานไม่ได้ ) "
+
+            - id: 👤 ขอปลดล็อค User / เปลี่ยนรหัสผ่าน
+              displayName: 👤 ขอปลดล็อค User / เปลี่ยนรหัสผ่าน
+
+            - id: 💬 สอบถามข้อมูล / วิธีใช้งานระบบ
+              displayName: 💬 สอบถามข้อมูล / วิธีใช้งานระบบ
+
+            - id: ไม่ต้องการให้ช่วยเหลือ
+              displayName: ไม่ต้องการให้ช่วยเหลือ
+
+    - kind: ConditionGroup
+      id: conditionGroup_3ASnQ7
+      conditions:
+        - id: conditionItem_W4VXwp
+          condition: =Topic.ActionChoice = ActionChoiceOptions.'🔧 แจ้งปัญหาระบบ ( ใช้งานไม่ได้ ) '
+          actions:
+            - kind: Question
+              id: question_Zeuytd
+              interruptionPolicy:
+                allowInterruption: true
+
+              variable: init:Topic.IssueSystemChoice
+              prompt: ปัญหาที่พบอยู่ในระบบไหนครับ เลือกได้เลยครับ
+              entity:
+                kind: EmbeddedEntity
+                definition:
+                  kind: ClosedListEntity
+                  items:
+                    - id: DSS
+                      displayName: DSS
+
+                    - id: Renewal Motor
+                      displayName: Renewal Motor
+
+                    - id: PCS
+                      displayName: PCS
+
+                    - id: Polisy 400
+                      displayName: Polisy 400
+
+                    - id: อื่นๆ (ระบุเอง)
+                      displayName: อื่นๆ (ระบุเอง)
+
+            - kind: SetVariable
+              id: setVariable_issueSystemName
+              variable: Topic.IssueSystemName
+              value: =Text(Topic.IssueSystemChoice)
+
+            - kind: ConditionGroup
+              id: conditionGroup_issueSystemOther
+              conditions:
+                - id: conditionItem_issueSystemOther
+                  condition: =Text(Topic.IssueSystemChoice) = "อื่นๆ (ระบุเอง)"
+                  actions:
+                    - kind: Question
+                      id: question_issueSystemOther
+                      interruptionPolicy:
+                        allowInterruption: true
+
+                      variable: Topic.IssueSystemName
+                      prompt: ระบบไหนครับ พิมพ์ชื่อระบบที่พบปัญหาได้เลยครับ
+                      entity: StringPrebuiltEntity
+
+            - kind: Question
+              id: question_DOpN9e
+              interruptionPolicy:
+                allowInterruption: true
+
+              variable: init:Topic.IssueDetail
+              prompt: ช่วยเล่ารายละเอียดปัญหาที่พบให้ผมหน่อยครับ (อาการที่เจอ ข้อความ Error หรือเลขอ้างอิงที่เกี่ยวข้อง)
+              entity: StringPrebuiltEntity
+
+            - kind: Question
+              id: question_vbgIMm
+              interruptionPolicy:
+                allowInterruption: true
+
+              variable: init:Topic.ContactTel
+              prompt: ขอเบอร์ติดต่อกลับของท่านหน่อยครับ เผื่อเจ้าหน้าที่ต้องประสานงานเพิ่มเติม
+              entity: StringPrebuiltEntity
+
+            - kind: SendActivity
+              id: annalo
+              activity: รับเรื่องเรียบร้อยแล้วครับ 🙏 ผมกำลังประสานทีม IT และผู้ที่เกี่ยวข้องให้ช่วยเร่งแก้ไขให้นะครับ ท่านสามารถตรวจสอบอีเมลแจ้งเรื่องได้ที่กล่อง Sent Items ของท่านครับ ขอบคุณที่แจ้งเข้ามาครับ 😊
+
+            - kind: InvokeFlowAction
+              id: invokeFlowAction_MDBBnL
+              input:
+                binding:
+                  text: =Text(Topic.ActionChoice)
+                  text_1: =System.User.Email
+                  text_2: =System.User.DisplayName
+                  text_3: =Topic.ContactTel
+                  text_4: =Topic.IssueSystemName
+                  text_5: =Topic.IssueDetail
+                  text_6: "-"
+
+              output: {}
+              flowId: 15bbc09f-f01a-d621-d0ac-71a27363b2b5
+
+        - id: conditionItem_18FAsZ
+          condition: =Topic.ActionChoice = ActionChoiceOptions.'👤 ขอปลดล็อค User / เปลี่ยนรหัสผ่าน'
+          actions:
+            - kind: Question
+              id: question_8YFo0H
+              interruptionPolicy:
+                allowInterruption: true
+
+              variable: init:Topic.UnlockSystemChoice
+              prompt: ต้องการปลดล็อค/รีเซ็ตรหัสผ่านของระบบไหนครับ เลือกได้เลยครับ
+              entity:
+                kind: EmbeddedEntity
+                definition:
+                  kind: ClosedListEntity
+                  items:
+                    - id: DSS
+                      displayName: DSS
+
+                    - id: "เข้าเครื่องไม่ได้ "
+                      displayName: "เข้าเครื่องไม่ได้ "
+
+                    - id: VPN ไม่ได้
+                      displayName: VPN ไม่ได้
+
+                    - id: Polisy 400
+                      displayName: Polisy 400
+
+                    - id: อื่นๆ (ระบุเอง)
+                      displayName: อื่นๆ (ระบุเอง)
+
+            - kind: SetVariable
+              id: setVariable_unlockSystemName
+              variable: Topic.UnlockSystemName
+              value: =Text(Topic.UnlockSystemChoice)
+
+            - kind: ConditionGroup
+              id: conditionGroup_unlockSystemOther
+              conditions:
+                - id: conditionItem_unlockSystemOther
+                  condition: =Text(Topic.UnlockSystemChoice) = "อื่นๆ (ระบุเอง)"
+                  actions:
+                    - kind: Question
+                      id: question_unlockSystemOther
+                      interruptionPolicy:
+                        allowInterruption: true
+
+                      variable: Topic.UnlockSystemName
+                      prompt: ระบบไหนครับ พิมพ์ชื่อระบบที่ต้องการปลดล็อค/รีเซ็ตรหัสผ่านได้เลยครับ
+                      entity: StringPrebuiltEntity
+
+            - kind: Question
+              id: question_C5YWHM
+              interruptionPolicy:
+                allowInterruption: true
+
+              variable: init:Topic.Unlocktype
+              prompt: อยากให้ผมช่วยทำรายการไหนครับ
+              entity:
+                kind: EmbeddedEntity
+                definition:
+                  kind: ClosedListEntity
+                  items:
+                    - id: ขอปลดล็อค
+                      displayName: ขอปลดล็อค
+
+                    - id: ขอรีเซ็ทรหัสผ่าน
+                      displayName: ขอรีเซ็ทรหัสผ่าน
+
+            - kind: Question
+              id: question_NGvp5D
+              interruptionPolicy:
+                allowInterruption: true
+
+              variable: init:Topic.Username
+              prompt: ขอ Username (ชื่อที่ใช้เข้าระบบ) ของท่านหน่อยครับ
+              entity: StringPrebuiltEntity
+
+            - kind: Question
+              id: XYpFZm
+              interruptionPolicy:
+                allowInterruption: true
+
+              variable: Topic.ContactTel
+              prompt: ขอเบอร์ติดต่อกลับของท่านหน่อยครับ เผื่อเจ้าหน้าที่ต้องประสานงานเพิ่มเติม
+              entity: StringPrebuiltEntity
+
+            - kind: SendActivity
+              id: YkvwqP
+              activity: รับเรื่องเรียบร้อยแล้วครับ 🙏 ผมกำลังประสานทีม IT และผู้ที่เกี่ยวข้องให้ช่วยเร่งแก้ไขให้นะครับ ท่านสามารถตรวจสอบอีเมลแจ้งเรื่องได้ที่กล่อง Sent Items ของท่านครับ ขอบคุณที่แจ้งเข้ามาครับ 😊
+
+            - kind: InvokeFlowAction
+              id: invokeFlowAction_1ytS4T
+              input:
+                binding:
+                  text: =Text(Topic.ActionChoice)
+                  text_1: =System.User.Email
+                  text_2: =System.User.DisplayName
+                  text_3: =Topic.ContactTel
+                  text_4: =Topic.UnlockSystemName
+                  text_5: =Text(Topic.Unlocktype)
+                  text_6: =Topic.Username
+
+              output: {}
+              flowId: 15bbc09f-f01a-d621-d0ac-71a27363b2b5
+
+        - id: conditionItem_info_5b2Qn
+          condition: =Topic.ActionChoice = ActionChoiceOptions.'💬 สอบถามข้อมูล / วิธีใช้งานระบบ'
+          actions:
+            - kind: Question
+              id: question_info_query
+              interruptionPolicy:
+                allowInterruption: true
+
+              variable: init:Topic.InfoQuery
+              prompt: อยากรู้เรื่องอะไรครับ พิมพ์คำถามมาได้เลย เดี๋ยวผมช่วยหาคำตอบให้ครับ
+              entity: StringPrebuiltEntity
+
+            - kind: SearchAndSummarizeContent
+              id: search_info
+              variable: Topic.InfoAnswer
+              userInput: =Topic.InfoQuery
+
+            - kind: ConditionGroup
+              id: conditionGroup_info_answer
+              conditions:
+                - id: conditionItem_has_answer
+                  condition: =!IsBlank(Topic.InfoAnswer)
+                  actions:
+                    - kind: Question
+                      id: question_resolved
+                      interruptionPolicy:
+                        allowInterruption: true
+
+                      variable: init:Topic.Resolved
+                      prompt: ข้อมูลนี้พอช่วยแก้ปัญหาของท่านได้ไหมครับ 😊
+                      entity:
+                        kind: EmbeddedEntity
+                        definition:
+                          kind: ClosedListEntity
+                          items:
+                            - id: ✅ แก้ไขได้แล้ว
+                              displayName: ✅ แก้ไขได้แล้ว
+
+                            - id: 📩 เปิดเคสให้เจ้าหน้าที่
+                              displayName: 📩 เปิดเคสให้เจ้าหน้าที่
+
+                    - kind: ConditionGroup
+                      id: conditionGroup_resolved
+                      conditions:
+                        - id: conditionItem_open_case
+                          condition: =Text(Topic.Resolved) = "📩 เปิดเคสให้เจ้าหน้าที่"
+                          actions:
+                            - kind: BeginDialog
+                              id: beginDialog_escalate_1
+                              dialog: cr616_helpMeAgentUat.topic.OpenCase
+
+                      elseActions:
+                        - kind: SendActivity
+                          id: sendActivity_resolved
+                          activity: ยินดีที่ได้ช่วยเหลือครับ หากมีปัญหาเพิ่มเติมแจ้งได้ตลอดครับ
+
+              elseActions:
+                - kind: SendActivity
+                  id: sendActivity_no_answer
+                  activity: ขออภัยครับ ไม่พบข้อมูลที่ยืนยันได้ ผมจะส่งเรื่องให้เจ้าหน้าที่ Helpdesk ดูแลต่อให้นะครับ
+
+                - kind: BeginDialog
+                  id: beginDialog_escalate_2
+                  dialog: cr616_helpMeAgentUat.topic.OpenCase
+
+      elseActions:
+        - kind: SendActivity
+          id: sendActivity_2OvPtr
+          activity: รับทราบครับ หากต้องการความช่วยเหลือ พิมพ์ "แจ้งปัญหา" ได้ตลอดครับ
+
+        - kind: EndDialog
+          id: Iob5PX
+
+inputType: {}
+outputType: {}

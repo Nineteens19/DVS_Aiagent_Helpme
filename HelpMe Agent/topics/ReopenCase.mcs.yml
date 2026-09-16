@@ -1,0 +1,47 @@
+mcs.metadata:
+  componentName: เปิดเรื่องเคสเดิมใหม่
+  description: ให้ผู้แจ้งเปิดเรื่องเคสเดิมที่ยังไม่ได้รับการแก้ไขขึ้นมาใหม่ และแจ้งเจ้าหน้าที่
+kind: AdaptiveDialog
+modelDescription: |-
+  ใช้เมื่อผู้ใช้บอกว่าเคสเดิมยังไม่หาย ยังแก้ไม่ได้ หรือขอเปิดเรื่องเคสเดิมขึ้นมาดูแลต่ออีกครั้ง (reopen)
+startBehavior: CancelOtherTopics
+beginDialog:
+  kind: OnRecognizedIntent
+  id: main
+  intent:
+    triggerQueries:
+      - เปิดเคสเดิมใหม่
+      - เคสเดิมยังไม่หาย
+      - ยังแก้ไม่ได้
+      - ขอเปิดเรื่องเคสเดิม
+      - เคสที่แจ้งยังไม่หาย
+
+  actions:
+    - kind: Question
+      id: question_rc_caseid
+      interruptionPolicy:
+        allowInterruption: true
+
+      variable: init:Topic.CaseId
+      prompt: กรุณาพิมพ์หมายเลขเคสที่ต้องการเปิดเรื่องใหม่ครับ (เช่น HD-20260916-12)
+      entity: StringPrebuiltEntity
+
+    - kind: InvokeFlowAction
+      id: invokeFlowAction_rc
+      input:
+        binding:
+          reporterEmail: =System.User.Email
+          caseId: =Trim(Text(Topic.CaseId))
+
+      output:
+        binding:
+          resultText: Topic.Result
+
+      flowId: 7c1e2f30-1111-4aaa-bbbb-000000000043
+
+    - kind: SendActivity
+      id: sendActivity_rc_result
+      activity: "{Topic.Result}"
+
+inputType: {}
+outputType: {}

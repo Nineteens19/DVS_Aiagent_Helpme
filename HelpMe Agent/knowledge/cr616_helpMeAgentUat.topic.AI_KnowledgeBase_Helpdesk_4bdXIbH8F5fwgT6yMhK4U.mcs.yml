@@ -1,0 +1,10 @@
+mcs.metadata:
+  componentName: AI_KnowledgeBase_Helpdesk
+  description: This knowledge source provides information found in AI_KnowledgeBase_Helpdesk SharePoint.
+kind: KnowledgeSourceConfiguration
+source:
+  kind: FederatedStructuredSearchSource
+  connectionProperties:
+    mode: Invoker
+
+  skillConfiguration: AI_KnowledgeBase_Helpdesk_19jbwkAI3A02gLeCOiQug

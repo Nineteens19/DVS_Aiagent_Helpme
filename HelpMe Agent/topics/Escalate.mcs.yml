@@ -1,0 +1,169 @@
+mcs.metadata:
+  componentName: ส่งเรื่องต่อ
+  description: |-
+    หัวข้อของระบบนี้จะทริกเกอร์เมื่อผู้ใช้ระบุว่าต้องการพูดคุยกับเจ้าหน้าที่
+    คุณสามารถกำหนดค่าว่าเอเจนต์จะจัดการกับสถานการณ์การส่งต่อให้มนุษย์ได้อย่างไรในการตั้งค่าเอเจนต์
+    หากเอเจนต์ของคุณไม่มีการส่งเรื่องต่อ หัวข้อนี้ควรถูกปิดใช้งาน
+kind: AdaptiveDialog
+modelDescription: |-
+  ใช้เมื่อผู้ใช้ต้องการส่งเรื่องต่อให้เจ้าหน้าที่ (มนุษย์) หรือขอคุยกับเจ้าหน้าที่โดยตรง
+  หรือเมื่อข้อมูลใน Knowledge ไม่เพียงพอและต้องให้เจ้าหน้าที่ดูแลต่อ
+startBehavior: CancelOtherTopics
+beginDialog:
+  kind: OnRecognizedIntent
+  id: main
+  intent: {}
+  actions:
+    - kind: Question
+      id: question_lpsM5z
+      interruptionPolicy:
+        allowInterruption: true
+
+      variable: Topic.issue_type
+      prompt: ปัญหาที่พบเป็นประเภทไหนครับ เลือกได้เลยครับ
+      entity:
+        kind: EmbeddedEntity
+        sensitivityLevel: None
+        definition:
+          kind: ClosedListEntity
+          items:
+            - id: สิทธิ์การใช้งาน
+              displayName: สิทธิ์การใช้งาน
+
+            - id: IT / ระบบ
+              displayName: IT / ระบบ
+
+            - id: อื่น ๆ
+              displayName: อื่น ๆ
+
+            - id: โปรแกรม / Application
+              displayName: โปรแกรม / Application
+
+    - kind: Question
+      id: question_j5o3yJ
+      interruptionPolicy:
+        allowInterruption: true
+
+      variable: Topic.priority
+      prompt: ปัญหานี้เร่งด่วนแค่ไหนครับ
+      entity:
+        kind: EmbeddedEntity
+        sensitivityLevel: None
+        definition:
+          kind: ClosedListEntity
+          items:
+            - id: ปกติ
+              displayName: ปกติ
+
+            - id: ด่วน
+              displayName: ด่วน
+
+    - kind: Question
+      id: question_imSPCh
+      interruptionPolicy:
+        allowInterruption: true
+
+      repeatCount: 0
+      variable: Topic.System
+      prompt: ปัญหาที่พบอยู่ในระบบไหนครับ
+      entity:
+        kind: EmbeddedEntity
+        sensitivityLevel: None
+        definition:
+          kind: ClosedListEntity
+          items:
+            - id: DSS
+              displayName: DSS
+
+            - id: Renewal Motor
+              displayName: Renewal Motor
+
+            - id: Polisy 400
+              displayName: Polisy 400
+
+            - id: PCS
+              displayName: PCS
+
+            - id: อื่นๆ (ระบุเอง)
+              displayName: อื่นๆ (ระบุเอง)
+
+        displayName: EmbeddedEntity-cNLCSq
+
+    - kind: SetVariable
+      id: setVariable_systemName
+      variable: Topic.SystemName
+      value: =Text(Topic.System)
+
+    - kind: ConditionGroup
+      id: conditionGroup_systemOther
+      conditions:
+        - id: conditionItem_systemOther
+          condition: =Text(Topic.System) = "อื่นๆ (ระบุเอง)"
+          actions:
+            - kind: InvokeFlowAction
+              id: invokeFlowAction_esc_getsys
+              input:
+                binding: {}
+              output:
+                binding:
+                  systemsText: Topic.SystemsText
+              flowId: 7c1e2f30-1111-4aaa-bbbb-000000000042
+
+            - kind: SendActivity
+              id: sendActivity_esc_syshint
+              activity: "ระบบที่รองรับตอนนี้: {Topic.SystemsText} — พิมพ์ชื่อระบบที่พบปัญหาได้เลยครับ (ถ้าไม่มีในรายการ พิมพ์ชื่อระบบของท่านได้เลย)"
+
+            - kind: Question
+              id: question_systemOther
+              interruptionPolicy:
+                allowInterruption: true
+
+              variable: Topic.SystemName
+              prompt: พิมพ์ชื่อระบบที่พบปัญหาครับ
+              entity: StringPrebuiltEntity
+
+    - kind: Question
+      id: question_detail_esc
+      interruptionPolicy:
+        allowInterruption: true
+
+      variable: init:Topic.IssueDetail
+      prompt: ช่วยเล่ารายละเอียดปัญหาให้ผมหน่อยครับ (อาการที่พบ ข้อความ Error เลขอ้างอิง หรือข้อมูลที่เกี่ยวข้อง)
+      entity: StringPrebuiltEntity
+
+    - kind: Question
+      id: question_ZiwfPd
+      interruptionPolicy:
+        allowInterruption: true
+
+      variable: Topic.ContactName
+      prompt: ขอชื่อของท่านหน่อยครับ
+      entity: PersonNamePrebuiltEntity
+
+    - kind: Question
+      id: question_nhYsCQ
+      interruptionPolicy:
+        allowInterruption: true
+
+      variable: init:Topic.ContactTel
+      prompt: ขอเบอร์ติดต่อกลับของท่านหน่อยครับ
+      entity: StringPrebuiltEntity
+
+    - kind: SendActivity
+      id: sendActivity_wrLgvd
+      activity: ขอบคุณครับ 🙏 ผมกำลังส่งเรื่องต่อให้เจ้าหน้าที่ Helpdesk ดูแลให้นะครับ เดี๋ยวมีเจ้าหน้าที่ติดต่อกลับแน่นอนครับ
+
+    - kind: InvokeFlowAction
+      id: invokeFlowAction_Wz0OrY
+      input:
+        binding:
+          text: ="🔧 แจ้งปัญหาระบบ ( ใช้งานไม่ได้ ) "
+          text_1: =System.User.Email
+          text_2: =Text(Topic.ContactName)
+          text_3: =Text(Topic.ContactTel)
+          text_4: =Topic.SystemName
+          text_5: ="[" & Text(Topic.issue_type) & " / " & Text(Topic.priority) & "] " & Topic.IssueDetail
+          text_6: "-"
+
+      output: {}
+      flowId: 15bbc09f-f01a-d621-d0ac-71a27363b2b5

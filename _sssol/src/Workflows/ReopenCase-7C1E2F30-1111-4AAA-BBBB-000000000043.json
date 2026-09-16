@@ -1,0 +1,114 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_sharepointonline": {
+        "api": { "name": "shared_sharepointonline" },
+        "connection": { "connectionReferenceLogicalName": "cr616_helpMeAgentUat.cr.KjQFMKAz" },
+        "runtimeSource": "invoker"
+      },
+      "shared_office365": {
+        "api": { "name": "shared_office365" },
+        "connection": { "connectionReferenceLogicalName": "new_sharedoffice365_71ca1" },
+        "runtimeSource": "invoker"
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": { "defaultValue": {}, "type": "SecureObject" },
+        "$connections": { "defaultValue": {}, "type": "Object" }
+      },
+      "triggers": {
+        "manual": {
+          "type": "Request",
+          "kind": "Skills",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "reporterEmail": { "title": "reporterEmail", "type": "string", "x-ms-content-hint": "TEXT", "x-ms-dynamically-added": true },
+                "caseId": { "title": "caseId", "type": "string", "x-ms-content-hint": "TEXT", "x-ms-dynamically-added": true }
+              },
+              "required": [ "reporterEmail", "caseId" ]
+            }
+          }
+        }
+      },
+      "actions": {
+        "Init_result": { "type": "InitializeVariable", "inputs": { "variables": [ { "name": "resultText", "type": "string" } ] }, "runAfter": {} },
+        "Get_case": {
+          "type": "OpenApiConnection",
+          "runAfter": { "Init_result": [ "Succeeded" ] },
+          "inputs": {
+            "parameters": {
+              "dataset": "https://dvsins.sharepoint.com/sites/PowerAppPRD",
+              "table": "b8b22b0d-45c6-43c9-bc66-06e5e45b1237",
+              "$filter": "CaseID eq '@{triggerBody()?['caseId']}' and ReporterEmail eq '@{triggerBody()?['reporterEmail']}'",
+              "$top": 1
+            },
+            "host": { "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline", "operationId": "GetItems", "connectionName": "shared_sharepointonline" }
+          }
+        },
+        "Condition_Found": {
+          "type": "If",
+          "runAfter": { "Get_case": [ "Succeeded" ] },
+          "expression": { "greater": [ "@length(outputs('Get_case')?['body/value'])", 0 ] },
+          "actions": {
+            "Update_reopen": {
+              "type": "OpenApiConnection",
+              "runAfter": {},
+              "inputs": {
+                "parameters": {
+                  "dataset": "https://dvsins.sharepoint.com/sites/PowerAppPRD",
+                  "table": "b8b22b0d-45c6-43c9-bc66-06e5e45b1237",
+                  "id": "@first(outputs('Get_case')?['body/value'])?['ID']",
+                  "item/Statuscase/Value": "Reopened",
+                  "item/ReopenCount": "@add(int(coalesce(first(outputs('Get_case')?['body/value'])?['ReopenCount'],0)),1)",
+                  "item/StatusNote": "ผู้แจ้งขอเปิดเรื่องใหม่ (ยังไม่ได้รับการแก้ไข)"
+                },
+                "host": { "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline", "operationId": "PatchItem", "connectionName": "shared_sharepointonline" }
+              }
+            },
+            "Email_owner_reopen": {
+              "type": "OpenApiConnection",
+              "runAfter": { "Update_reopen": [ "Succeeded" ] },
+              "inputs": {
+                "parameters": {
+                  "emailMessage/To": "@if(equals(coalesce(first(outputs('Get_case')?['body/value'])?['AssignedOwner'],''),''),'Teerapat.ti@deves.co.th',first(outputs('Get_case')?['body/value'])?['AssignedOwner'])",
+                  "emailMessage/Subject": "[AI Helpdesk] เคสถูกเปิดใหม่ @{triggerBody()?['caseId']}",
+                  "emailMessage/Body": "<p>เรียนผู้รับผิดชอบ</p><p>ผู้แจ้งระบุว่าปัญหายังไม่ได้รับการแก้ไข และขอเปิดเรื่องเคส <b>@{triggerBody()?['caseId']}</b> ใหม่ โปรดติดตามต่อ</p><p>ระบบ: @{first(outputs('Get_case')?['body/value'])?['SystemName']}<br>ผู้แจ้ง: @{first(outputs('Get_case')?['body/value'])?['ReporterName']} - @{triggerBody()?['reporterEmail']}</p><hr>ระบบ AI Helpdesk</p>",
+                  "emailMessage/Importance": "High"
+                },
+                "host": { "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365", "operationId": "SendEmailV2", "connectionName": "shared_office365" }
+              }
+            },
+            "Set_ok": {
+              "type": "SetVariable",
+              "runAfter": { "Email_owner_reopen": [ "Succeeded" ] },
+              "inputs": { "name": "resultText", "value": "@concat('เปิดเรื่องเคส ', triggerBody()?['caseId'], ' ใหม่เรียบร้อยแล้วครับ เจ้าหน้าที่จะติดตามต่อและติดต่อกลับ')" }
+            }
+          },
+          "else": {
+            "actions": {
+              "Set_nf": { "type": "SetVariable", "inputs": { "name": "resultText", "value": "@concat('ไม่พบเคสหมายเลข ', triggerBody()?['caseId'], ' หรือเคสนี้ไม่ใช่ของท่านครับ')" } }
+            }
+          }
+        },
+        "Response": {
+          "type": "Response",
+          "kind": "Skills",
+          "runAfter": { "Condition_Found": [ "Succeeded" ] },
+          "inputs": {
+            "statusCode": 200,
+            "body": { "resultText": "@variables('resultText')" },
+            "schema": { "type": "object", "properties": { "resultText": { "title": "resultText", "type": "string", "x-ms-content-hint": "TEXT" } } }
+          }
+        }
+      },
+      "outputs": {},
+      "description": "helpdesk-agent ReopenCase - reporter reopens a case (Statuscase=Reopened, notify owner)"
+    }
+  },
+  "schemaVersion": "1.0.0.0"
+}

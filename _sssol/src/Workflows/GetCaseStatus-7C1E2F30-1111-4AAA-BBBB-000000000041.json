@@ -1,0 +1,138 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_sharepointonline": {
+        "api": { "name": "shared_sharepointonline" },
+        "connection": { "connectionReferenceLogicalName": "cr616_helpMeAgentUat.cr.KjQFMKAz" },
+        "runtimeSource": "invoker"
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": { "defaultValue": {}, "type": "SecureObject" },
+        "$connections": { "defaultValue": {}, "type": "Object" }
+      },
+      "triggers": {
+        "manual": {
+          "type": "Request",
+          "kind": "Skills",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "reporterEmail": { "title": "reporterEmail", "type": "string", "x-ms-content-hint": "TEXT", "x-ms-dynamically-added": true },
+                "caseId": { "title": "caseId", "type": "string", "x-ms-content-hint": "TEXT", "x-ms-dynamically-added": true }
+              },
+              "required": [ "reporterEmail" ]
+            }
+          }
+        }
+      },
+      "actions": {
+        "Init_result": { "type": "InitializeVariable", "inputs": { "variables": [ { "name": "resultText", "type": "string" } ] }, "runAfter": {} },
+        "Condition_HasCaseId": {
+          "type": "If",
+          "runAfter": { "Init_result": [ "Succeeded" ] },
+          "expression": { "not": { "equals": [ "@coalesce(triggerBody()?['caseId'],'')", "" ] } },
+          "actions": {
+            "Get_ById": {
+              "type": "OpenApiConnection",
+              "runAfter": {},
+              "inputs": {
+                "parameters": {
+                  "dataset": "https://dvsins.sharepoint.com/sites/PowerAppPRD",
+                  "table": "b8b22b0d-45c6-43c9-bc66-06e5e45b1237",
+                  "$filter": "CaseID eq '@{triggerBody()?['caseId']}' and ReporterEmail eq '@{triggerBody()?['reporterEmail']}'",
+                  "$top": 1
+                },
+                "host": { "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline", "operationId": "GetItems", "connectionName": "shared_sharepointonline" }
+              }
+            },
+            "Condition_Found": {
+              "type": "If",
+              "runAfter": { "Get_ById": [ "Succeeded" ] },
+              "expression": { "greater": [ "@length(outputs('Get_ById')?['body/value'])", 0 ] },
+              "actions": {
+                "Set_single": {
+                  "type": "SetVariable",
+                  "inputs": {
+                    "name": "resultText",
+                    "value": "@concat('เคส ', first(outputs('Get_ById')?['body/value'])?['CaseID'], ' | ระบบ: ', coalesce(first(outputs('Get_ById')?['body/value'])?['SystemName'],'-'), ' | สถานะ: ', if(equals(first(outputs('Get_ById')?['body/value'])?['Statuscase']?['Value'],'In Progress'),'กำลังดำเนินการ',if(equals(first(outputs('Get_ById')?['body/value'])?['Statuscase']?['Value'],'Resolved'),'แก้ไขเสร็จแล้ว (รอยืนยัน)',if(equals(first(outputs('Get_ById')?['body/value'])?['Statuscase']?['Value'],'Closed'),'ปิดเคสแล้ว',if(equals(first(outputs('Get_ById')?['body/value'])?['Statuscase']?['Value'],'On Hold'),'พักเรื่องชั่วคราว',if(equals(first(outputs('Get_ById')?['body/value'])?['Statuscase']?['Value'],'Reopened'),'เปิดเรื่องใหม่',coalesce(first(outputs('Get_ById')?['body/value'])?['Statuscase']?['Value'],'-')))))), ' | อัปเดตล่าสุด: ', formatDateTime(first(outputs('Get_ById')?['body/value'])?['Modified'],'dd/MM/yyyy HH:mm'), if(equals(coalesce(first(outputs('Get_ById')?['body/value'])?['StatusNote'],''),''),'',concat(' | หมายเหตุ: ',first(outputs('Get_ById')?['body/value'])?['StatusNote'])))"
+                  }
+                }
+              },
+              "else": {
+                "actions": {
+                  "Set_notfound": { "type": "SetVariable", "inputs": { "name": "resultText", "value": "@concat('ไม่พบเคสหมายเลข ', triggerBody()?['caseId'], ' หรือเคสนี้ไม่ใช่ของท่านครับ')" } }
+                }
+              }
+            }
+          },
+          "else": {
+            "actions": {
+              "Get_Mine": {
+                "type": "OpenApiConnection",
+                "runAfter": {},
+                "inputs": {
+                  "parameters": {
+                    "dataset": "https://dvsins.sharepoint.com/sites/PowerAppPRD",
+                    "table": "b8b22b0d-45c6-43c9-bc66-06e5e45b1237",
+                    "$filter": "ReporterEmail eq '@{triggerBody()?['reporterEmail']}' and Statuscase ne 'Closed'",
+                    "$orderby": "Modified desc",
+                    "$top": 20
+                  },
+                  "host": { "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline", "operationId": "GetItems", "connectionName": "shared_sharepointonline" }
+                }
+              },
+              "Condition_HasMine": {
+                "type": "If",
+                "runAfter": { "Get_Mine": [ "Succeeded" ] },
+                "expression": { "greater": [ "@length(outputs('Get_Mine')?['body/value'])", 0 ] },
+                "actions": {
+                  "Set_header": { "type": "SetVariable", "runAfter": {}, "inputs": { "name": "resultText", "value": "เคสที่กำลังดำเนินการของท่าน:" } },
+                  "For_each_mine": {
+                    "type": "Foreach",
+                    "runAfter": { "Set_header": [ "Succeeded" ] },
+                    "foreach": "@outputs('Get_Mine')?['body/value']",
+                    "actions": {
+                      "Append_line": {
+                        "type": "AppendToStringVariable",
+                        "inputs": {
+                          "name": "resultText",
+                          "value": "@concat('\n• ', item()?['CaseID'], ' - ', coalesce(item()?['SystemName'],'-'), ' - ', if(equals(item()?['Statuscase']?['Value'],'In Progress'),'กำลังดำเนินการ',if(equals(item()?['Statuscase']?['Value'],'Resolved'),'แก้ไขเสร็จแล้ว (รอยืนยัน)',if(equals(item()?['Statuscase']?['Value'],'Reopened'),'เปิดเรื่องใหม่',if(equals(item()?['Statuscase']?['Value'],'On Hold'),'พักเรื่องชั่วคราว',coalesce(item()?['Statuscase']?['Value'],'-'))))))"
+                        }
+                      }
+                    }
+                  }
+                },
+                "else": {
+                  "actions": {
+                    "Set_none": { "type": "SetVariable", "inputs": { "name": "resultText", "value": "ท่านไม่มีเคสที่กำลังดำเนินการอยู่ในขณะนี้ครับ" } }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "Response": {
+          "type": "Response",
+          "kind": "Skills",
+          "runAfter": { "Condition_HasCaseId": [ "Succeeded" ] },
+          "inputs": {
+            "statusCode": 200,
+            "body": { "resultText": "@variables('resultText')" },
+            "schema": {
+              "type": "object",
+              "properties": { "resultText": { "title": "resultText", "type": "string", "x-ms-content-hint": "TEXT" } }
+            }
+          }
+        }
+      },
+      "outputs": {},
+      "description": "helpdesk-agent GetCaseStatus - self-service case lookup (by CaseID or my open cases), ReporterEmail filtered"
+    }
+  },
+  "schemaVersion": "1.0.0.0"
+}

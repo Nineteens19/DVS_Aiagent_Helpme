@@ -1,0 +1,20 @@
+{
+  "feature": "helpdesk-agent",
+  "language": "th",
+  "platform": "kiro-ide",
+  "type": "main",
+  "currentPhase": "design-review",
+  "completedPhases": ["context", "d1", "requirements", "d2", "units", "foundation"],
+  "nextAction": "architecture-review",
+  "mode": "incremental",
+  "implementationMode": null,
+  "units": [
+    { "name": "foundation", "status": "in-progress", "currentPhase": "tasks", "nextAction": "complete" },
+    { "name": "knowledge-answering", "status": "in-progress", "currentPhase": "tasks", "nextAction": "complete" },
+    { "name": "case-management", "status": "in-progress", "currentPhase": "tasks", "nextAction": "complete" },
+    { "name": "notification-followup", "status": "in-progress", "currentPhase": "tasks", "nextAction": "complete" },
+    { "name": "kb-governance", "status": "in-progress", "currentPhase": "tasks", "nextAction": "complete" }
+  ],
+  "implementation": { "totalTasks": 56, "completedTasks": 0, "currentTask": null, "currentWave": null },
+  "lastUpdated": "2026-09-14T03:30:00Z"
+}

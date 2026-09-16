@@ -1,0 +1,54 @@
+mcs.metadata:
+  componentName: ติดตามสถานะเคส
+  description: ให้ผู้แจ้งเช็คสถานะเคสของตนเองด้วยหมายเลขเคส หรือดูเคสที่ยังไม่ปิดทั้งหมด
+kind: AdaptiveDialog
+modelDescription: |-
+  ใช้เมื่อผู้ใช้ต้องการติดตามหรือเช็คสถานะเคสที่เคยแจ้งไว้ เช่น ถามความคืบหน้า สถานะเคส เคสถึงไหนแล้ว หรือขอดูเคสของตนเอง
+startBehavior: CancelOtherTopics
+beginDialog:
+  kind: OnRecognizedIntent
+  id: main
+  intent:
+    triggerQueries:
+      - ติดตามเคส
+      - สถานะเคส
+      - เช็คสถานะเคส
+      - เคสของฉัน
+      - ความคืบหน้าเคส
+      - เคสถึงไหนแล้ว
+      - ขอสถานะเคส
+
+  actions:
+    - kind: Question
+      id: question_cs_caseid
+      interruptionPolicy:
+        allowInterruption: true
+
+      variable: init:Topic.CaseIdInput
+      prompt: พิมพ์หมายเลขเคสที่ต้องการติดตาม (เช่น HD-20260916-12) หรือพิมพ์ "ทั้งหมด" เพื่อดูเคสที่ยังไม่ปิดของท่านครับ
+      entity: StringPrebuiltEntity
+
+    - kind: SetVariable
+      id: setVariable_cs_param
+      variable: Topic.CaseIdParam
+      value: =If(Or(Lower(Trim(Text(Topic.CaseIdInput)))="ทั้งหมด", Lower(Trim(Text(Topic.CaseIdInput)))="เคสของฉัน", IsBlank(Topic.CaseIdInput)), "", Trim(Text(Topic.CaseIdInput)))
+
+    - kind: InvokeFlowAction
+      id: invokeFlowAction_cs
+      input:
+        binding:
+          reporterEmail: =System.User.Email
+          caseId: =Topic.CaseIdParam
+
+      output:
+        binding:
+          resultText: Topic.Result
+
+      flowId: 7c1e2f30-1111-4aaa-bbbb-000000000041
+
+    - kind: SendActivity
+      id: sendActivity_cs_result
+      activity: "{Topic.Result}"
+
+inputType: {}
+outputType: {}

@@ -1,0 +1,8 @@
+mcs.metadata:
+  componentName: imageincident
+  description: รูปภาพปัญฆา
+kind: ClosedListEntity
+smartMatchingEnabled: false
+items:
+  - id: 94d1Wv
+    displayName: Helpdesk

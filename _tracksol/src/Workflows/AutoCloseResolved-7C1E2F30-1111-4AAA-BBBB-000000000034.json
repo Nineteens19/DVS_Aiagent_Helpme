@@ -1,0 +1,70 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_sharepointonline": {
+        "api": { "name": "shared_sharepointonline" },
+        "connection": { "connectionReferenceLogicalName": "cr616_helpMeAgentUat.cr.KjQFMKAz" },
+        "runtimeSource": "embedded"
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": { "defaultValue": {}, "type": "SecureObject" },
+        "$connections": { "defaultValue": {}, "type": "Object" }
+      },
+      "triggers": {
+        "Recurrence_daily": {
+          "type": "Recurrence",
+          "recurrence": {
+            "frequency": "Week",
+            "interval": 1,
+            "schedule": { "hours": [ "8" ], "minutes": [ 30 ], "weekDays": [ "Monday", "Tuesday", "Wednesday", "Thursday", "Friday" ] },
+            "timeZone": "SE Asia Standard Time"
+          }
+        }
+      },
+      "actions": {
+        "Get_ResolvedStale": {
+          "type": "OpenApiConnection",
+          "runAfter": {},
+          "inputs": {
+            "parameters": {
+              "dataset": "https://dvsins.sharepoint.com/sites/PowerAppPRD",
+              "table": "b8b22b0d-45c6-43c9-bc66-06e5e45b1237",
+              "$filter": "Statuscase eq 'Resolved' and ResolvedAt lt '@{addDays(utcNow(),-3)}'",
+              "$top": 100
+            },
+            "host": { "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline", "operationId": "GetItems", "connectionName": "shared_sharepointonline" }
+          }
+        },
+        "For_each_resolved": {
+          "type": "Foreach",
+          "runAfter": { "Get_ResolvedStale": [ "Succeeded" ] },
+          "foreach": "@outputs('Get_ResolvedStale')?['body/value']",
+          "actions": {
+            "Close_item": {
+              "type": "OpenApiConnection",
+              "runAfter": {},
+              "inputs": {
+                "parameters": {
+                  "dataset": "https://dvsins.sharepoint.com/sites/PowerAppPRD",
+                  "table": "b8b22b0d-45c6-43c9-bc66-06e5e45b1237",
+                  "id": "@item()?['ID']",
+                  "item/Statuscase/Value": "Closed",
+                  "item/ClosedAt": "@utcNow()",
+                  "item/StatusNote": "ปิดอัตโนมัติ: เคสอยู่สถานะ Resolved เกิน 3 วันโดยไม่มีการตอบกลับ"
+                },
+                "host": { "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline", "operationId": "PatchItem", "connectionName": "shared_sharepointonline" }
+              }
+            }
+          }
+        }
+      },
+      "outputs": {},
+      "description": "helpdesk-agent AutoCloseResolved - close Resolved cases idle > 3 days (NotifyStatusChange emails reporter)"
+    }
+  },
+  "schemaVersion": "1.0.0.0"
+}

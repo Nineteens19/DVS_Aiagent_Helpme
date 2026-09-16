@@ -1,0 +1,120 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_sharepointonline": {
+        "api": { "name": "shared_sharepointonline" },
+        "connection": { "connectionReferenceLogicalName": "cr616_helpMeAgentUat.cr.KjQFMKAz" },
+        "runtimeSource": "embedded"
+      },
+      "shared_office365": {
+        "api": { "name": "shared_office365" },
+        "connection": { "connectionReferenceLogicalName": "new_sharedoffice365_71ca1" },
+        "runtimeSource": "embedded"
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": { "defaultValue": {}, "type": "SecureObject" },
+        "$connections": { "defaultValue": {}, "type": "Object" }
+      },
+      "triggers": {
+        "Recurrence_daily": {
+          "type": "Recurrence",
+          "recurrence": {
+            "frequency": "Week",
+            "interval": 1,
+            "schedule": { "hours": [ "9" ], "minutes": [ 0 ], "weekDays": [ "Monday", "Tuesday", "Wednesday", "Thursday", "Friday" ] },
+            "timeZone": "SE Asia Standard Time"
+          }
+        }
+      },
+      "actions": {
+        "Get_StaleCases": {
+          "type": "OpenApiConnection",
+          "runAfter": {},
+          "inputs": {
+            "parameters": {
+              "dataset": "https://dvsins.sharepoint.com/sites/PowerAppPRD",
+              "table": "b8b22b0d-45c6-43c9-bc66-06e5e45b1237",
+              "$filter": "(Statuscase eq 'Open' or Statuscase eq 'In Progress' or Statuscase eq 'Reopened') and SlaDueDate lt '@{utcNow()}'",
+              "$top": 100
+            },
+            "host": { "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline", "operationId": "GetItems", "connectionName": "shared_sharepointonline" }
+          }
+        },
+        "For_each_stale": {
+          "type": "Foreach",
+          "runAfter": { "Get_StaleCases": [ "Succeeded" ] },
+          "foreach": "@outputs('Get_StaleCases')?['body/value']",
+          "actions": {
+            "Get_SLA_forCC": {
+              "type": "OpenApiConnection",
+              "runAfter": {},
+              "inputs": {
+                "parameters": {
+                  "dataset": "https://dvsins.sharepoint.com/sites/PowerAppPRD",
+                  "table": "9c7bb698-4841-447e-aae4-5a43466771af",
+                  "$filter": "Severity eq '@{item()?['Severity']?['Value']}'",
+                  "$top": 1
+                },
+                "host": { "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline", "operationId": "GetItems", "connectionName": "shared_sharepointonline" }
+              }
+            },
+            "Send_reminder": {
+              "type": "OpenApiConnection",
+              "runAfter": { "Get_SLA_forCC": [ "Succeeded" ] },
+              "inputs": {
+                "parameters": {
+                  "emailMessage/To": "@if(equals(coalesce(item()?['AssignedOwner'],''),''),'Teerapat.ti@deves.co.th',item()?['AssignedOwner'])",
+                  "emailMessage/Cc": "@coalesce(first(outputs('Get_SLA_forCC')?['body/value'])?['EscalateToCC'],'')",
+                  "emailMessage/Subject": "[AI Helpdesk] เตือนเคสเกิน SLA @{item()?['CaseID']} - @{item()?['SystemName']}",
+                  "emailMessage/Body": "<p>เรียนผู้รับผิดชอบ</p><p>เคส <b>@{item()?['CaseID']}</b> เกินกำหนด SLA แล้ว โปรดติดตามและอัปเดตสถานะ</p><p>ระบบ: @{item()?['SystemName']}<br>ความเร่งด่วน: @{item()?['Severity']?['Value']}<br>สถานะปัจจุบัน: @{item()?['Statuscase']?['Value']}<br>ครบกำหนด: @{item()?['SlaDueDate']}</p><p>รายละเอียด: @{item()?['ProblemDetail']}</p><p>ผู้แจ้ง: @{item()?['ReporterName']} - @{item()?['ReporterEmail']}</p><hr>ระบบ AI Helpdesk</p>",
+                  "emailMessage/Importance": "High"
+                },
+                "host": { "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365", "operationId": "SendEmailV2", "connectionName": "shared_office365" }
+              }
+            }
+          }
+        },
+        "Get_FirstResponseOverdue": {
+          "type": "OpenApiConnection",
+          "runAfter": { "For_each_stale": [ "Succeeded" ] },
+          "inputs": {
+            "parameters": {
+              "dataset": "https://dvsins.sharepoint.com/sites/PowerAppPRD",
+              "table": "b8b22b0d-45c6-43c9-bc66-06e5e45b1237",
+              "$filter": "Statuscase eq 'Open' and FirstResponseDueDate lt '@{utcNow()}'",
+              "$top": 100
+            },
+            "host": { "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline", "operationId": "GetItems", "connectionName": "shared_sharepointonline" }
+          }
+        },
+        "For_each_fr": {
+          "type": "Foreach",
+          "runAfter": { "Get_FirstResponseOverdue": [ "Succeeded" ] },
+          "foreach": "@outputs('Get_FirstResponseOverdue')?['body/value']",
+          "actions": {
+            "Send_fr_reminder": {
+              "type": "OpenApiConnection",
+              "runAfter": {},
+              "inputs": {
+                "parameters": {
+                  "emailMessage/To": "@if(equals(coalesce(item()?['AssignedOwner'],''),''),'Teerapat.ti@deves.co.th',item()?['AssignedOwner'])",
+                  "emailMessage/Subject": "[AI Helpdesk] เคสยังไม่เริ่มดำเนินการ (เกินเวลาตอบกลับครั้งแรก) @{item()?['CaseID']}",
+                  "emailMessage/Body": "<p>เรียนผู้รับผิดชอบ</p><p>เคส <b>@{item()?['CaseID']}</b> ยังอยู่สถานะ Open และเกินกำหนดการตอบกลับครั้งแรก (First Response) แล้ว โปรดเริ่มดำเนินการและอัปเดตสถานะเป็น กำลังดำเนินการ</p><p>ระบบ: @{item()?['SystemName']}<br>ความเร่งด่วน: @{item()?['Severity']?['Value']}<br>ครบกำหนดตอบกลับ: @{item()?['FirstResponseDueDate']}</p><p>รายละเอียด: @{item()?['ProblemDetail']}</p><p>ผู้แจ้ง: @{item()?['ReporterName']} - @{item()?['ReporterEmail']}</p><hr>ระบบ AI Helpdesk</p>",
+                  "emailMessage/Importance": "High"
+                },
+                "host": { "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365", "operationId": "SendEmailV2", "connectionName": "shared_office365" }
+              }
+            }
+          }
+        }
+      },
+      "outputs": {},
+      "description": "helpdesk-agent RemindStaleCases - SLA overdue + first-response overdue reminders"
+    }
+  },
+  "schemaVersion": "1.0.0.0"
+}

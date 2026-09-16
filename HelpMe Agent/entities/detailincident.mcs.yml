@@ -1,0 +1,7 @@
+mcs.metadata:
+  componentName: detailincident
+  description: รายละเอียดปัญหา
+kind: ClosedListEntity
+items:
+  - id: dGf5my
+    displayName: Helpdesk

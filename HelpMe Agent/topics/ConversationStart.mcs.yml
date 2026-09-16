@@ -1,0 +1,19 @@
+mcs.metadata:
+  componentName: การเริ่มต้นการสนทนา
+  description: หัวข้อของระบบนี้จะทริกเกอร์เมื่อเอเจนต์ได้รับกิจกรรม ซึ่งบ่งชี้ถึงการเริ่มต้นการสนทนาใหม่ หากคุณไม่ต้องการให้เอเจนต์เริ่มการสนทนา ให้ปิดใช้งานหัวข้อนี้
+kind: AdaptiveDialog
+beginDialog:
+  kind: OnConversationStart
+  id: main
+  actions:
+    - kind: SendActivity
+      id: sendMessage_M0LuhV
+      activity:
+        text:
+          - "สวัสดีครับ 👋 ผมคือ HelpMe ผู้ช่วยดูแลปัญหาการใช้งานระบบภายในของคุณครับ\n\nเลือกหัวข้อด้านล่างได้เลย หรือจะพิมพ์คำถาม/อาการที่พบมาตรง ๆ ก็ได้นะครับ เดี๋ยวผมช่วยดูให้ทันทีครับ 😊"
+        speak:
+          - สวัสดีครับ ผมคือ HelpMe ผู้ช่วยดูแลปัญหาการใช้งานระบบภายในของคุณ มีอะไรให้ผมช่วยได้บ้างครับ โปรดทราบว่าคำตอบบางส่วนสร้างโดย AI และอาจต้องตรวจสอบเพื่อความถูกต้องครับ
+
+    - kind: BeginDialog
+      id: beginDialog_startMenu
+      dialog: cr616_helpMeAgentUat.topic.v4K

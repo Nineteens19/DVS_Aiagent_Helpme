@@ -1,0 +1,88 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_sharepointonline": {
+        "api": { "name": "shared_sharepointonline" },
+        "connection": { "connectionReferenceLogicalName": "cr616_helpMeAgentUat.cr.KjQFMKAz" },
+        "runtimeSource": "embedded"
+      },
+      "shared_office365": {
+        "api": { "name": "shared_office365" },
+        "connection": { "connectionReferenceLogicalName": "new_sharedoffice365_71ca1" },
+        "runtimeSource": "embedded"
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": { "defaultValue": {}, "type": "SecureObject" },
+        "$connections": { "defaultValue": {}, "type": "Object" }
+      },
+      "triggers": {
+        "When_a_case_is_modified": {
+          "type": "OpenApiConnection",
+          "recurrence": { "frequency": "Minute", "interval": 3 },
+          "splitOn": "@triggerOutputs()?['body/value']",
+          "inputs": {
+            "parameters": { "dataset": "https://dvsins.sharepoint.com/sites/PowerAppPRD", "table": "b8b22b0d-45c6-43c9-bc66-06e5e45b1237" },
+            "host": { "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline", "operationId": "GetOnUpdatedItems", "connectionName": "shared_sharepointonline" }
+          }
+        }
+      },
+      "actions": {
+        "Compose_StatusLabel": {
+          "type": "Compose",
+          "runAfter": {},
+          "inputs": "@if(equals(triggerBody()?['Statuscase']?['Value'],'In Progress'),'กำลังดำเนินการ',if(equals(triggerBody()?['Statuscase']?['Value'],'Resolved'),'แก้ไขเสร็จแล้ว (รอการยืนยัน)',if(equals(triggerBody()?['Statuscase']?['Value'],'Closed'),'ปิดเคสแล้ว',if(equals(triggerBody()?['Statuscase']?['Value'],'On Hold'),'พักเรื่องชั่วคราว',if(equals(triggerBody()?['Statuscase']?['Value'],'Reopened'),'เปิดเรื่องใหม่อีกครั้ง',triggerBody()?['Statuscase']?['Value'])))))"
+        },
+        "Condition_StatusChanged": {
+          "type": "If",
+          "runAfter": { "Compose_StatusLabel": [ "Succeeded" ] },
+          "expression": {
+            "and": [
+              { "not": { "equals": [ "@coalesce(triggerBody()?['Statuscase']?['Value'],'')", "@coalesce(triggerBody()?['LastNotifiedStatus'],'')" ] } },
+              { "not": { "equals": [ "@coalesce(triggerBody()?['Statuscase']?['Value'],'')", "Open" ] } },
+              { "not": { "equals": [ "@coalesce(triggerBody()?['Statuscase']?['Value'],'')", "" ] } },
+              { "not": { "equals": [ "@coalesce(triggerBody()?['ReporterEmail'],'')", "" ] } }
+            ]
+          },
+          "actions": {
+            "Send_email_status": {
+              "type": "OpenApiConnection",
+              "runAfter": {},
+              "inputs": {
+                "parameters": {
+                  "emailMessage/To": "@triggerBody()?['ReporterEmail']",
+                  "emailMessage/Subject": "[AI Helpdesk] อัปเดตสถานะเคส @{triggerBody()?['CaseID']} - @{outputs('Compose_StatusLabel')}",
+                  "emailMessage/Body": "<p>เรียน @{triggerBody()?['ReporterName']}</p><p>เคสหมายเลข <b>@{triggerBody()?['CaseID']}</b> มีการอัปเดตสถานะเป็น: <b>@{outputs('Compose_StatusLabel')}</b></p>@{if(equals(coalesce(triggerBody()?['StatusNote'],''),''),'',concat('<p>หมายเหตุจากเจ้าหน้าที่: ',triggerBody()?['StatusNote'],'</p>'))}@{if(equals(triggerBody()?['Statuscase']?['Value'],'Resolved'),'<p>หากปัญหาได้รับการแก้ไขแล้ว ท่านไม่ต้องดำเนินการใด ๆ ระบบจะปิดเคสอัตโนมัติภายใน 3 วันทำการ หากยังไม่หาย โปรดพิมพ์หมายเลขเคสนี้กับ AI Helpdesk เพื่อเปิดเรื่องต่อได้ครับ</p>','')}<hr>ระบบ AI Helpdesk",
+                  "emailMessage/Importance": "Normal"
+                },
+                "host": { "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365", "operationId": "SendEmailV2", "connectionName": "shared_office365" }
+              }
+            },
+            "Update_item_notified": {
+              "type": "OpenApiConnection",
+              "runAfter": { "Send_email_status": [ "Succeeded" ] },
+              "inputs": {
+                "parameters": {
+                  "dataset": "https://dvsins.sharepoint.com/sites/PowerAppPRD",
+                  "table": "b8b22b0d-45c6-43c9-bc66-06e5e45b1237",
+                  "id": "@triggerBody()?['ID']",
+                  "item/LastNotifiedStatus": "@triggerBody()?['Statuscase']?['Value']",
+                  "item/ResolvedAt": "@if(equals(triggerBody()?['Statuscase']?['Value'],'Resolved'), utcNow(), triggerBody()?['ResolvedAt'])",
+                  "item/ClosedAt": "@if(equals(triggerBody()?['Statuscase']?['Value'],'Closed'), utcNow(), triggerBody()?['ClosedAt'])"
+                },
+                "host": { "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline", "operationId": "PatchItem", "connectionName": "shared_sharepointonline" }
+              }
+            }
+          },
+          "else": { "actions": {} }
+        }
+      },
+      "outputs": {},
+      "description": "helpdesk-agent NotifyStatusChange - email reporter on Cases status change"
+    }
+  },
+  "schemaVersion": "1.0.0.0"
+}

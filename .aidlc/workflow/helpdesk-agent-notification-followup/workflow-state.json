@@ -1,0 +1,15 @@
+{
+  "feature": "helpdesk-agent",
+  "language": "th",
+  "platform": "kiro-ide",
+  "unit": "notification-followup",
+  "type": "unit",
+  "parentFeature": "helpdesk-agent",
+  "mainStatePath": ".aidlc/workflow/helpdesk-agent/workflow-state.json",
+  "currentPhase": "tasks",
+  "completedPhases": ["d3", "design", "d4", "tasks"],
+  "nextAction": "complete",
+  "implementationMode": null,
+  "implementation": { "totalTasks": 10, "completedTasks": 0, "currentTask": null, "currentWave": null },
+  "lastUpdated": "2026-09-14T02:35:00Z"
+}

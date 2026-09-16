@@ -1,0 +1,24 @@
+mcs.metadata:
+  componentName: ทางเลือก
+  description: หัวข้อของระบบนี้จะทริกเกอร์เมื่อคำพูดของผู้ใช้ไม่ตรงกับหัวข้อในปัจจุบัน
+kind: AdaptiveDialog
+beginDialog:
+  kind: OnUnknownIntent
+  id: main
+  actions:
+    - kind: ConditionGroup
+      id: conditionGroup_LktzXw
+      conditions:
+        - id: conditionItem_tlGIVo
+          condition: =System.FallbackCount < 3
+          actions:
+            - kind: SendActivity
+              id: sendMessage_QZreqo
+              activity: ขออภัยครับ ผมยังไม่ค่อยเข้าใจคำถามนี้ 🙏 ท่านลองพิมพ์ใหม่อีกครั้ง หรือพิมพ์ "แจ้งปัญหา" เพื่อให้ผมช่วยเปิดเคสส่งต่อเจ้าหน้าที่ได้เลยนะครับ
+      elseActions:
+        - kind: SendActivity
+          id: sendMessage_fallbackEscalate
+          activity: ขออภัยครับ ผมยังไม่พบข้อมูลที่ยืนยันได้ ผมจะเปิดเคสส่งต่อให้เจ้าหน้าที่ Helpdesk ดูแลต่อให้นะครับ
+        - kind: BeginDialog
+          id: beginDialog_fallbackEscalate
+          dialog: cr616_helpMeAgentUat.topic.OpenCase
