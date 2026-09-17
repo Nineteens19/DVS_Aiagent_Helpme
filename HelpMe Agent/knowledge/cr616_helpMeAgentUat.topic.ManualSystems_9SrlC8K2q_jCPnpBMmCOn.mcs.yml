@@ -4,4 +4,4 @@ mcs.metadata:
 kind: KnowledgeSourceConfiguration
 source:
   kind: SharePointSearchSource
-  site: https://dvsins.sharepoint.com/sites/BusinessAnalystandHelpdesk/Shared%20Documents/General/07.Project%20Document%20Control/Learn%20Project/Manual%20Systems
+  site: https://dvsins.sharepoint.com/sites/PowerAppPRD/SystemManuals

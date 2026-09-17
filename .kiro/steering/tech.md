@@ -5,35 +5,36 @@ inclusion: always
 
 ## Stack
 
-- **Languages**: YAML (MCS component definitions), JSON (Power Automate/Logic Apps), Power Fx (expression bindings), PowerShell (deploy)
-- **Frameworks**: Microsoft Copilot Studio (template `default-2.1.0`), Power Automate Cloud Flow (Logic Apps schema `2016-06-01`)
-- **Build System**: Power Platform CLI — `pac copilot push`, `pac copilot publish`
-- **Package Manager**: N/A (low-code platform)
-- **Testing**: N/A — ยังไม่มี automated test; ทดสอบผ่าน Copilot Studio Test pane และช่องทางจริง (Teams / M365 Copilot)
+- **Client / Frontend**: Microsoft Power Apps (Canvas App) — YAML layout schema (`.pa.yaml`), Power Fx formula language
+- **AI Agent**: Microsoft Copilot Studio (template `default-2.1.0`), Adaptive Dialog YAML (`.mcs.yml`)
+- **Backend / Integration**: Power Automate Cloud Flows (Logic Apps schema `2016-06-01`)
+- **CLI & Packaging**: Microsoft Power Platform CLI (`pac`) — `pac canvas download/unpack/pack`, `pac copilot push/publish`
+- **Languages**: Power Fx, YAML, JSON, PowerShell
+- **Testing**: Power Apps Studio Test Player, Playwright for Power Apps / Manual Testing
 
 ## Architecture
 
-- **Pattern**: Conversational agent (topic-based `AdaptiveDialog`) + Generative answering (`SearchAndSummarizeContent`, `GenerativeAIRecognizer`) + Serverless orchestration flow (Power Automate) สำหรับ side-effects (เปิดเคส/ส่งอีเมล)
-- **API Style**: Skills-triggered flow (`Request` trigger kind `Skills`) เรียกจาก topic ผ่าน `InvokeFlowAction`; connectors ใช้ OpenApiConnection
+- **Pattern**: Low-Code Multi-Tier Enterprise Architecture:
+  - Presentation Layer: Power Apps Canvas App (`Monitor_case_Helpdesk`)
+  - Conversational Layer: Copilot Studio Agent (`HelpMe Agent`)
+  - Integration Layer: Power Automate Cloud Flows (Notification, Status Change, Auto Close)
+  - Data Persistence Layer: SharePoint Online Lists (OData V3 Connector)
+- **API Style**: SharePoint Connector (Delegable OData queries via Power Fx), OpenApiConnection
 
 ## Infrastructure
 
-- **Cloud Provider**: Microsoft 365 / Power Platform (SaaS)
-- **Compute**: Copilot Studio runtime + Power Automate (managed)
-- **Database**: SharePoint Online lists (site `https://dvsins.sharepoint.com/sites/PowerAppPRD`) — case lists + owner/routing list; KB = `AI_KnowledgeBase_Helpdesk` (structured search) + Manual Systems (document search)
-- **IaC Tool**: ไม่มี IaC โดยตรง — จัดการผ่าน pac CLI + connection references; environment = `devesinsurancedefault` (crm5.dynamics.com)
+- **Cloud Provider**: Microsoft 365 / Microsoft Power Platform (SaaS)
+- **Environment**: Deves Insurance (default) (`https://devesinsurancedefault.crm5.dynamics.com/`)
+- **Database / Lists**:
+  - `Cases` (`b8b22b0d-45c6-43c9-bc66-06e5e45b1237`) at `https://dvsins.sharepoint.com/sites/PowerAppPRD`
+  - `Routing` (`3d5264cb-65f6-4db5-8afa-fa68a6ea61e1`)
+  - `SLAConfig` (`9c7bb698-4841-447e-aae4-5a43466771af`)
+  - `KnowledgeGaps` (`9beb45a0-08e2-4717-8eee-5b80bd218005`)
+  - `ErrorLog` (`f6822ed6-ef24-4129-a56a-832d71c8312e`)
 
 ## Conventions
 
-- **Code Style**: MCS components เป็นไฟล์ `*.mcs.yml` แยกตามชนิด (agent/topics/entities/knowledge/workflows); flow เป็น `workflow.json` + `metadata.yml`
-- **Naming**: schema prefix `cr616_helpMeAgentUat`; `CaseID` รูปแบบ `Case-UserSystem-{yyyyMMdd}-{ID}`; ภาษา UI/เนื้อหา = ไทย (locale 1054)
-- **Testing Pattern**: Manual test ผ่าน Test pane; ยังไม่มี unit/integration test
-- **Branch Strategy**: ยังไม่ระบุ (ไฟล์ export อยู่ใน workspace); deploy ผ่านสคริปต์ `deploy-helpme-agent.ps1`
-
-## Guardrails & Security (existing)
-
-- ตอบเฉพาะ `Approved_Answer`; ห้ามเดาสาเหตุ/วิธีแก้/ผู้รับผิดชอบ
-- ห้ามใช้รายการที่ `Review_Status = Review Required` หรือ `Is_Active ≠ Active`
-- ห้ามขอ/บันทึก Password, OTP หรือข้อมูลลับ
-- แสดง `KB_ID` ท้ายคำตอบเมื่ออ้างจากฐานความรู้
-- `contentModeration: High`; auth = Integrated (Entra ID), `authenticationTrigger: Always`
+- **UI Standards**: Modern Enterprise Theme (Fluent Design System, Professional Blue/Gray palette, Strictly No Emojis in labels/buttons)
+- **Delegation Rules**: All SharePoint list queries must strictly adhere to Power Apps Delegation rules (avoiding `in` operator on large sets, indexing columns in SharePoint, using `Filter`, `SortByColumns`, and `StartsWith`)
+- **Attachment Standards**: Case resolution evidence stored via SharePoint native item attachment mechanism or documented document library with file validation (size, type)
+- **Screen Resolution**: Optimized for 16:9 Desktop/Laptop viewports (1366x768 to 1920x1080)

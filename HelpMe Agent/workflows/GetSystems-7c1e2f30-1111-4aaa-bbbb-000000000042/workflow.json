@@ -1,0 +1,121 @@
+﻿{
+  "properties": {
+    "connectionReferences": {
+      "shared_sharepointonline": {
+        "api": {
+          "name": "shared_sharepointonline"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "cr616_helpMeAgentUat.cr.KjQFMKAz"
+        },
+        "runtimeSource": "invoker"
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "type": "Request",
+          "kind": "Skills",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {},
+              "required": []
+            }
+          }
+        }
+      },
+      "actions": {
+        "Get_Routing": {
+          "type": "OpenApiConnection",
+          "runAfter": {},
+          "inputs": {
+            "parameters": {
+              "dataset": "https://dvsins.sharepoint.com/sites/PowerAppPRD",
+              "table": "3d5264cb-65f6-4db5-8afa-fa68a6ea61e1",
+              "$top": 200
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+              "operationId": "GetItems",
+              "connectionName": "shared_sharepointonline"
+            }
+          }
+        },
+        "Select_names": {
+          "type": "Select",
+          "runAfter": {
+            "Get_Routing": [
+              "Succeeded"
+            ]
+          },
+          "inputs": {
+            "from": "@outputs(\u0027Get_Routing\u0027)?[\u0027body/value\u0027]",
+            "select": "@item()?[\u0027SystemName\u0027]"
+          }
+        },
+        "Filter_names": {
+          "type": "Query",
+          "runAfter": {
+            "Select_names": [
+              "Succeeded"
+            ]
+          },
+          "inputs": {
+            "from": "@body(\u0027Select_names\u0027)",
+            "where": "@and(not(equals(item(),\u0027Helpdesk\u0027)), not(equals(coalesce(item(),\u0027\u0027),\u0027\u0027)))"
+          }
+        },
+        "Compose_text": {
+          "type": "Compose",
+          "runAfter": {
+            "Filter_names": [
+              "Succeeded"
+            ]
+          },
+          "inputs": "@if(equals(length(body(\u0027Filter_names\u0027)),0),\u0027-\u0027,join(body(\u0027Filter_names\u0027), \u0027, \u0027))"
+        },
+        "Response": {
+          "type": "Response",
+          "kind": "Skills",
+          "runAfter": {
+            "Compose_text": [
+              "Succeeded"
+            ]
+          },
+          "inputs": {
+            "statusCode": 200,
+            "body": {
+              "systemsText": "@outputs(\u0027Compose_text\u0027)"
+            },
+            "schema": {
+              "type": "object",
+              "properties": {
+                "systemsText": {
+                  "title": "systemsText",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT"
+                }
+              }
+            }
+          }
+        }
+      },
+      "outputs": {},
+      "description": "helpdesk-agent GetSystems - returns active system names from Routing (for dynamic hint)"
+    }
+  },
+  "schemaVersion": "1.0.0.0"
+}

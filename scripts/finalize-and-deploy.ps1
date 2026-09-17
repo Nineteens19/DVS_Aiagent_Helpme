@@ -9,8 +9,8 @@
       5) pac copilot push (+ publish ถ้าใส่ -Publish)
 
     ต้อง login ก่อน:
-      & "C:\Program Files\node-v24.15.0-win-x64\m365.cmd" login --appId <APPID> --authType deviceCode
-      & "$env:USERPROFILE\pac-cli\extracted\tools\pac.exe" auth create --environment <EnvUrl> --deviceCode
+      m365 login --appId d514ef9a-e9c4-4d09-a282-a9a12e2bbea4 --tenant 8ffef73e-6c1e-4fda-890b-a8fa247be32e --authType deviceCode
+      pac auth create --environment <EnvUrl> --deviceCode
 
     ตัวอย่างรัน:
       powershell -ExecutionPolicy Bypass -File .\scripts\finalize-and-deploy.ps1 -AdminEmail "helpdesk-admin@deves.co.th"
@@ -40,7 +40,7 @@ if (-not $AdminEmail) { $AdminEmail = Read-Host "ใส่ admin email สำห
 # ---- 0) ตรวจ login m365 ----
 Write-Host "== ตรวจ m365 login ==" -ForegroundColor Cyan
 $st = cmd /c "`"$m365`" status 2>&1"
-if ($st -match "Logged out" -or $st -match "not logged in") { throw "m365 ยังไม่ได้ login — รัน: & `"$m365`" login --appId <APPID> --authType deviceCode" }
+if ($st -match "Logged out" -or $st -match "not logged in") { throw "m365 ยังไม่ได้ login — รัน: m365 login --appId d514ef9a-e9c4-4d09-a282-a9a12e2bbea4 --tenant 8ffef73e-6c1e-4fda-890b-a8fa247be32e --authType deviceCode" }
 Write-Host $st
 
 # ---- 1) provision ----

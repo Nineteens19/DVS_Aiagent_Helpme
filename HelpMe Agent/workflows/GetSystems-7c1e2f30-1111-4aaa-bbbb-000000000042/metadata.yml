@@ -1,0 +1,32 @@
+﻿jsonFileName: workflows/GetSystems-7c1e2f30-1111-4aaa-bbbb-000000000042/workflow.json
+workflowId: 7c1e2f30-1111-4aaa-bbbb-000000000042
+name: GetSystems
+type: 1
+description: 
+subprocess: false
+category: 5
+mode: 0
+scope: 4
+onDemand: false
+triggerOnCreate: false
+triggerOnDelete: false
+asyncAutodelete: false
+syncWorkflowLogOnFailure: false
+stateCode: 1
+statusCode: 2
+runAs: 1
+isTransacted: true
+introducedVersion: 1.0
+isCustomizable:
+  value: true
+  canBeChanged: true
+  managedPropertyLogicalName: iscustomizableanddeletable
+businessProcessType: 
+isCustomProcessingStepAllowedForOtherPublishers:
+  value: true
+  canBeChanged: true
+  managedPropertyLogicalName: canbedeleted
+modernFlowType: 1
+primaryEntity: none
+connectionReferences:
+- cr616_helpMeAgentUat.cr.KjQFMKAz

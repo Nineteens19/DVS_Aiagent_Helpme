@@ -11,10 +11,18 @@ beginDialog:
   intent:
     triggerQueries:
       - เปิดเคสเดิมใหม่
+      - ขอเปิดเคสเดิมใหม่
+      - ขอเปิดเคสเดิม
+      - เปิดเคสเดิม
       - เคสเดิมยังไม่หาย
+      - ปัญหายังไม่หาย
       - ยังแก้ไม่ได้
       - ขอเปิดเรื่องเคสเดิม
       - เคสที่แจ้งยังไม่หาย
+      - ขอ reopen
+      - reopen case
+      - reopen
+      - เปิดเรื่องใหม่
 
   actions:
     - kind: Question
@@ -23,14 +31,14 @@ beginDialog:
         allowInterruption: true
 
       variable: init:Topic.CaseId
-      prompt: กรุณาพิมพ์หมายเลขเคสที่ต้องการเปิดเรื่องใหม่ครับ (เช่น HD-20260916-12)
+      prompt: กรุณาพิมพ์หมายเลขเคสที่ต้องการเปิดเรื่องใหม่ครับ (เช่น HD-20260916-1)
       entity: StringPrebuiltEntity
 
     - kind: InvokeFlowAction
       id: invokeFlowAction_rc
       input:
         binding:
-          reporterEmail: =System.User.Email
+          reporterEmail: =Coalesce(System.User.Email, "")
           caseId: =Trim(Text(Topic.CaseId))
 
       output:
@@ -42,6 +50,46 @@ beginDialog:
     - kind: SendActivity
       id: sendActivity_rc_result
       activity: "{Topic.Result}"
+
+    - kind: Question
+      id: question_rc_next
+      variable: Topic.NextStep
+      prompt: มีรายการอื่นให้ผมช่วยเหลือเพิ่มเติมไหมครับ 😊
+      entity:
+        kind: EmbeddedEntity
+        definition:
+          kind: ClosedListEntity
+          items:
+            - id: "📋 ติดตามสถานะเคส"
+              displayName: "📋 ติดตามสถานะเคส"
+
+            - id: "🏠 กลับสู่เมนูหลัก"
+              displayName: "🏠 กลับสู่เมนูหลัก"
+
+            - id: "ไม่ต้องการแล้ว ขอบคุณครับ"
+              displayName: "ไม่ต้องการแล้ว ขอบคุณครับ"
+
+    - kind: ConditionGroup
+      id: condition_rc_next_step
+      conditions:
+        - id: cond_rc_track
+          condition: =Text(Topic.NextStep) = "📋 ติดตามสถานะเคส"
+          actions:
+            - kind: BeginDialog
+              id: begin_rc_case_status
+              dialog: cr616_helpMeAgentUat.topic.CaseStatus
+
+        - id: cond_rc_menu
+          condition: =Text(Topic.NextStep) = "🏠 กลับสู่เมนูหลัก"
+          actions:
+            - kind: BeginDialog
+              id: begin_rc_menu
+              dialog: cr616_helpMeAgentUat.topic.v4K
+
+      elseActions:
+        - kind: SendActivity
+          id: send_rc_bye
+          activity: ยินดีที่ได้ให้บริการครับ หากมีปัญหาหรือต้องการติดตามเคสเมื่อใด สามารถพิมพ์บอกผมได้ตลอดเวลานะครับ 😊
 
 inputType: {}
 outputType: {}

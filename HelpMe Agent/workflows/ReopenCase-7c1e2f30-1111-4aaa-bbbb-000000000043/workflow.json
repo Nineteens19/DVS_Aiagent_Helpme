@@ -1,0 +1,208 @@
+﻿{
+  "properties": {
+    "connectionReferences": {
+      "shared_sharepointonline": {
+        "api": {
+          "name": "shared_sharepointonline"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "cr616_helpMeAgentUat.cr.KjQFMKAz"
+        },
+        "runtimeSource": "invoker"
+      },
+      "shared_office365": {
+        "api": {
+          "name": "shared_office365"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedoffice365_71ca1"
+        },
+        "runtimeSource": "invoker"
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "type": "Request",
+          "kind": "Skills",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "reporterEmail": {
+                  "title": "reporterEmail",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "caseId": {
+                  "title": "caseId",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                }
+              },
+              "required": [
+                "caseId"
+              ]
+            }
+          }
+        }
+      },
+      "actions": {
+        "Init_result": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "resultText",
+                "type": "string"
+              }
+            ]
+          },
+          "runAfter": {}
+        },
+        "Get_case": {
+          "type": "OpenApiConnection",
+          "runAfter": {
+            "Init_result": [
+              "Succeeded"
+            ]
+          },
+          "inputs": {
+            "parameters": {
+              "dataset": "https://dvsins.sharepoint.com/sites/PowerAppPRD",
+              "table": "b8b22b0d-45c6-43c9-bc66-06e5e45b1237",
+              "$filter": "CaseID eq \u0027@{triggerBody()?[\u0027caseId\u0027]}\u0027",
+              "$top": 1
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+              "operationId": "GetItems",
+              "connectionName": "shared_sharepointonline"
+            }
+          }
+        },
+        "Condition_Found": {
+          "type": "If",
+          "runAfter": {
+            "Get_case": [
+              "Succeeded"
+            ]
+          },
+          "expression": {
+            "greater": [
+              "@length(outputs(\u0027Get_case\u0027)?[\u0027body/value\u0027])",
+              0
+            ]
+          },
+          "actions": {
+            "Update_reopen": {
+              "type": "OpenApiConnection",
+              "runAfter": {},
+              "inputs": {
+                "parameters": {
+                  "dataset": "https://dvsins.sharepoint.com/sites/PowerAppPRD",
+                  "table": "b8b22b0d-45c6-43c9-bc66-06e5e45b1237",
+                  "id": "@first(outputs(\u0027Get_case\u0027)?[\u0027body/value\u0027])?[\u0027ID\u0027]",
+                  "item/Statuscase/Value": "Reopened",
+                  "item/ReopenCount": "@add(int(coalesce(first(outputs(\u0027Get_case\u0027)?[\u0027body/value\u0027])?[\u0027ReopenCount\u0027],0)),1)",
+                  "item/StatusNote": "\u0E1C\u0E39\u0E49\u0E41\u0E08\u0E49\u0E07\u0E02\u0E2D\u0E40\u0E1B\u0E34\u0E14\u0E40\u0E23\u0E37\u0E48\u0E2D\u0E07\u0E43\u0E2B\u0E21\u0E48 (\u0E22\u0E31\u0E07\u0E44\u0E21\u0E48\u0E44\u0E14\u0E49\u0E23\u0E31\u0E1A\u0E01\u0E32\u0E23\u0E41\u0E01\u0E49\u0E44\u0E02)"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+                  "operationId": "PatchItem",
+                  "connectionName": "shared_sharepointonline"
+                }
+              }
+            },
+            "Email_owner_reopen": {
+              "type": "OpenApiConnection",
+              "runAfter": {
+                "Update_reopen": [
+                  "Succeeded"
+                ]
+              },
+              "inputs": {
+                "parameters": {
+                  "emailMessage/To": "@if(equals(coalesce(first(outputs(\u0027Get_case\u0027)?[\u0027body/value\u0027])?[\u0027AssignedOwner\u0027],\u0027\u0027),\u0027\u0027),\u0027Teerapat.ti@deves.co.th\u0027,first(outputs(\u0027Get_case\u0027)?[\u0027body/value\u0027])?[\u0027AssignedOwner\u0027])",
+                  "emailMessage/Subject": "[AI Helpdesk] \u0E40\u0E04\u0E2A\u0E16\u0E39\u0E01\u0E40\u0E1B\u0E34\u0E14\u0E43\u0E2B\u0E21\u0E48 @{triggerBody()?[\u0027caseId\u0027]}",
+                  "emailMessage/Body": "\u003Cp\u003E\u0E40\u0E23\u0E35\u0E22\u0E19\u0E1C\u0E39\u0E49\u0E23\u0E31\u0E1A\u0E1C\u0E34\u0E14\u0E0A\u0E2D\u0E1A\u003C/p\u003E\u003Cp\u003E\u0E1C\u0E39\u0E49\u0E41\u0E08\u0E49\u0E07\u0E23\u0E30\u0E1A\u0E38\u0E27\u0E48\u0E32\u0E1B\u0E31\u0E0D\u0E2B\u0E32\u0E22\u0E31\u0E07\u0E44\u0E21\u0E48\u0E44\u0E14\u0E49\u0E23\u0E31\u0E1A\u0E01\u0E32\u0E23\u0E41\u0E01\u0E49\u0E44\u0E02 \u0E41\u0E25\u0E30\u0E02\u0E2D\u0E40\u0E1B\u0E34\u0E14\u0E40\u0E23\u0E37\u0E48\u0E2D\u0E07\u0E40\u0E04\u0E2A \u003Cb\u003E@{triggerBody()?[\u0027caseId\u0027]}\u003C/b\u003E \u0E43\u0E2B\u0E21\u0E48 \u0E42\u0E1B\u0E23\u0E14\u0E15\u0E34\u0E14\u0E15\u0E32\u0E21\u0E15\u0E48\u0E2D\u003C/p\u003E\u003Cp\u003E\u0E23\u0E30\u0E1A\u0E1A: @{first(outputs(\u0027Get_case\u0027)?[\u0027body/value\u0027])?[\u0027SystemName\u0027]}\u003Cbr\u003E\u0E1C\u0E39\u0E49\u0E41\u0E08\u0E49\u0E07: @{first(outputs(\u0027Get_case\u0027)?[\u0027body/value\u0027])?[\u0027ReporterName\u0027]} - @{triggerBody()?[\u0027reporterEmail\u0027]}\u003C/p\u003E\u003Chr\u003E\u0E23\u0E30\u0E1A\u0E1A AI Helpdesk\u003C/p\u003E",
+                  "emailMessage/Importance": "High"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365",
+                  "operationId": "SendEmailV2",
+                  "connectionName": "shared_office365"
+                }
+              }
+            },
+            "Set_ok": {
+              "type": "SetVariable",
+              "runAfter": {
+                "Email_owner_reopen": [
+                  "Succeeded"
+                ]
+              },
+              "inputs": {
+                "name": "resultText",
+                "value": "@concat(\u0027\u0E40\u0E1B\u0E34\u0E14\u0E40\u0E23\u0E37\u0E48\u0E2D\u0E07\u0E40\u0E04\u0E2A \u0027, triggerBody()?[\u0027caseId\u0027], \u0027 \u0E43\u0E2B\u0E21\u0E48\u0E40\u0E23\u0E35\u0E22\u0E1A\u0E23\u0E49\u0E2D\u0E22\u0E41\u0E25\u0E49\u0E27\u0E04\u0E23\u0E31\u0E1A \u0E40\u0E08\u0E49\u0E32\u0E2B\u0E19\u0E49\u0E32\u0E17\u0E35\u0E48\u0E08\u0E30\u0E15\u0E34\u0E14\u0E15\u0E32\u0E21\u0E15\u0E48\u0E2D\u0E41\u0E25\u0E30\u0E15\u0E34\u0E14\u0E15\u0E48\u0E2D\u0E01\u0E25\u0E31\u0E1A\u0027)"
+              }
+            }
+          },
+          "else": {
+            "actions": {
+              "Set_nf": {
+                "type": "SetVariable",
+                "inputs": {
+                  "name": "resultText",
+                  "value": "@concat(\u0027\u0E44\u0E21\u0E48\u0E1E\u0E1A\u0E40\u0E04\u0E2A\u0E2B\u0E21\u0E32\u0E22\u0E40\u0E25\u0E02 \u0027, triggerBody()?[\u0027caseId\u0027], \u0027 \u0E2B\u0E23\u0E37\u0E2D\u0E40\u0E04\u0E2A\u0E19\u0E35\u0E49\u0E44\u0E21\u0E48\u0E43\u0E0A\u0E48\u0E02\u0E2D\u0E07\u0E17\u0E48\u0E32\u0E19\u0E04\u0E23\u0E31\u0E1A\u0027)"
+                }
+              }
+            }
+          }
+        },
+        "Response": {
+          "type": "Response",
+          "kind": "Skills",
+          "runAfter": {
+            "Condition_Found": [
+              "Succeeded"
+            ]
+          },
+          "inputs": {
+            "statusCode": 200,
+            "body": {
+              "resultText": "@variables(\u0027resultText\u0027)"
+            },
+            "schema": {
+              "type": "object",
+              "properties": {
+                "resultText": {
+                  "title": "resultText",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT"
+                }
+              }
+            }
+          }
+        }
+      },
+      "outputs": {},
+      "description": "helpdesk-agent ReopenCase - reporter reopens a case (Statuscase=Reopened, notify owner)"
+    }
+  },
+  "schemaVersion": "1.0.0.0"
+}

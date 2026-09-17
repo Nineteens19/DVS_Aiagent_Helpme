@@ -24,7 +24,7 @@ m365 CLI v11 ต้องใช้ app ของ tenant เอง:
 4. คัดลอก **Application (client) ID** และ **Directory (tenant) ID**
 5. Login:
    ```
-   & "C:\Program Files\node-v24.15.0-win-x64\m365.cmd" login --appId <CLIENT_ID> --tenant <TENANT_ID> --authType deviceCode
+   m365 login --appId d514ef9a-e9c4-4d09-a282-a9a12e2bbea4 --tenant 8ffef73e-6c1e-4fda-890b-a8fa247be32e --authType deviceCode
    ```
    แล้วกรอก device code (จะได้ลิงก์/รหัสบนจอ)
 

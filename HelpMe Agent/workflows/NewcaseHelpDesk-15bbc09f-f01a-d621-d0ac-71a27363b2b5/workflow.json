@@ -1,19 +1,31 @@
-{
+﻿{
   "properties": {
     "connectionReferences": {
-      "shared_sharepointonline-1": {
-        "api": { "name": "shared_sharepointonline" },
-        "connection": { "connectionReferenceLogicalName": "new_sharedsharepointonline_4d4aa" },
-        "runtimeSource": "invoker"
+      "shared_office365users-1": {
+        "api": {
+          "name": "shared_office365users"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedoffice365users_8cbe3"
+        },
+        "runtimeSource": "embedded"
       },
       "shared_sharepointonline": {
-        "api": { "name": "shared_sharepointonline" },
-        "connection": { "connectionReferenceLogicalName": "cr616_helpMeAgentUat.cr.KjQFMKAz" },
+        "api": {
+          "name": "shared_sharepointonline"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "cr616_helpMeAgentUat.cr.KjQFMKAz"
+        },
         "runtimeSource": "invoker"
       },
       "shared_office365": {
-        "api": { "name": "shared_office365" },
-        "connection": { "connectionReferenceLogicalName": "new_sharedoffice365_71ca1" },
+        "api": {
+          "name": "shared_office365"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedoffice365_71ca1"
+        },
         "runtimeSource": "invoker"
       }
     },
@@ -21,8 +33,14 @@
       "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
       "contentVersion": "1.0.0.0",
       "parameters": {
-        "$authentication": { "defaultValue": {}, "type": "SecureObject" },
-        "$connections": { "defaultValue": {}, "type": "Object" }
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        }
       },
       "triggers": {
         "manual": {
@@ -32,46 +50,232 @@
             "schema": {
               "type": "object",
               "properties": {
-                "text_2": { "description": "Please enter your input", "title": "contactName", "type": "string", "x-ms-content-hint": "TEXT", "x-ms-dynamically-added": true },
-                "text_3": { "description": "Please enter your input", "title": "contactTel", "type": "string", "x-ms-content-hint": "TEXT", "x-ms-dynamically-added": true },
-                "text_4": { "description": "Please enter your input", "title": "System", "type": "string", "x-ms-content-hint": "TEXT", "x-ms-dynamically-added": true },
-                "text_5": { "description": "Please enter your input", "title": "Desc", "type": "string", "x-ms-content-hint": "TEXT", "x-ms-dynamically-added": true },
-                "text": { "description": "Please enter your input", "title": "ActionType", "type": "string", "x-ms-content-hint": "TEXT", "x-ms-dynamically-added": true },
-                "text_1": { "description": "Please enter your input", "title": "contactEmail", "type": "string", "x-ms-content-hint": "TEXT", "x-ms-dynamically-added": true },
-                "text_6": { "description": "Please enter your input", "title": "Username", "type": "string", "x-ms-content-hint": "TEXT", "x-ms-dynamically-added": true }
+                "text_2": {
+                  "description": "Please enter your input",
+                  "title": "contactName",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_3": {
+                  "description": "Please enter your input",
+                  "title": "contactTel",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_4": {
+                  "description": "Please enter your input",
+                  "title": "System",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_5": {
+                  "description": "Please enter your input",
+                  "title": "Desc",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text": {
+                  "description": "Please enter your input",
+                  "title": "ActionType",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_1": {
+                  "description": "Please enter your input",
+                  "title": "contactEmail",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_6": {
+                  "description": "Please enter your input",
+                  "title": "Username",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                }
               },
-              "required": ["text_2", "text_3", "text_4", "text_5", "text", "text_1", "text_6"]
+              "required": [
+                "text_2",
+                "text_3",
+                "text_4",
+                "text_5",
+                "text",
+                "text_1",
+                "text_6"
+              ]
             }
           },
-          "metadata": { "operationMetadataId": "b8f61c18-7224-4f8a-9c5f-72fbce5df764" }
+          "metadata": {
+            "operationMetadataId": "b8f61c18-7224-4f8a-9c5f-72fbce5df764"
+          }
         }
       },
       "actions": {
-        "Init_CaseID": { "type": "InitializeVariable", "inputs": { "variables": [ { "name": "CaseID", "type": "string" } ] }, "runAfter": {} },
-        "Init_MailTo": { "type": "InitializeVariable", "inputs": { "variables": [ { "name": "MailTo", "type": "string" } ] }, "runAfter": { "Init_CaseID": [ "Succeeded" ] } },
-        "Init_MailCC": { "type": "InitializeVariable", "inputs": { "variables": [ { "name": "MailCC", "type": "string" } ] }, "runAfter": { "Init_MailTo": [ "Succeeded" ] } },
-        "Init_CaseType": { "type": "InitializeVariable", "inputs": { "variables": [ { "name": "CaseType", "type": "string" } ] }, "runAfter": { "Init_MailCC": [ "Succeeded" ] } },
-        "Init_Priority": { "type": "InitializeVariable", "inputs": { "variables": [ { "name": "Priority", "type": "string" } ] }, "runAfter": { "Init_CaseType": [ "Succeeded" ] } },
-        "Init_Severity": { "type": "InitializeVariable", "inputs": { "variables": [ { "name": "Severity", "type": "string" } ] }, "runAfter": { "Init_Priority": [ "Succeeded" ] } },
-        "Init_MailToFinal": { "type": "InitializeVariable", "inputs": { "variables": [ { "name": "MailToFinal", "type": "string" } ] }, "runAfter": { "Init_Severity": [ "Succeeded" ] } },
+        "Init_CaseID": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "CaseID",
+                "type": "string"
+              }
+            ]
+          },
+          "runAfter": {}
+        },
+        "Init_MailTo": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "MailTo",
+                "type": "string"
+              }
+            ]
+          },
+          "runAfter": {
+            "Init_CaseID": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Init_MailCC": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "MailCC",
+                "type": "string"
+              }
+            ]
+          },
+          "runAfter": {
+            "Init_MailTo": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Init_CaseType": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "CaseType",
+                "type": "string"
+              }
+            ]
+          },
+          "runAfter": {
+            "Init_MailCC": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Init_Priority": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "Priority",
+                "type": "string"
+              }
+            ]
+          },
+          "runAfter": {
+            "Init_CaseType": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Init_Severity": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "Severity",
+                "type": "string"
+              }
+            ]
+          },
+          "runAfter": {
+            "Init_Priority": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Init_MailToFinal": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "MailToFinal",
+                "type": "string"
+              }
+            ]
+          },
+          "runAfter": {
+            "Init_Severity": [
+              "Succeeded"
+            ]
+          }
+        },
         "Scope_Main": {
           "type": "Scope",
-          "runAfter": { "Init_MailToFinal": [ "Succeeded" ] },
           "actions": {
             "Set_CaseType": {
               "type": "SetVariable",
-              "inputs": { "name": "CaseType", "value": "@if(contains(coalesce(triggerBody()?['text'],''),'ปลดล็อค'),'Access',if(contains(coalesce(triggerBody()?['text'],''),'สอบถาม'),'Service Request','Incident'))" },
-              "runAfter": {}
+              "inputs": {
+                "name": "CaseType",
+                "value": "@if(contains(coalesce(triggerBody()?[\u0027text\u0027],\u0027\u0027),\u0027\u0E1B\u0E25\u0E14\u0E25\u0E47\u0E2D\u0E04\u0027),\u0027Access\u0027,if(contains(coalesce(triggerBody()?[\u0027text\u0027],\u0027\u0027),\u0027\u0E2A\u0E2D\u0E1A\u0E16\u0E32\u0E21\u0027),\u0027Service Request\u0027,\u0027Incident\u0027))"
+              }
             },
             "Set_Priority": {
               "type": "SetVariable",
-              "inputs": { "name": "Priority", "value": "@if(contains(coalesce(triggerBody()?['text_5'],''),'ด่วน'),'ด่วน','ปกติ')" },
-              "runAfter": { "Set_CaseType": [ "Succeeded" ] }
+              "inputs": {
+                "name": "Priority",
+                "value": "@if(contains(coalesce(triggerBody()?[\u0027text_5\u0027],\u0027\u0027),\u0027\u0E14\u0E48\u0E27\u0E19\u0027),\u0027\u0E14\u0E48\u0E27\u0E19\u0027,\u0027\u0E1B\u0E01\u0E15\u0E34\u0027)"
+              },
+              "runAfter": {
+                "Set_CaseType": [
+                  "Succeeded"
+                ]
+              }
             },
             "Set_Severity": {
               "type": "SetVariable",
-              "inputs": { "name": "Severity", "value": "@if(contains(coalesce(triggerBody()?['text_5'],''),'ด่วน'),'P2','P3')" },
-              "runAfter": { "Set_Priority": [ "Succeeded" ] }
+              "inputs": {
+                "name": "Severity",
+                "value": "@if(contains(coalesce(triggerBody()?[\u0027text_5\u0027],\u0027\u0027),\u0027\u0E14\u0E48\u0E27\u0E19\u0027),\u0027P2\u0027,\u0027P3\u0027)"
+              },
+              "runAfter": {
+                "Set_Priority": [
+                  "Succeeded"
+                ]
+              }
+            },
+            "Get_user_profile": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "id": "@coalesce(triggerBody()?[\u0027text_1\u0027], \u0027\u0027)"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365users",
+                  "operationId": "UserProfile_V2",
+                  "connectionName": "shared_office365users-1"
+                }
+              },
+              "runAfter": {
+                "Set_Severity": [
+                  "Succeeded"
+                ]
+              }
             },
             "Create_item_Cases": {
               "type": "OpenApiConnection",
@@ -79,26 +283,44 @@
                 "parameters": {
                   "dataset": "https://dvsins.sharepoint.com/sites/PowerAppPRD",
                   "table": "b8b22b0d-45c6-43c9-bc66-06e5e45b1237",
-                  "item/CaseType/Value": "@variables('CaseType')",
-                  "item/SystemName": "@triggerBody()?['text_4']",
-                  "item/Priority/Value": "@variables('Priority')",
-                  "item/Severity/Value": "@variables('Severity')",
-                  "item/ProblemDetail": "@triggerBody()?['text_5']",
-                  "item/IssueSummary": "@concat(coalesce(triggerBody()?['text'],''),' - ',coalesce(triggerBody()?['text_4'],''))",
-                  "item/Username": "@if(equals(coalesce(triggerBody()?['text_6'],''),'-'),'',triggerBody()?['text_6'])",
-                  "item/ReporterName": "@triggerBody()?['text_2']",
-                  "item/ReporterEmail": "@triggerBody()?['text_1']",
-                  "item/ReporterTel": "@triggerBody()?['text_3']",
+                  "item/CaseType/Value": "@variables(\u0027CaseType\u0027)",
+                  "item/SystemName": "@triggerBody()?[\u0027text_4\u0027]",
+                  "item/Priority/Value": "@variables(\u0027Priority\u0027)",
+                  "item/Severity/Value": "@variables(\u0027Severity\u0027)",
+                  "item/ProblemDetail": "@triggerBody()?[\u0027text_5\u0027]",
+                  "item/IssueSummary": "@concat(coalesce(triggerBody()?[\u0027text\u0027],\u0027\u0027),\u0027 - \u0027,coalesce(triggerBody()?[\u0027text_4\u0027],\u0027\u0027))",
+                  "item/Username": "@if(and(not(equals(coalesce(triggerBody()?[\u0027text_6\u0027],\u0027\u0027),\u0027\u0027)), not(equals(triggerBody()?[\u0027text_6\u0027],\u0027-\u0027))), triggerBody()?[\u0027text_6\u0027], coalesce(outputs(\u0027Get_user_profile\u0027)?[\u0027body/userPrincipalName\u0027], \u0027\u0027))",
+                  "item/ReporterName": "@coalesce(outputs(\u0027Get_user_profile\u0027)?[\u0027body/displayName\u0027], if(equals(coalesce(triggerBody()?[\u0027text_2\u0027],\u0027\u0027),\u0027-\u0027),\u0027\u0027,triggerBody()?[\u0027text_2\u0027]), triggerBody()?[\u0027text_1\u0027], \u0027User\u0027)",
+                  "item/ReporterEmail": "@coalesce(outputs(\u0027Get_user_profile\u0027)?[\u0027body/mail\u0027], outputs(\u0027Get_user_profile\u0027)?[\u0027body/userPrincipalName\u0027], triggerBody()?[\u0027text_1\u0027])",
+                  "item/ReporterTel": "@if(and(not(equals(coalesce(triggerBody()?[\u0027text_3\u0027],\u0027\u0027),\u0027\u0027)), not(equals(triggerBody()?[\u0027text_3\u0027],\u0027-\u0027))), triggerBody()?[\u0027text_3\u0027], coalesce(outputs(\u0027Get_user_profile\u0027)?[\u0027body/mobilePhone\u0027], first(outputs(\u0027Get_user_profile\u0027)?[\u0027body/businessPhones\u0027]), \u0027-\u0027))",
                   "item/Statuscase/Value": "Open"
                 },
-                "host": { "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline", "operationId": "PostItem", "connectionName": "shared_sharepointonline" }
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+                  "operationId": "PostItem",
+                  "connectionName": "shared_sharepointonline"
+                }
               },
-              "runAfter": { "Set_Severity": [ "Succeeded" ] }
+              "runAfter": {
+                "Get_user_profile": [
+                  "Succeeded",
+                  "Failed",
+                  "Skipped",
+                  "TimedOut"
+                ]
+              }
             },
             "Set_CaseID": {
               "type": "SetVariable",
-              "inputs": { "name": "CaseID", "value": "@concat('HD-', formatDateTime(utcNow(),'yyyyMMdd'), '-', string(outputs('Create_item_Cases')?['body/ID']))" },
-              "runAfter": { "Create_item_Cases": [ "Succeeded" ] }
+              "inputs": {
+                "name": "CaseID",
+                "value": "@concat(\u0027HD-\u0027, formatDateTime(utcNow(),\u0027yyyyMMdd\u0027), \u0027-\u0027, string(outputs(\u0027Create_item_Cases\u0027)?[\u0027body/ID\u0027]))"
+              },
+              "runAfter": {
+                "Create_item_Cases": [
+                  "Succeeded"
+                ]
+              }
             },
             "Update_item_CaseID": {
               "type": "OpenApiConnection",
@@ -106,12 +328,20 @@
                 "parameters": {
                   "dataset": "https://dvsins.sharepoint.com/sites/PowerAppPRD",
                   "table": "b8b22b0d-45c6-43c9-bc66-06e5e45b1237",
-                  "id": "@outputs('Create_item_Cases')?['body/ID']",
-                  "item/CaseID": "@variables('CaseID')"
+                  "id": "@outputs(\u0027Create_item_Cases\u0027)?[\u0027body/ID\u0027]",
+                  "item/CaseID": "@variables(\u0027CaseID\u0027)"
                 },
-                "host": { "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline", "operationId": "PatchItem", "connectionName": "shared_sharepointonline" }
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+                  "operationId": "PatchItem",
+                  "connectionName": "shared_sharepointonline"
+                }
               },
-              "runAfter": { "Set_CaseID": [ "Succeeded" ] }
+              "runAfter": {
+                "Set_CaseID": [
+                  "Succeeded"
+                ]
+              }
             },
             "Get_Routing_bySystem": {
               "type": "OpenApiConnection",
@@ -119,20 +349,49 @@
                 "parameters": {
                   "dataset": "https://dvsins.sharepoint.com/sites/PowerAppPRD",
                   "table": "3d5264cb-65f6-4db5-8afa-fa68a6ea61e1",
-                  "$filter": "SystemName eq '@{triggerBody()?['text_4']}'",
+                  "$filter": "SystemName eq \u0027@{triggerBody()?[\u0027text_4\u0027]}\u0027",
                   "$top": 1
                 },
-                "host": { "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline", "operationId": "GetItems", "connectionName": "shared_sharepointonline" }
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+                  "operationId": "GetItems",
+                  "connectionName": "shared_sharepointonline"
+                }
               },
-              "runAfter": { "Update_item_CaseID": [ "Succeeded" ] }
+              "runAfter": {
+                "Update_item_CaseID": [
+                  "Succeeded"
+                ]
+              }
             },
             "Condition_Routing_found": {
               "type": "If",
-              "expression": { "greater": [ "@length(outputs('Get_Routing_bySystem')?['body/value'])", 0 ] },
-              "runAfter": { "Get_Routing_bySystem": [ "Succeeded" ] },
+              "expression": {
+                "greater": [
+                  "@length(outputs(\u0027Get_Routing_bySystem\u0027)?[\u0027body/value\u0027])",
+                  0
+                ]
+              },
               "actions": {
-                "Set_MailTo_fromSystem": { "type": "SetVariable", "inputs": { "name": "MailTo", "value": "@concat(coalesce(first(outputs('Get_Routing_bySystem')?['body/value'])?['ToNotifyBA'],''), ';', coalesce(first(outputs('Get_Routing_bySystem')?['body/value'])?['ToNotifySA'],''))" } },
-                "Set_MailCC_fromSystem": { "type": "SetVariable", "inputs": { "name": "MailCC", "value": "@coalesce(first(outputs('Get_Routing_bySystem')?['body/value'])?['CCNotify'],'')" }, "runAfter": { "Set_MailTo_fromSystem": [ "Succeeded" ] } }
+                "Set_MailTo_fromSystem": {
+                  "type": "SetVariable",
+                  "inputs": {
+                    "name": "MailTo",
+                    "value": "@concat(coalesce(first(outputs(\u0027Get_Routing_bySystem\u0027)?[\u0027body/value\u0027])?[\u0027ToNotifyBA\u0027],\u0027\u0027), \u0027;\u0027, coalesce(first(outputs(\u0027Get_Routing_bySystem\u0027)?[\u0027body/value\u0027])?[\u0027ToNotifySA\u0027],\u0027\u0027))"
+                  }
+                },
+                "Set_MailCC_fromSystem": {
+                  "type": "SetVariable",
+                  "inputs": {
+                    "name": "MailCC",
+                    "value": "@coalesce(first(outputs(\u0027Get_Routing_bySystem\u0027)?[\u0027body/value\u0027])?[\u0027CCNotify\u0027],\u0027\u0027)"
+                  },
+                  "runAfter": {
+                    "Set_MailTo_fromSystem": [
+                      "Succeeded"
+                    ]
+                  }
+                }
               },
               "else": {
                 "actions": {
@@ -142,21 +401,59 @@
                       "parameters": {
                         "dataset": "https://dvsins.sharepoint.com/sites/PowerAppPRD",
                         "table": "3d5264cb-65f6-4db5-8afa-fa68a6ea61e1",
-                        "$filter": "SystemName eq 'Helpdesk'",
+                        "$filter": "SystemName eq \u0027Helpdesk\u0027",
                         "$top": 1
                       },
-                      "host": { "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline", "operationId": "GetItems", "connectionName": "shared_sharepointonline" }
+                      "host": {
+                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+                        "operationId": "GetItems",
+                        "connectionName": "shared_sharepointonline"
+                      }
                     }
                   },
-                  "Set_MailTo_Helpdesk": { "type": "SetVariable", "inputs": { "name": "MailTo", "value": "@concat(coalesce(first(outputs('Get_Routing_Helpdesk')?['body/value'])?['ToNotifyBA'],''), ';', coalesce(first(outputs('Get_Routing_Helpdesk')?['body/value'])?['ToNotifySA'],''))" }, "runAfter": { "Get_Routing_Helpdesk": [ "Succeeded" ] } },
-                  "Set_MailCC_Helpdesk": { "type": "SetVariable", "inputs": { "name": "MailCC", "value": "@coalesce(first(outputs('Get_Routing_Helpdesk')?['body/value'])?['CCNotify'],'')" }, "runAfter": { "Set_MailTo_Helpdesk": [ "Succeeded" ] } }
+                  "Set_MailTo_Helpdesk": {
+                    "type": "SetVariable",
+                    "inputs": {
+                      "name": "MailTo",
+                      "value": "@concat(coalesce(first(outputs(\u0027Get_Routing_Helpdesk\u0027)?[\u0027body/value\u0027])?[\u0027ToNotifyBA\u0027],\u0027\u0027), \u0027;\u0027, coalesce(first(outputs(\u0027Get_Routing_Helpdesk\u0027)?[\u0027body/value\u0027])?[\u0027ToNotifySA\u0027],\u0027\u0027))"
+                    },
+                    "runAfter": {
+                      "Get_Routing_Helpdesk": [
+                        "Succeeded"
+                      ]
+                    }
+                  },
+                  "Set_MailCC_Helpdesk": {
+                    "type": "SetVariable",
+                    "inputs": {
+                      "name": "MailCC",
+                      "value": "@coalesce(first(outputs(\u0027Get_Routing_Helpdesk\u0027)?[\u0027body/value\u0027])?[\u0027CCNotify\u0027],\u0027\u0027)"
+                    },
+                    "runAfter": {
+                      "Set_MailTo_Helpdesk": [
+                        "Succeeded"
+                      ]
+                    }
+                  }
                 }
+              },
+              "runAfter": {
+                "Get_Routing_bySystem": [
+                  "Succeeded"
+                ]
               }
             },
             "Set_MailToFinal": {
               "type": "SetVariable",
-              "inputs": { "name": "MailToFinal", "value": "@if(contains(coalesce(variables('MailTo'),''),'@'), variables('MailTo'), 'Teerapat.ti@deves.co.th')" },
-              "runAfter": { "Condition_Routing_found": [ "Succeeded" ] }
+              "inputs": {
+                "name": "MailToFinal",
+                "value": "@if(contains(coalesce(variables(\u0027MailTo\u0027),\u0027\u0027),\u0027@\u0027), variables(\u0027MailTo\u0027), \u0027Teerapat.ti@deves.co.th\u0027)"
+              },
+              "runAfter": {
+                "Condition_Routing_found": [
+                  "Succeeded"
+                ]
+              }
             },
             "Get_SLA_bySeverity": {
               "type": "OpenApiConnection",
@@ -164,12 +461,20 @@
                 "parameters": {
                   "dataset": "https://dvsins.sharepoint.com/sites/PowerAppPRD",
                   "table": "9c7bb698-4841-447e-aae4-5a43466771af",
-                  "$filter": "Severity eq '@{variables('Severity')}'",
+                  "$filter": "Severity eq \u0027@{variables(\u0027Severity\u0027)}\u0027",
                   "$top": 1
                 },
-                "host": { "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline", "operationId": "GetItems", "connectionName": "shared_sharepointonline" }
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+                  "operationId": "GetItems",
+                  "connectionName": "shared_sharepointonline"
+                }
               },
-              "runAfter": { "Set_MailToFinal": [ "Succeeded" ] }
+              "runAfter": {
+                "Set_MailToFinal": [
+                  "Succeeded"
+                ]
+              }
             },
             "Update_item_SLA": {
               "type": "OpenApiConnection",
@@ -177,46 +482,76 @@
                 "parameters": {
                   "dataset": "https://dvsins.sharepoint.com/sites/PowerAppPRD",
                   "table": "b8b22b0d-45c6-43c9-bc66-06e5e45b1237",
-                  "id": "@outputs('Create_item_Cases')?['body/ID']",
-                  "item/AssignedOwner": "@variables('MailToFinal')",
-                  "item/SlaDueDate": "@if(greater(length(outputs('Get_SLA_bySeverity')?['body/value']),0), addHours(utcNow(), int(coalesce(first(outputs('Get_SLA_bySeverity')?['body/value'])?['ResolutionHours'],'48'))), addHours(utcNow(),48))",
-                  "item/FirstResponseDueDate": "@if(greater(length(outputs('Get_SLA_bySeverity')?['body/value']),0), addHours(utcNow(), int(coalesce(first(outputs('Get_SLA_bySeverity')?['body/value'])?['FirstResponseHours'],'8'))), addHours(utcNow(),8))"
+                  "id": "@outputs(\u0027Create_item_Cases\u0027)?[\u0027body/ID\u0027]",
+                  "item/AssignedOwner": "@variables(\u0027MailToFinal\u0027)",
+                  "item/SlaDueDate": "@if(greater(length(outputs(\u0027Get_SLA_bySeverity\u0027)?[\u0027body/value\u0027]),0), addHours(utcNow(), int(coalesce(first(outputs(\u0027Get_SLA_bySeverity\u0027)?[\u0027body/value\u0027])?[\u0027ResolutionHours\u0027],\u002748\u0027))), addHours(utcNow(),48))",
+                  "item/FirstResponseDueDate": "@if(greater(length(outputs(\u0027Get_SLA_bySeverity\u0027)?[\u0027body/value\u0027]),0), addHours(utcNow(), int(coalesce(first(outputs(\u0027Get_SLA_bySeverity\u0027)?[\u0027body/value\u0027])?[\u0027FirstResponseHours\u0027],\u00278\u0027))), addHours(utcNow(),8))"
                 },
-                "host": { "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline", "operationId": "PatchItem", "connectionName": "shared_sharepointonline" }
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+                  "operationId": "PatchItem",
+                  "connectionName": "shared_sharepointonline"
+                }
               },
-              "runAfter": { "Get_SLA_bySeverity": [ "Succeeded" ] }
+              "runAfter": {
+                "Get_SLA_bySeverity": [
+                  "Succeeded"
+                ]
+              }
             },
             "Send_email_team": {
               "type": "OpenApiConnection",
               "inputs": {
                 "parameters": {
-                  "emailMessage/To": "@variables('MailToFinal')",
-                  "emailMessage/Cc": "@variables('MailCC')",
-                  "emailMessage/Subject": "[AI Helpdesk] เคสใหม่ @{variables('CaseID')} - @{triggerBody()?['text_4']}",
-                  "emailMessage/Body": "<p>เรียนเจ้าหน้าที่</p><p>CaseID: @{variables('CaseID')}<br>ระบบ: @{triggerBody()?['text_4']}<br>ประเภท: @{variables('CaseType')}<br>ความเร่งด่วน: @{variables('Priority')} (@{variables('Severity')})</p><p>รายละเอียด: @{triggerBody()?['text_5']}</p><p>ผู้แจ้ง: @{triggerBody()?['text_2']} - @{triggerBody()?['text_3']} - @{triggerBody()?['text_1']}</p><hr>ระบบ AI Helpdesk",
+                  "emailMessage/To": "@variables(\u0027MailToFinal\u0027)",
+                  "emailMessage/Subject": "[AI Helpdesk] \u0E40\u0E04\u0E2A\u0E43\u0E2B\u0E21\u0E48 @{variables(\u0027CaseID\u0027)} - @{triggerBody()?[\u0027text_4\u0027]}",
+                  "emailMessage/Body": "\u003Cp\u003E\u0E40\u0E23\u0E35\u0E22\u0E19\u0E40\u0E08\u0E49\u0E32\u0E2B\u0E19\u0E49\u0E32\u0E17\u0E35\u0E48\u003C/p\u003E\u003Cp\u003ECaseID: @{variables(\u0027CaseID\u0027)}\u003Cbr\u003E\u0E23\u0E30\u0E1A\u0E1A: @{triggerBody()?[\u0027text_4\u0027]}\u003Cbr\u003E\u0E1B\u0E23\u0E30\u0E40\u0E20\u0E17: @{variables(\u0027CaseType\u0027)}\u003Cbr\u003E\u0E04\u0E27\u0E32\u0E21\u0E40\u0E23\u0E48\u0E07\u0E14\u0E48\u0E27\u0E19: @{variables(\u0027Priority\u0027)} (@{variables(\u0027Severity\u0027)})\u003C/p\u003E\u003Cp\u003E\u0E23\u0E32\u0E22\u0E25\u0E30\u0E40\u0E2D\u0E35\u0E22\u0E14: @{triggerBody()?[\u0027text_5\u0027]}\u003C/p\u003E\u003Cp\u003E\u0E1C\u0E39\u0E49\u0E41\u0E08\u0E49\u0E07: @{triggerBody()?[\u0027text_2\u0027]} - @{triggerBody()?[\u0027text_3\u0027]} - @{triggerBody()?[\u0027text_1\u0027]}\u003C/p\u003E\u003Chr\u003E\u0E23\u0E30\u0E1A\u0E1A AI Helpdesk",
+                  "emailMessage/Cc": "@variables(\u0027MailCC\u0027)",
                   "emailMessage/Importance": "Normal"
                 },
-                "host": { "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365", "operationId": "SendEmailV2", "connectionName": "shared_office365" }
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365",
+                  "operationId": "SendEmailV2",
+                  "connectionName": "shared_office365"
+                }
               },
-              "runAfter": { "Update_item_SLA": [ "Succeeded" ] }
+              "runAfter": {
+                "Update_item_SLA": [
+                  "Succeeded"
+                ]
+              }
             },
             "Send_email_ack_reporter": {
               "type": "OpenApiConnection",
               "inputs": {
                 "parameters": {
-                  "emailMessage/To": "@triggerBody()?['text_1']",
-                  "emailMessage/Subject": "[AI Helpdesk] รับเรื่องแล้ว @{variables('CaseID')}",
-                  "emailMessage/Body": "<p>เรียน @{triggerBody()?['text_2']}</p><p>ระบบได้รับเรื่องของท่านแล้ว และส่งต่อให้เจ้าหน้าที่ดูแล</p><p>หมายเลขเคส (CaseID): @{variables('CaseID')}<br>ระบบ: @{triggerBody()?['text_4']}</p><p>รายละเอียด: @{triggerBody()?['text_5']}</p><p>ท่านสามารถพิมพ์หมายเลขเคสนี้กับ AI Helpdesk เพื่อติดตามสถานะ และจะได้รับอีเมลแจ้งเมื่อสถานะเปลี่ยน</p><hr>ระบบ AI Helpdesk",
+                  "emailMessage/To": "@triggerBody()?[\u0027text_1\u0027]",
+                  "emailMessage/Subject": "[AI Helpdesk] \u0E23\u0E31\u0E1A\u0E40\u0E23\u0E37\u0E48\u0E2D\u0E07\u0E41\u0E25\u0E49\u0E27 @{variables(\u0027CaseID\u0027)}",
+                  "emailMessage/Body": "\u003Cp\u003E\u0E40\u0E23\u0E35\u0E22\u0E19 @{triggerBody()?[\u0027text_2\u0027]}\u003C/p\u003E\u003Cp\u003E\u0E23\u0E30\u0E1A\u0E1A\u0E44\u0E14\u0E49\u0E23\u0E31\u0E1A\u0E40\u0E23\u0E37\u0E48\u0E2D\u0E07\u0E02\u0E2D\u0E07\u0E17\u0E48\u0E32\u0E19\u0E41\u0E25\u0E49\u0E27 \u0E41\u0E25\u0E30\u0E2A\u0E48\u0E07\u0E15\u0E48\u0E2D\u0E43\u0E2B\u0E49\u0E40\u0E08\u0E49\u0E32\u0E2B\u0E19\u0E49\u0E32\u0E17\u0E35\u0E48\u0E14\u0E39\u0E41\u0E25\u003C/p\u003E\u003Cp\u003E\u0E2B\u0E21\u0E32\u0E22\u0E40\u0E25\u0E02\u0E40\u0E04\u0E2A (CaseID): @{variables(\u0027CaseID\u0027)}\u003Cbr\u003E\u0E23\u0E30\u0E1A\u0E1A: @{triggerBody()?[\u0027text_4\u0027]}\u003C/p\u003E\u003Cp\u003E\u0E23\u0E32\u0E22\u0E25\u0E30\u0E40\u0E2D\u0E35\u0E22\u0E14: @{triggerBody()?[\u0027text_5\u0027]}\u003C/p\u003E\u003Cp\u003E\u0E17\u0E48\u0E32\u0E19\u0E2A\u0E32\u0E21\u0E32\u0E23\u0E16\u0E1E\u0E34\u0E21\u0E1E\u0E4C\u0E2B\u0E21\u0E32\u0E22\u0E40\u0E25\u0E02\u0E40\u0E04\u0E2A\u0E19\u0E35\u0E49\u0E01\u0E31\u0E1A AI Helpdesk \u0E40\u0E1E\u0E37\u0E48\u0E2D\u0E15\u0E34\u0E14\u0E15\u0E32\u0E21\u0E2A\u0E16\u0E32\u0E19\u0E30 \u0E41\u0E25\u0E30\u0E08\u0E30\u0E44\u0E14\u0E49\u0E23\u0E31\u0E1A\u0E2D\u0E35\u0E40\u0E21\u0E25\u0E41\u0E08\u0E49\u0E07\u0E40\u0E21\u0E37\u0E48\u0E2D\u0E2A\u0E16\u0E32\u0E19\u0E30\u0E40\u0E1B\u0E25\u0E35\u0E48\u0E22\u0E19\u003C/p\u003E\u003Chr\u003E\u0E23\u0E30\u0E1A\u0E1A AI Helpdesk",
                   "emailMessage/Importance": "Normal"
                 },
-                "host": { "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365", "operationId": "SendEmailV2", "connectionName": "shared_office365" }
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365",
+                  "operationId": "SendEmailV2",
+                  "connectionName": "shared_office365"
+                }
               },
-              "runAfter": { "Send_email_team": [ "Succeeded" ] }
+              "runAfter": {
+                "Send_email_team": [
+                  "Succeeded"
+                ]
+              }
             },
             "Condition_write_gap": {
               "type": "If",
-              "expression": { "not": { "equals": [ "@variables('CaseType')", "Access" ] } },
-              "runAfter": { "Send_email_ack_reporter": [ "Succeeded" ] },
+              "expression": {
+                "not": {
+                  "equals": [
+                    "@variables(\u0027CaseType\u0027)",
+                    "Access"
+                  ]
+                }
+              },
               "actions": {
                 "Create_item_Gap": {
                   "type": "OpenApiConnection",
@@ -224,23 +559,38 @@
                     "parameters": {
                       "dataset": "https://dvsins.sharepoint.com/sites/PowerAppPRD",
                       "table": "9beb45a0-08e2-4717-8eee-5b80bd218005",
-                      "item/Title": "@triggerBody()?['text_4']",
-                      "item/UserQuestion": "@triggerBody()?['text_5']",
-                      "item/SystemGuess": "@triggerBody()?['text_4']",
-                      "item/RelatedCaseID": "@variables('CaseID')",
+                      "item/Title": "@triggerBody()?[\u0027text_4\u0027]",
+                      "item/UserQuestion": "@triggerBody()?[\u0027text_5\u0027]",
+                      "item/SystemGuess": "@triggerBody()?[\u0027text_4\u0027]",
+                      "item/RelatedCaseID": "@variables(\u0027CaseID\u0027)",
                       "item/GapStatus/Value": "New"
                     },
-                    "host": { "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline", "operationId": "PostItem", "connectionName": "shared_sharepointonline" }
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+                      "operationId": "PostItem",
+                      "connectionName": "shared_sharepointonline"
+                    }
                   }
                 }
               },
-              "else": { "actions": {} }
+              "else": {
+                "actions": {}
+              },
+              "runAfter": {
+                "Send_email_ack_reporter": [
+                  "Succeeded"
+                ]
+              }
             }
+          },
+          "runAfter": {
+            "Init_MailToFinal": [
+              "Succeeded"
+            ]
           }
         },
         "Scope_Catch": {
           "type": "Scope",
-          "runAfter": { "Scope_Main": [ "Failed", "TimedOut" ] },
           "actions": {
             "Create_item_ErrorLog": {
               "type": "OpenApiConnection",
@@ -251,11 +601,15 @@
                   "item/Title": "NewcaseHelpDesk failed",
                   "item/FlowName": "NewcaseHelpDesk",
                   "item/ErrorCode/Value": "CASE_001",
-                  "item/ErrorMessage": "@{result('Scope_Main')}",
-                  "item/ContextData": "system=@{triggerBody()?['text_4']}; reporter=@{triggerBody()?['text_1']}",
+                  "item/ErrorMessage": "@{result(\u0027Scope_Main\u0027)}",
+                  "item/ContextData": "system=@{triggerBody()?[\u0027text_4\u0027]}; reporter=@{triggerBody()?[\u0027text_1\u0027]}",
                   "item/Notified": true
                 },
-                "host": { "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline", "operationId": "PostItem", "connectionName": "shared_sharepointonline" }
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+                  "operationId": "PostItem",
+                  "connectionName": "shared_sharepointonline"
+                }
               }
             },
             "Send_admin_email": {
@@ -264,34 +618,71 @@
                 "parameters": {
                   "emailMessage/To": "Teerapat.ti@deves.co.th",
                   "emailMessage/Subject": "[AI Helpdesk] Flow error - NewcaseHelpDesk",
-                  "emailMessage/Body": "<p>NewcaseHelpDesk ล้มเหลว</p><p>ระบบ: @{triggerBody()?['text_4']}</p><p>ผู้แจ้ง: @{triggerBody()?['text_1']}</p><p>โปรดตรวจสอบ ErrorLog</p>",
+                  "emailMessage/Body": "\u003Cp\u003ENewcaseHelpDesk \u0E25\u0E49\u0E21\u0E40\u0E2B\u0E25\u0E27\u003C/p\u003E\u003Cp\u003E\u0E23\u0E30\u0E1A\u0E1A: @{triggerBody()?[\u0027text_4\u0027]}\u003C/p\u003E\u003Cp\u003E\u0E1C\u0E39\u0E49\u0E41\u0E08\u0E49\u0E07: @{triggerBody()?[\u0027text_1\u0027]}\u003C/p\u003E\u003Cp\u003E\u0E42\u0E1B\u0E23\u0E14\u0E15\u0E23\u0E27\u0E08\u0E2A\u0E2D\u0E1A ErrorLog\u003C/p\u003E",
                   "emailMessage/Importance": "High"
                 },
-                "host": { "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365", "operationId": "SendEmailV2", "connectionName": "shared_office365" }
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365",
+                  "operationId": "SendEmailV2",
+                  "connectionName": "shared_office365"
+                }
               },
-              "runAfter": { "Create_item_ErrorLog": [ "Succeeded" ] }
+              "runAfter": {
+                "Create_item_ErrorLog": [
+                  "Succeeded"
+                ]
+              }
             }
+          },
+          "runAfter": {
+            "Scope_Main": [
+              "Failed",
+              "TimedOut"
+            ]
           }
         },
         "Response": {
           "type": "Response",
           "kind": "Skills",
-          "runAfter": { "Scope_Main": [ "Succeeded" ], "Scope_Catch": [ "Succeeded", "Skipped" ] },
           "inputs": {
-            "statusCode": 200,
-            "body": { "caseId": "@variables('CaseID')", "status": "@if(equals(variables('CaseID'),''),'error','created')" },
             "schema": {
               "type": "object",
               "properties": {
-                "caseId": { "title": "caseId", "type": "string", "x-ms-content-hint": "TEXT" },
-                "status": { "title": "status", "type": "string", "x-ms-content-hint": "TEXT" }
-              }
+                "caseId": {
+                  "title": "caseId",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT"
+                },
+                "status": {
+                  "title": "status",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT"
+                }
+              },
+              "additionalProperties": {}
+            },
+            "statusCode": 200,
+            "body": {
+              "caseId": "@variables(\u0027CaseID\u0027)",
+              "status": "@if(equals(variables(\u0027CaseID\u0027),\u0027\u0027),\u0027error\u0027,\u0027created\u0027)"
             }
+          },
+          "runAfter": {
+            "Scope_Main": [
+              "Succeeded"
+            ],
+            "Scope_Catch": [
+              "Succeeded",
+              "Skipped"
+            ]
           }
         }
       },
       "outputs": {},
-      "description": "helpdesk-agent NewcaseHelpDesk - create case (Cases list) + team notify + reporter ack + SLA + error handling + knowledge gap"
+      "description": "helpdesk-agent NewcaseHelpDesk - create case (Cases list) \u002B team notify \u002B reporter ack \u002B SLA \u002B error handling \u002B knowledge gap",
+      "metadata": {
+        "defaultToEmbeddedConnections": true
+      }
     }
   },
   "schemaVersion": "1.0.0.0"

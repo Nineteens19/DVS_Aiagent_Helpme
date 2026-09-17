@@ -3,5 +3,5 @@
     connectorId: /providers/Microsoft.PowerApps/apis/shared_sharepointonline
   - connectionReferenceLogicalName: new_sharedoffice365_71ca1
     connectorId: /providers/Microsoft.PowerApps/apis/shared_office365
-  - connectionReferenceLogicalName: new_sharedsharepointonline_4d4aa
-    connectorId: /providers/Microsoft.PowerApps/apis/shared_sharepointonline
+  - connectionReferenceLogicalName: new_sharedoffice365users_8cbe3
+    connectorId: /providers/Microsoft.PowerApps/apis/shared_office365users

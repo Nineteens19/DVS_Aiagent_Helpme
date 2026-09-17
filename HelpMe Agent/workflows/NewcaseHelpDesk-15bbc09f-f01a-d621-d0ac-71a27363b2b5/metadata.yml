@@ -29,6 +29,6 @@ isCustomProcessingStepAllowedForOtherPublishers:
 modernFlowType: 1
 primaryEntity: none
 connectionReferences:
-- new_sharedsharepointonline_4d4aa
+- new_sharedoffice365users_8cbe3
 - cr616_helpMeAgentUat.cr.KjQFMKAz
 - new_sharedoffice365_71ca1

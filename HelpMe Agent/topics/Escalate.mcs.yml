@@ -131,24 +131,6 @@ beginDialog:
       prompt: ช่วยเล่ารายละเอียดปัญหาให้ผมหน่อยครับ (อาการที่พบ ข้อความ Error เลขอ้างอิง หรือข้อมูลที่เกี่ยวข้อง)
       entity: StringPrebuiltEntity
 
-    - kind: Question
-      id: question_ZiwfPd
-      interruptionPolicy:
-        allowInterruption: true
-
-      variable: Topic.ContactName
-      prompt: ขอชื่อของท่านหน่อยครับ
-      entity: PersonNamePrebuiltEntity
-
-    - kind: Question
-      id: question_nhYsCQ
-      interruptionPolicy:
-        allowInterruption: true
-
-      variable: init:Topic.ContactTel
-      prompt: ขอเบอร์ติดต่อกลับของท่านหน่อยครับ
-      entity: StringPrebuiltEntity
-
     - kind: SendActivity
       id: sendActivity_wrLgvd
       activity: ขอบคุณครับ 🙏 ผมกำลังส่งเรื่องต่อให้เจ้าหน้าที่ Helpdesk ดูแลให้นะครับ เดี๋ยวมีเจ้าหน้าที่ติดต่อกลับแน่นอนครับ
@@ -159,8 +141,8 @@ beginDialog:
         binding:
           text: ="🔧 แจ้งปัญหาระบบ ( ใช้งานไม่ได้ ) "
           text_1: =System.User.Email
-          text_2: =Text(Topic.ContactName)
-          text_3: =Text(Topic.ContactTel)
+          text_2: =System.User.DisplayName
+          text_3: "-"
           text_4: =Topic.SystemName
           text_5: ="[" & Text(Topic.issue_type) & " / " & Text(Topic.priority) & "] " & Topic.IssueDetail
           text_6: "-"

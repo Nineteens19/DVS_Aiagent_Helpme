@@ -231,6 +231,8 @@ Open ──► In Progress ──► Resolved ──► Closed
 | ประเภท | ชื่อ | ID |
 |--------|------|-----|
 | Agent | HelpMe Agent | `76812e27-6dce-f011-8544-6045bd592e11` |
+| Entra App Registration | CLI-m365-Helpdesk (App ID) | `d514ef9a-e9c4-4d09-a282-a9a12e2bbea4` |
+| Tenant ID | Deves Insurance (default) | `8ffef73e-6c1e-4fda-890b-a8fa247be32e` |
 | List | Cases | `b8b22b0d-45c6-43c9-bc66-06e5e45b1237` |
 | List | SLAConfig | `9c7bb698-4841-447e-aae4-5a43466771af` |
 | List | KnowledgeGaps | `9beb45a0-08e2-4717-8eee-5b80bd218005` |

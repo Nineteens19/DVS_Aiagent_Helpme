@@ -11,44 +11,165 @@ beginDialog:
   intent:
     triggerQueries:
       - ติดตามเคส
-      - สถานะเคส
+      - ตามเคส
+      - เช็คเคส
+      - เช็คสถานะ
       - เช็คสถานะเคส
+      - สถานะเคส
+      - ตรวจสอบเคส
+      - ตรวจสอบสถานะเคส
       - เคสของฉัน
+      - ดูเคสของฉัน
+      - รายการเคสของฉัน
       - ความคืบหน้าเคส
       - เคสถึงไหนแล้ว
       - ขอสถานะเคส
+      - ถามสถานะเคส
+      - ดูเคส
+      - ค้นหาเคส
+      - track case
+      - case status
+      - check case
+      - my cases
+      - my case
 
   actions:
     - kind: Question
-      id: question_cs_caseid
-      interruptionPolicy:
-        allowInterruption: true
+      id: question_cs_choice
+      variable: Topic.LookupChoice
+      prompt: ต้องการตรวจสอบสถานะเคสแบบใดครับ 😊
+      entity:
+        kind: EmbeddedEntity
+        definition:
+          kind: ClosedListEntity
+          items:
+            - id: "🔍 ระบุหมายเลขเคส (เช่น HD-20260916-1)"
+              displayName: "🔍 ระบุหมายเลขเคส (เช่น HD-20260916-1)"
 
-      variable: init:Topic.CaseIdInput
-      prompt: พิมพ์หมายเลขเคสที่ต้องการติดตาม (เช่น HD-20260916-12) หรือพิมพ์ "ทั้งหมด" เพื่อดูเคสที่ยังไม่ปิดของท่านครับ
-      entity: StringPrebuiltEntity
+            - id: "📋 ดูเคสทั้งหมดของฉันที่ยังไม่ปิด"
+              displayName: "📋 ดูเคสทั้งหมดของฉันที่ยังไม่ปิด"
 
-    - kind: SetVariable
-      id: setVariable_cs_param
-      variable: Topic.CaseIdParam
-      value: =If(Or(Lower(Trim(Text(Topic.CaseIdInput)))="ทั้งหมด", Lower(Trim(Text(Topic.CaseIdInput)))="เคสของฉัน", IsBlank(Topic.CaseIdInput)), "", Trim(Text(Topic.CaseIdInput)))
+    - kind: ConditionGroup
+      id: condition_cs_mode
+      conditions:
+        - id: cond_by_id
+          condition: =Text(Topic.LookupChoice) = "🔍 ระบุหมายเลขเคส (เช่น HD-20260916-1)"
+          actions:
+            - kind: Question
+              id: question_cs_caseid
+              interruptionPolicy:
+                allowInterruption: true
+              variable: init:Topic.CaseIdInput
+              prompt: กรุณาพิมพ์หมายเลขเคสที่ต้องการตรวจสอบครับ (เช่น HD-20260916-1)
+              entity: StringPrebuiltEntity
 
-    - kind: InvokeFlowAction
-      id: invokeFlowAction_cs
-      input:
-        binding:
-          reporterEmail: =System.User.Email
-          caseId: =Topic.CaseIdParam
+            - kind: InvokeFlowAction
+              id: invokeFlowAction_cs_id
+              input:
+                binding:
+                  caseId: =Trim(Text(Topic.CaseIdInput))
+                  reporterEmail: =Coalesce(System.User.Email, "")
+              output:
+                binding:
+                  resultText: Topic.Result
+              flowId: 7c1e2f30-1111-4aaa-bbbb-000000000041
 
-      output:
-        binding:
-          resultText: Topic.Result
+            - kind: SendActivity
+              id: sendActivity_cs_result_id
+              activity: "{Topic.Result}"
 
-      flowId: 7c1e2f30-1111-4aaa-bbbb-000000000041
+        - id: cond_my_cases
+          condition: =Text(Topic.LookupChoice) = "📋 ดูเคสทั้งหมดของฉันที่ยังไม่ปิด"
+          actions:
+            - kind: ConditionGroup
+              id: condition_user_email
+              conditions:
+                - id: cond_email_blank
+                  condition: =IsBlank(System.User.Email)
+                  actions:
+                    - kind: Question
+                      id: question_cs_email
+                      interruptionPolicy:
+                        allowInterruption: true
+                      variable: init:Topic.UserEmailInput
+                      prompt: เนื่องจากระบบไม่พบอีเมลผู้ใช้อัตโนมัติ กรุณาระบุอีเมลของคุณ (เช่น yourname@deves.co.th) เพื่อดึงรายการเคสครับ
+                      entity: StringPrebuiltEntity
 
-    - kind: SendActivity
-      id: sendActivity_cs_result
-      activity: "{Topic.Result}"
+                    - kind: SetVariable
+                      id: set_user_email
+                      variable: Topic.TargetEmail
+                      value: =Trim(Text(Topic.UserEmailInput))
+
+              elseActions:
+                - kind: SetVariable
+                  id: set_user_email_from_sys
+                  variable: Topic.TargetEmail
+                  value: =System.User.Email
+
+            - kind: InvokeFlowAction
+              id: invokeFlowAction_cs_mine
+              input:
+                binding:
+                  caseId: ""
+                  reporterEmail: =Topic.TargetEmail
+              output:
+                binding:
+                  resultText: Topic.Result
+              flowId: 7c1e2f30-1111-4aaa-bbbb-000000000041
+
+            - kind: SendActivity
+              id: sendActivity_cs_result_mine
+              activity: "{Topic.Result}"
+
+    - kind: Question
+      id: question_cs_next
+      variable: Topic.NextStep
+      prompt: มีรายการอื่นให้ผมช่วยเหลือเพิ่มเติมไหมครับ 😊
+      entity:
+        kind: EmbeddedEntity
+        definition:
+          kind: ClosedListEntity
+          items:
+            - id: "🔍 ติดตามเคสอื่น"
+              displayName: "🔍 ติดตามเคสอื่น"
+
+            - id: "🔄 ขอเปิดเคสเดิมใหม่ (Reopen)"
+              displayName: "🔄 ขอเปิดเคสเดิมใหม่ (Reopen)"
+
+            - id: "🏠 กลับสู่เมนูหลัก"
+              displayName: "🏠 กลับสู่เมนูหลัก"
+
+            - id: "ไม่ต้องการแล้ว ขอบคุณครับ"
+              displayName: "ไม่ต้องการแล้ว ขอบคุณครับ"
+
+    - kind: ConditionGroup
+      id: condition_next_step
+      conditions:
+        - id: cond_next_track
+          condition: =Text(Topic.NextStep) = "🔍 ติดตามเคสอื่น"
+          actions:
+            - kind: BeginDialog
+              id: begin_again
+              dialog: cr616_helpMeAgentUat.topic.CaseStatus
+
+        - id: cond_next_reopen
+          condition: =Text(Topic.NextStep) = "🔄 ขอเปิดเคสเดิมใหม่ (Reopen)"
+          actions:
+            - kind: BeginDialog
+              id: begin_reopen
+              dialog: cr616_helpMeAgentUat.topic.ReopenCase
+
+        - id: cond_next_menu
+          condition: =Text(Topic.NextStep) = "🏠 กลับสู่เมนูหลัก"
+          actions:
+            - kind: BeginDialog
+              id: begin_menu
+              dialog: cr616_helpMeAgentUat.topic.v4K
+
+      elseActions:
+        - kind: SendActivity
+          id: send_bye
+          activity: ยินดีที่ได้ให้บริการครับ หากมีปัญหาหรือต้องการติดตามเคสเมื่อใด สามารถพิมพ์บอกผมได้ตลอดเวลานะครับ 😊
 
 inputType: {}
 outputType: {}

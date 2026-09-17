@@ -7,8 +7,30 @@ beginDialog:
   id: main
   actions:
     - kind: ConditionGroup
-      id: conditionGroup_LktzXw
+      id: fallback_special_check
       conditions:
+        - id: fallback_is_case_tracking
+          condition: =Or("hd-" in Lower(System.Activity.Text), "ติดตาม" in System.Activity.Text, "สถานะเคส" in System.Activity.Text, "เช็คเคส" in System.Activity.Text, "ตามเคส" in System.Activity.Text, "เคสของฉัน" in System.Activity.Text)
+          actions:
+            - kind: BeginDialog
+              id: fallback_to_case_status
+              dialog: cr616_helpMeAgentUat.topic.CaseStatus
+
+            - kind: EndDialog
+              id: end_fallback_case
+              clearTopicQueue: true
+
+        - id: fallback_is_reopen
+          condition: =Or("reopen" in Lower(System.Activity.Text), "เปิดเคสเดิม" in System.Activity.Text, "เปิดเรื่องเดิม" in System.Activity.Text)
+          actions:
+            - kind: BeginDialog
+              id: fallback_to_reopen
+              dialog: cr616_helpMeAgentUat.topic.ReopenCase
+
+            - kind: EndDialog
+              id: end_fallback_reopen
+              clearTopicQueue: true
+
         - id: conditionItem_tlGIVo
           condition: =System.FallbackCount < 3
           actions:

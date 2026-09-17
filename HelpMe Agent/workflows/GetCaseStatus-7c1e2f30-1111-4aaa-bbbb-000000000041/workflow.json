@@ -1,0 +1,241 @@
+﻿{
+  "properties": {
+    "connectionReferences": {
+      "shared_sharepointonline": {
+        "api": {
+          "name": "shared_sharepointonline"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "cr616_helpMeAgentUat.cr.KjQFMKAz"
+        },
+        "runtimeSource": "invoker"
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "type": "Request",
+          "kind": "Skills",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "reporterEmail": {
+                  "title": "reporterEmail",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "caseId": {
+                  "title": "caseId",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                }
+              },
+              "required": []
+            }
+          }
+        }
+      },
+      "actions": {
+        "Init_result": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "resultText",
+                "type": "string"
+              }
+            ]
+          },
+          "runAfter": {}
+        },
+        "Condition_HasCaseId": {
+          "type": "If",
+          "runAfter": {
+            "Init_result": [
+              "Succeeded"
+            ]
+          },
+          "expression": {
+            "not": {
+              "equals": [
+                "@coalesce(triggerBody()?[\u0027caseId\u0027],\u0027\u0027)",
+                ""
+              ]
+            }
+          },
+          "actions": {
+            "Get_ById": {
+              "type": "OpenApiConnection",
+              "runAfter": {},
+              "inputs": {
+                "parameters": {
+                  "dataset": "https://dvsins.sharepoint.com/sites/PowerAppPRD",
+                  "table": "b8b22b0d-45c6-43c9-bc66-06e5e45b1237",
+                  "$filter": "CaseID eq \u0027@{triggerBody()?[\u0027caseId\u0027]}\u0027",
+                  "$top": 1
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+                  "operationId": "GetItems",
+                  "connectionName": "shared_sharepointonline"
+                }
+              }
+            },
+            "Condition_Found": {
+              "type": "If",
+              "runAfter": {
+                "Get_ById": [
+                  "Succeeded"
+                ]
+              },
+              "expression": {
+                "greater": [
+                  "@length(outputs(\u0027Get_ById\u0027)?[\u0027body/value\u0027])",
+                  0
+                ]
+              },
+              "actions": {
+                "Set_single": {
+                  "type": "SetVariable",
+                  "inputs": {
+                    "name": "resultText",
+                    "value": "@concat(\u0027\u0E40\u0E04\u0E2A \u0027, first(outputs(\u0027Get_ById\u0027)?[\u0027body/value\u0027])?[\u0027CaseID\u0027], \u0027 | \u0E23\u0E30\u0E1A\u0E1A: \u0027, coalesce(first(outputs(\u0027Get_ById\u0027)?[\u0027body/value\u0027])?[\u0027SystemName\u0027],\u0027-\u0027), \u0027 | \u0E2A\u0E16\u0E32\u0E19\u0E30: \u0027, if(equals(first(outputs(\u0027Get_ById\u0027)?[\u0027body/value\u0027])?[\u0027Statuscase\u0027]?[\u0027Value\u0027],\u0027In Progress\u0027),\u0027\u0E01\u0E33\u0E25\u0E31\u0E07\u0E14\u0E33\u0E40\u0E19\u0E34\u0E19\u0E01\u0E32\u0E23\u0027,if(equals(first(outputs(\u0027Get_ById\u0027)?[\u0027body/value\u0027])?[\u0027Statuscase\u0027]?[\u0027Value\u0027],\u0027Resolved\u0027),\u0027\u0E41\u0E01\u0E49\u0E44\u0E02\u0E40\u0E2A\u0E23\u0E47\u0E08\u0E41\u0E25\u0E49\u0E27 (\u0E23\u0E2D\u0E22\u0E37\u0E19\u0E22\u0E31\u0E19)\u0027,if(equals(first(outputs(\u0027Get_ById\u0027)?[\u0027body/value\u0027])?[\u0027Statuscase\u0027]?[\u0027Value\u0027],\u0027Closed\u0027),\u0027\u0E1B\u0E34\u0E14\u0E40\u0E04\u0E2A\u0E41\u0E25\u0E49\u0E27\u0027,if(equals(first(outputs(\u0027Get_ById\u0027)?[\u0027body/value\u0027])?[\u0027Statuscase\u0027]?[\u0027Value\u0027],\u0027On Hold\u0027),\u0027\u0E1E\u0E31\u0E01\u0E40\u0E23\u0E37\u0E48\u0E2D\u0E07\u0E0A\u0E31\u0E48\u0E27\u0E04\u0E23\u0E32\u0E27\u0027,if(equals(first(outputs(\u0027Get_ById\u0027)?[\u0027body/value\u0027])?[\u0027Statuscase\u0027]?[\u0027Value\u0027],\u0027Reopened\u0027),\u0027\u0E40\u0E1B\u0E34\u0E14\u0E40\u0E23\u0E37\u0E48\u0E2D\u0E07\u0E43\u0E2B\u0E21\u0E48\u0027,coalesce(first(outputs(\u0027Get_ById\u0027)?[\u0027body/value\u0027])?[\u0027Statuscase\u0027]?[\u0027Value\u0027],\u0027-\u0027)))))), \u0027 | \u0E2D\u0E31\u0E1B\u0E40\u0E14\u0E15\u0E25\u0E48\u0E32\u0E2A\u0E38\u0E14: \u0027, formatDateTime(first(outputs(\u0027Get_ById\u0027)?[\u0027body/value\u0027])?[\u0027Modified\u0027],\u0027dd/MM/yyyy HH:mm\u0027), if(equals(coalesce(first(outputs(\u0027Get_ById\u0027)?[\u0027body/value\u0027])?[\u0027StatusNote\u0027],\u0027\u0027),\u0027\u0027),\u0027\u0027,concat(\u0027 | \u0E2B\u0E21\u0E32\u0E22\u0E40\u0E2B\u0E15\u0E38: \u0027,first(outputs(\u0027Get_ById\u0027)?[\u0027body/value\u0027])?[\u0027StatusNote\u0027])))"
+                  }
+                }
+              },
+              "else": {
+                "actions": {
+                  "Set_notfound": {
+                    "type": "SetVariable",
+                    "inputs": {
+                      "name": "resultText",
+                      "value": "@concat(\u0027\u0E44\u0E21\u0E48\u0E1E\u0E1A\u0E02\u0E49\u0E2D\u0E21\u0E39\u0E25\u0E40\u0E04\u0E2A\u0E2B\u0E21\u0E32\u0E22\u0E40\u0E25\u0E02 \u0027, triggerBody()?[\u0027caseId\u0027], \u0027 \u0E43\u0E19\u0E23\u0E30\u0E1A\u0E1A\u0E04\u0E23\u0E31\u0E1A \u0E01\u0E23\u0E38\u0E13\u0E32\u0E15\u0E23\u0E27\u0E08\u0E2A\u0E2D\u0E1A\u0E2B\u0E21\u0E32\u0E22\u0E40\u0E25\u0E02\u0E40\u0E04\u0E2A\u0E2D\u0E35\u0E01\u0E04\u0E23\u0E31\u0E49\u0E07 \u0E2B\u0E23\u0E37\u0E2D\u0E1E\u0E34\u0E21\u0E1E\u0E4C \u0022\u0E40\u0E04\u0E2A\u0E02\u0E2D\u0E07\u0E09\u0E31\u0E19\u0022 \u0E40\u0E1E\u0E37\u0E48\u0E2D\u0E14\u0E39\u0E23\u0E32\u0E22\u0E01\u0E32\u0E23\u0E40\u0E04\u0E2A\u0E17\u0E31\u0E49\u0E07\u0E2B\u0E21\u0E14\u0E04\u0E23\u0E31\u0E1A\u0027)"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "else": {
+            "actions": {
+              "Get_Mine": {
+                "type": "OpenApiConnection",
+                "runAfter": {},
+                "inputs": {
+                  "parameters": {
+                    "dataset": "https://dvsins.sharepoint.com/sites/PowerAppPRD",
+                    "table": "b8b22b0d-45c6-43c9-bc66-06e5e45b1237",
+                    "$filter": "ReporterEmail eq \u0027@{triggerBody()?[\u0027reporterEmail\u0027]}\u0027 and Statuscase ne \u0027Closed\u0027",
+                    "$orderby": "Modified desc",
+                    "$top": 20
+                  },
+                  "host": {
+                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+                    "operationId": "GetItems",
+                    "connectionName": "shared_sharepointonline"
+                  }
+                }
+              },
+              "Condition_HasMine": {
+                "type": "If",
+                "runAfter": {
+                  "Get_Mine": [
+                    "Succeeded"
+                  ]
+                },
+                "expression": {
+                  "greater": [
+                    "@length(outputs(\u0027Get_Mine\u0027)?[\u0027body/value\u0027])",
+                    0
+                  ]
+                },
+                "actions": {
+                  "Set_header": {
+                    "type": "SetVariable",
+                    "runAfter": {},
+                    "inputs": {
+                      "name": "resultText",
+                      "value": "\u0E40\u0E04\u0E2A\u0E17\u0E35\u0E48\u0E01\u0E33\u0E25\u0E31\u0E07\u0E14\u0E33\u0E40\u0E19\u0E34\u0E19\u0E01\u0E32\u0E23\u0E02\u0E2D\u0E07\u0E17\u0E48\u0E32\u0E19:"
+                    }
+                  },
+                  "For_each_mine": {
+                    "type": "Foreach",
+                    "runAfter": {
+                      "Set_header": [
+                        "Succeeded"
+                      ]
+                    },
+                    "foreach": "@outputs(\u0027Get_Mine\u0027)?[\u0027body/value\u0027]",
+                    "actions": {
+                      "Append_line": {
+                        "type": "AppendToStringVariable",
+                        "inputs": {
+                          "name": "resultText",
+                          "value": "@concat(\u0027\n\u2022 \u0027, item()?[\u0027CaseID\u0027], \u0027 - \u0027, coalesce(item()?[\u0027SystemName\u0027],\u0027-\u0027), \u0027 - \u0027, if(equals(item()?[\u0027Statuscase\u0027]?[\u0027Value\u0027],\u0027In Progress\u0027),\u0027\u0E01\u0E33\u0E25\u0E31\u0E07\u0E14\u0E33\u0E40\u0E19\u0E34\u0E19\u0E01\u0E32\u0E23\u0027,if(equals(item()?[\u0027Statuscase\u0027]?[\u0027Value\u0027],\u0027Resolved\u0027),\u0027\u0E41\u0E01\u0E49\u0E44\u0E02\u0E40\u0E2A\u0E23\u0E47\u0E08\u0E41\u0E25\u0E49\u0E27 (\u0E23\u0E2D\u0E22\u0E37\u0E19\u0E22\u0E31\u0E19)\u0027,if(equals(item()?[\u0027Statuscase\u0027]?[\u0027Value\u0027],\u0027Reopened\u0027),\u0027\u0E40\u0E1B\u0E34\u0E14\u0E40\u0E23\u0E37\u0E48\u0E2D\u0E07\u0E43\u0E2B\u0E21\u0E48\u0027,if(equals(item()?[\u0027Statuscase\u0027]?[\u0027Value\u0027],\u0027On Hold\u0027),\u0027\u0E1E\u0E31\u0E01\u0E40\u0E23\u0E37\u0E48\u0E2D\u0E07\u0E0A\u0E31\u0E48\u0E27\u0E04\u0E23\u0E32\u0E27\u0027,coalesce(item()?[\u0027Statuscase\u0027]?[\u0027Value\u0027],\u0027-\u0027))))))"
+                        }
+                      }
+                    }
+                  }
+                },
+                "else": {
+                  "actions": {
+                    "Set_none": {
+                      "type": "SetVariable",
+                      "inputs": {
+                        "name": "resultText",
+                        "value": "\u0E17\u0E48\u0E32\u0E19\u0E44\u0E21\u0E48\u0E21\u0E35\u0E40\u0E04\u0E2A\u0E17\u0E35\u0E48\u0E01\u0E33\u0E25\u0E31\u0E07\u0E14\u0E33\u0E40\u0E19\u0E34\u0E19\u0E01\u0E32\u0E23\u0E2D\u0E22\u0E39\u0E48\u0E43\u0E19\u0E02\u0E13\u0E30\u0E19\u0E35\u0E49\u0E04\u0E23\u0E31\u0E1A"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "Response": {
+          "type": "Response",
+          "kind": "Skills",
+          "runAfter": {
+            "Condition_HasCaseId": [
+              "Succeeded"
+            ]
+          },
+          "inputs": {
+            "statusCode": 200,
+            "body": {
+              "resultText": "@variables(\u0027resultText\u0027)"
+            },
+            "schema": {
+              "type": "object",
+              "properties": {
+                "resultText": {
+                  "title": "resultText",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT"
+                }
+              }
+            }
+          }
+        }
+      },
+      "outputs": {},
+      "description": "helpdesk-agent GetCaseStatus - self-service case lookup (by CaseID or my open cases), ReporterEmail filtered"
+    }
+  },
+  "schemaVersion": "1.0.0.0"
+}

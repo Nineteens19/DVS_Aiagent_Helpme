@@ -1,0 +1,103 @@
+# ************************************************************************************************
+# Warning: YAML source code for Canvas Apps should only be used to review changes made within Power Apps Studio and for minor edits (Preview).
+# Use the maker portal to create and edit your Power Apps.
+# 
+# The schema file for Canvas Apps is available at https://go.microsoft.com/fwlink/?linkid=2304907
+# 
+# For more information, visit https://go.microsoft.com/fwlink/?linkid=2292623
+# ************************************************************************************************
+App:
+  Properties:
+    OnStart: |-
+      =Set(
+          varCurrentUser,
+          {
+              Email: User().Email,
+              FullName: User().FullName,
+              Image: User().Image
+          }
+      );
+      
+      // Role-Based Access Control (RBAC) - Helpdesk Admin vs Read-Only
+      Set(
+          varIsKBAdmin,
+          Lower(User().Email) in [
+              "somchai.p@deves.co.th",
+              "kanya.m@deves.co.th",
+              "teerapat.ti@deves.co.th",
+              "admin@deves.co.th"
+          ] || "helpdesk" in Lower(User().Email) || "admin" in Lower(User().Email)
+      );
+      Set(
+          varUserRole,
+          If(varIsKBAdmin, "KB Administrator", "Viewer (Read-Only)")
+      );
+      
+      // Cache Master Systems from SharePoint Systems List (Delegable Query)
+      ClearCollect(
+          colMasterSystems,
+          Sort(
+              Filter(
+                  Systems,
+                  IsActive = "Yes" || IsActive = true || IsBlank(IsActive)
+              ),
+              DisplayOrder,
+              SortOrder.Ascending
+          )
+      );
+      
+      // Default Navigation & Modal State
+      Set(varActiveTab, "QNA");
+      Set(varDrawerOpen, false);
+      Set(varDrawerMode, "NEW");
+      Set(varSelectedQnA, Blank());
+      Set(varSelectedSystemFolder, Blank());
+      Set(varSearchQnA, "");
+      Set(varFilterSystem, "All");
+      Set(varFilterStatus, "All");
+      Set(varGapsFilter, "All");
+      Set(varSelectedGap, Blank());
+      Set(varShowConfirmModal, false);
+      Set(varConfirmAction, "");
+      Set(varConfirmTargetId, Blank());
+      Set(varConfirmMessage, "");
+      Set(varUploadModalOpen, false);
+      Set(varNotificationMsg, "");
+      Set(varLastRefreshedTime, Now());
+      
+      // Deves Corporate Fluent Design Tokens (100% Zero Emoji)
+      Set(gblColorPrimary, ColorValue("#012169"));
+      Set(gblColorPrimaryHover, ColorValue("#0A3590"));
+      Set(gblColorSecondary, ColorValue("#FFCD00"));
+      Set(gblColorBg, ColorValue("#F8F9FA"));
+      Set(gblColorSurface, ColorValue("#FFFFFF"));
+      Set(gblColorBorder, ColorValue("#E2E8F0"));
+      Set(gblColorTextPrimary, ColorValue("#0F172A"));
+      Set(gblColorTextSecondary, ColorValue("#64748B"));
+      
+      // Semantic Status Badges
+      Set(gblColorApprovedBg, ColorValue("#D1FAE5"));
+      Set(gblColorApprovedText, ColorValue("#047857"));
+      Set(gblColorDraftBg, ColorValue("#F1F5F9"));
+      Set(gblColorDraftText, ColorValue("#475569"));
+      Set(gblColorReviewBg, ColorValue("#FEF3C7"));
+      Set(gblColorReviewText, ColorValue("#B45309"));
+      Set(gblColorAlertBg, ColorValue("#FFE4E6"));
+      Set(gblColorAlertText, ColorValue("#BE123C"));
+      
+      ClearCollect(
+          colDevesTheme,
+          {
+              Primary: RGBA(1, 33, 105, 1),
+              Secondary: RGBA(255, 205, 0, 1),
+              Background: RGBA(248, 249, 250, 1),
+              Success: RGBA(40, 167, 69, 1),
+              Danger: RGBA(220, 53, 69, 1),
+              Warning: RGBA(253, 126, 20, 1),
+              Info: RGBA(23, 162, 184, 1),
+              Text: RGBA(33, 37, 41, 1),
+              TextMuted: RGBA(108, 117, 125, 1),
+              Border: RGBA(222, 226, 230, 1)
+          }
+      );
+    Theme: =PowerAppsTheme

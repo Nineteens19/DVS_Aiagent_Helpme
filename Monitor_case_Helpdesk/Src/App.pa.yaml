@@ -1,0 +1,71 @@
+# ************************************************************************************************
+# Warning: YAML source code for Canvas Apps should only be used to review changes made within Power Apps Studio and for minor edits (Preview).
+# Use the maker portal to create and edit your Power Apps.
+# 
+# The schema file for Canvas Apps is available at https://go.microsoft.com/fwlink/?linkid=2304907
+# 
+# For more information, visit https://go.microsoft.com/fwlink/?linkid=2292623
+# ************************************************************************************************
+App:
+  Properties:
+    OnStart: |-
+      =Set(
+          varCurrentUser,
+          {
+              Email: User().Email,
+              FullName: User().FullName,
+              Image: User().Image
+          }
+      );
+      ClearCollect(
+          colRoutingSystems,
+          Distinct(Routing, SystemName)
+      );
+      Set(varSelectedStatus, "All");
+      Set(varShowDrawer, false);
+      Set(varSelectedCase, Blank());
+      Set(varActiveKPIFilter, "");
+      Set(varSearchQuery, "");
+      Set(varSelectedSystem, "");
+      Set(varLastRefreshedTime, Now());
+      Set(varShowAssignModal, false);
+      Set(varAssignSelectedUser, Blank());
+      Set(varAssignNote, "");
+      Set(varSendAssignEmail, true);
+      
+      // Deves Corporate Fluent Tokens (Zero Emoji)
+      Set(gblColorPrimary, ColorValue("#012169"));
+      Set(gblColorPrimaryHover, ColorValue("#0A3590"));
+      Set(gblColorSecondary, ColorValue("#FFCD00"));
+      Set(gblColorBg, ColorValue("#F8F9FA"));
+      Set(gblColorSurface, ColorValue("#FFFFFF"));
+      Set(gblColorBorder, ColorValue("#E2E8F0"));
+      Set(gblColorTextPrimary, ColorValue("#0F172A"));
+      Set(gblColorTextSecondary, ColorValue("#64748B"));
+      
+      // Semantic Status Badges
+      Set(gblColorOpenBg, ColorValue("#F1F5F9"));
+      Set(gblColorOpenText, ColorValue("#475569"));
+      Set(gblColorInProgBg, ColorValue("#FEF3C7"));
+      Set(gblColorInProgText, ColorValue("#B45309"));
+      Set(gblColorResolvedBg, ColorValue("#D1FAE5"));
+      Set(gblColorResolvedText, ColorValue("#047857"));
+      Set(gblColorSlaBreachBg, ColorValue("#FFE4E6"));
+      Set(gblColorSlaBreachText, ColorValue("#BE123C"));
+      
+      ClearCollect(
+          colDevesTheme,
+          {
+              Primary: RGBA(1, 33, 105, 1),
+              Secondary: RGBA(255, 205, 0, 1),
+              Background: RGBA(248, 249, 250, 1),
+              Success: RGBA(40, 167, 69, 1),
+              Danger: RGBA(220, 53, 69, 1),
+              Warning: RGBA(253, 126, 20, 1),
+              Info: RGBA(23, 162, 184, 1),
+              Text: RGBA(33, 37, 41, 1),
+              TextMuted: RGBA(108, 117, 125, 1),
+              Border: RGBA(222, 226, 230, 1)
+          }
+      );
+    Theme: =PowerAppsTheme

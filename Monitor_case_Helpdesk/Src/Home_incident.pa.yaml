@@ -1,0 +1,1596 @@
+# ************************************************************************************************
+# Warning: YAML source code for Canvas Apps should only be used to review changes made within Power Apps Studio and for minor edits (Preview).
+# Use the maker portal to create and edit your Power Apps.
+# 
+# The schema file for Canvas Apps is available at https://go.microsoft.com/fwlink/?linkid=2304907
+# 
+# For more information, visit https://go.microsoft.com/fwlink/?linkid=2292623
+# ************************************************************************************************
+Screens:
+  Home_incident:
+    Properties:
+      Fill: =RGBA(255, 255, 255, 1)
+      LoadingSpinnerColor: =RGBA(1, 33, 105, 1)
+    Children:
+      - ScreenContainer1_1:
+          Control: GroupContainer@1.5.0
+          Variant: AutoLayout
+          Properties:
+            Fill: =RGBA(248, 249, 250, 1)
+            Height: =Parent.Height
+            LayoutAlignItems: =LayoutAlignItems.Stretch
+            LayoutDirection: =LayoutDirection.Vertical
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            Width: =Parent.Width
+          Children:
+            - HeaderContainer1_1:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  Fill: =RGBA(1, 33, 105, 1)
+                  FillPortions: =0
+                  Height: =56
+                  LayoutAlignItems: =LayoutAlignItems.Center
+                  LayoutDirection: =LayoutDirection.Horizontal
+                  LayoutGap: =12
+                  LayoutMinHeight: =32
+                  LayoutMinWidth: =32
+                  PaddingBottom: =8
+                  PaddingLeft: =20
+                  PaddingRight: =20
+                  PaddingTop: =8
+                  RadiusBottomLeft: =0
+                  RadiusBottomRight: =0
+                  RadiusTopLeft: =0
+                  RadiusTopRight: =0
+                Children:
+                  - lbl_Breadcrumb:
+                      Control: Label@2.5.1
+                      Properties:
+                        BorderColor: =RGBA(0, 0, 0, 0)
+                        Color: =RGBA(255, 255, 255, 0.75)
+                        DisabledColor: =RGBA(186, 186, 186, 1)
+                        Font: =Font.'Segoe UI'
+                        Height: =36
+                        Size: =11
+                        Text: ="ระบบบริหารจัดการเทคโนโลยีสารสนเทศ > "
+                  - lbl_HeaderTitle:
+                      Control: Label@2.5.1
+                      Properties:
+                        BorderColor: =RGBA(0, 0, 0, 0)
+                        Color: =RGBA(255, 255, 255, 1)
+                        DisabledColor: =RGBA(186, 186, 186, 1)
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Bold
+                        Height: =36
+                        Size: =14
+                        Text: ="ระบบบริหารจัดการเคสไอที (IT Helpdesk Case Monitor)"
+                        Width: =460
+                  - lbl_LiveStatus:
+                      Control: Label@2.5.1
+                      Properties:
+                        BorderColor: =RGBA(0, 0, 0, 0)
+                        Color: =RGBA(255, 255, 255, 0.8)
+                        DisabledColor: =RGBA(186, 186, 186, 1)
+                        Font: =Font.'Segoe UI'
+                        Height: =36
+                        Size: =11
+                        Text: |-
+                          ="อัปเดตล่าสุด: " & Text(varLastRefreshedTime, "hh:mm:ss")
+                        Width: =160
+                  - btn_Refresh:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Center
+                        BorderColor: =RGBA(0, 0, 0, 0)
+                        Color: =RGBA(1, 33, 105, 1)
+                        DisabledColor: =RGBA(186, 186, 186, 1)
+                        Fill: =RGBA(255, 205, 0, 1)
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =32
+                        OnSelect: |-
+                          =Refresh(Cases);
+                          Refresh(Routing);
+                          Refresh(SLAConfig);
+                          Set(varLastRefreshedTime, Now());
+                          Notify("ดึงข้อมูลเคสล่าสุดเรียบร้อยแล้ว", NotificationType.Success)
+                        Size: =11
+                        Text: ="รีเฟรชข้อมูล"
+                        Width: =100
+                  - lbl_UserInfo:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Right
+                        BorderColor: =RGBA(0, 0, 0, 0)
+                        Color: =RGBA(255, 255, 255, 0.95)
+                        DisabledColor: =RGBA(186, 186, 186, 1)
+                        Font: =Font.'Segoe UI'
+                        Height: =36
+                        Size: =11
+                        Text: =varCurrentUser.FullName
+                        Width: =300
+            - KPICardsContainer:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  AlignInContainer: =AlignInContainer.SetByContainer
+                  DropShadow: =DropShadow.None
+                  Fill: =RGBA(248, 249, 250, 1)
+                  FillPortions: =0
+                  Height: =76
+                  LayoutDirection: =LayoutDirection.Horizontal
+                  LayoutGap: =12
+                  LayoutJustifyContent: =LayoutJustifyContent.Center
+                  LayoutMinHeight: =32
+                  LayoutMinWidth: =32
+                  PaddingBottom: =6
+                  PaddingLeft: =16
+                  PaddingRight: =16
+                  PaddingTop: =6
+                  RadiusBottomLeft: =0
+                  RadiusBottomRight: =0
+                  RadiusTopLeft: =0
+                  RadiusTopRight: =0
+                  Width: =Parent.Width
+                Children:
+                  - lbl_KPI_Total:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Center
+                        BorderColor: =RGBA(1, 33, 105, 1)
+                        BorderThickness: =2
+                        Color: =RGBA(1, 33, 105, 1)
+                        DisabledColor: =RGBA(186, 186, 186, 1)
+                        Fill: =RGBA(255, 255, 255, 1)
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =60
+                        OnSelect: =Set(varSelectedStatus, "All")
+                        Size: =11
+                        Text: |-
+                          ="เคสทั้งหมด: " & Text(CountRows(Filter(Cases, Statuscase.Value <> "Closed")))
+                        Width: =220
+                  - lbl_KPI_Open:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Center
+                        BorderColor: =RGBA(71, 85, 105, 1)
+                        BorderThickness: =2
+                        Color: =RGBA(71, 85, 105, 1)
+                        DisabledColor: =RGBA(186, 186, 186, 1)
+                        Fill: =RGBA(241, 245, 249, 1)
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =60
+                        OnSelect: =Set(varSelectedStatus, "Open")
+                        Size: =11
+                        Text: |-
+                          ="รอรับเรื่อง: " & Text(CountRows(Filter(Cases, Statuscase.Value = "Open")))
+                        Width: =220
+                  - lbl_KPI_Progress:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Center
+                        BorderColor: =RGBA(180, 83, 9, 1)
+                        BorderThickness: =2
+                        Color: =RGBA(180, 83, 9, 1)
+                        DisabledColor: =RGBA(186, 186, 186, 1)
+                        Fill: =RGBA(254, 243, 199, 1)
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =60
+                        OnSelect: =Set(varSelectedStatus, "In Progress")
+                        Size: =11
+                        Text: |-
+                          ="กำลังแก้ไข: " & Text(CountRows(Filter(Cases, Statuscase.Value = "In Progress")))
+                        Width: =220
+                  - lbl_KPI_Resolved:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Center
+                        BorderColor: =RGBA(4, 120, 87, 1)
+                        BorderThickness: =2
+                        Color: =RGBA(4, 120, 87, 1)
+                        DisabledColor: =RGBA(186, 186, 186, 1)
+                        Fill: =RGBA(209, 250, 229, 1)
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =60
+                        OnSelect: =Set(varSelectedStatus, "Resolved")
+                        Size: =11
+                        Text: |-
+                          ="ปิดงานแล้ว: " & Text(CountRows(Filter(Cases, Statuscase.Value = "Resolved")))
+                        Width: =220
+                  - lbl_KPI_Sla:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Center
+                        BorderColor: =RGBA(190, 18, 60, 1)
+                        BorderThickness: =2
+                        Color: =RGBA(190, 18, 60, 1)
+                        DisabledColor: =RGBA(186, 186, 186, 1)
+                        Fill: =RGBA(255, 228, 230, 1)
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =60
+                        OnSelect: =Set(varSelectedStatus, "Open")
+                        Size: =11
+                        Text: |-
+                          ="เกินกำหนดเวลา SLA: " & Text(CountRows(Filter(Cases, Statuscase.Value = "Open" && Created < DateAdd(Now(), -48, TimeUnit.Hours))))
+                        Width: =220
+            - ControlBarContainer:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  AlignInContainer: =AlignInContainer.SetByContainer
+                  DropShadow: =DropShadow.None
+                  Fill: =RGBA(255, 255, 255, 1)
+                  FillPortions: =0
+                  Height: =52
+                  LayoutAlignItems: =LayoutAlignItems.Center
+                  LayoutDirection: =LayoutDirection.Horizontal
+                  LayoutGap: =8
+                  LayoutMinHeight: =32
+                  LayoutMinWidth: =32
+                  PaddingBottom: =6
+                  PaddingLeft: =16
+                  PaddingRight: =16
+                  PaddingTop: =6
+                  RadiusBottomLeft: =0
+                  RadiusBottomRight: =0
+                  RadiusTopLeft: =0
+                  RadiusTopRight: =0
+                  Width: =Parent.Width
+                Children:
+                  - btn_FilterAll:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Center
+                        BorderColor: =RGBA(226, 232, 240, 1)
+                        BorderThickness: =1
+                        Color: =If(varSelectedStatus = "All", RGBA(255, 255, 255, 1), RGBA(1, 33, 105, 1))
+                        DisabledColor: =RGBA(186, 186, 186, 1)
+                        Fill: =If(varSelectedStatus = "All", RGBA(1, 33, 105, 1), RGBA(241, 245, 249, 1))
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =34
+                        OnSelect: =Set(varSelectedStatus, "All")
+                        Size: =11
+                        Text: ="ทั้งหมด"
+                        Width: =70
+                  - btn_FilterOpen:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Center
+                        BorderColor: =RGBA(226, 232, 240, 1)
+                        BorderThickness: =1
+                        Color: =If(varSelectedStatus = "Open", RGBA(255, 255, 255, 1), RGBA(71, 85, 105, 1))
+                        DisabledColor: =RGBA(186, 186, 186, 1)
+                        Fill: =If(varSelectedStatus = "Open", RGBA(71, 85, 105, 1), RGBA(241, 245, 249, 1))
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =34
+                        OnSelect: =Set(varSelectedStatus, "Open")
+                        Size: =11
+                        Text: ="รอรับเรื่อง"
+                        Width: =85
+                  - btn_FilterInProgress:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Center
+                        BorderColor: =RGBA(226, 232, 240, 1)
+                        BorderThickness: =1
+                        Color: =If(varSelectedStatus = "In Progress", RGBA(255, 255, 255, 1), RGBA(180, 83, 9, 1))
+                        DisabledColor: =RGBA(186, 186, 186, 1)
+                        Fill: =If(varSelectedStatus = "In Progress", RGBA(180, 83, 9, 1), RGBA(254, 243, 199, 1))
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =34
+                        OnSelect: =Set(varSelectedStatus, "In Progress")
+                        Size: =11
+                        Text: ="กำลังแก้ไข"
+                        Width: =95
+                  - btn_FilterResolved:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Center
+                        BorderColor: =RGBA(226, 232, 240, 1)
+                        BorderThickness: =1
+                        Color: =If(varSelectedStatus = "Resolved", RGBA(255, 255, 255, 1), RGBA(4, 120, 87, 1))
+                        DisabledColor: =RGBA(186, 186, 186, 1)
+                        Fill: =If(varSelectedStatus = "Resolved", RGBA(4, 120, 87, 1), RGBA(209, 250, 229, 1))
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =34
+                        OnSelect: =Set(varSelectedStatus, "Resolved")
+                        Size: =11
+                        Text: ="ปิดงานแล้ว"
+                        Width: =85
+                  - cmb_SystemFilter:
+                      Control: Classic/ComboBox@2.4.0
+                      Properties:
+                        BorderColor: =RGBA(226, 232, 240, 1)
+                        ChevronBackground: =RGBA(35, 31, 32, 1)
+                        ChevronDisabledBackground: =RGBA(215, 210, 204, 1)
+                        ChevronDisabledFill: =RGBA(235, 233, 229, 1)
+                        ChevronFill: =RGBA(255, 255, 255, 1)
+                        ChevronHoverBackground: =ColorFade(Self.ChevronBackground, 20%)
+                        ChevronHoverFill: =Self.ChevronFill
+                        Color: =RGBA(15, 23, 42, 1)
+                        DefaultSelectedItems: =[]
+                        DisabledBorderColor: =RGBA(186, 186, 186, 1)
+                        DisabledColor: =RGBA(186, 186, 186, 1)
+                        DisabledFill: =RGBA(242, 242, 242, 1)
+                        DisplayFields: =["Value"]
+                        Font: =Font.'Segoe UI'
+                        Height: =34
+                        HoverColor: =Self.Color
+                        HoverFill: =RGBA(241, 245, 249, 1)
+                        InputTextPlaceholder: ="เลือกระบบงาน..."
+                        IsSearchable: =false
+                        Items: |-
+                          =Sort(
+                              Distinct(Cases, SystemName),
+                              Value,
+                              SortOrder.Ascending
+                          )
+                        OnChange: =Set(varSelectedSystem, Self.Selected.Value)
+                        PressedColor: =Self.Color
+                        PressedFill: =ColorFade(Self.SelectionFill, -30%)
+                        SearchFields: =["Value"]
+                        SelectMultiple: =false
+                        SelectionColor: =RGBA(255, 255, 255, 1)
+                        SelectionFill: =RGBA(1, 33, 105, 1)
+                        Size: =11
+                        Tooltip: ="กรองตามระบบงาน"
+                        Width: =180
+                  - txt_SearchBox:
+                      Control: Classic/TextInput@2.3.2
+                      Properties:
+                        BorderColor: =RGBA(226, 232, 240, 1)
+                        BorderThickness: =1
+                        Color: =RGBA(15, 23, 42, 1)
+                        DisabledBorderColor: =ColorFade(Self.BorderColor, 40%)
+                        DisabledColor: =ColorFade(Self.Color, 40%)
+                        DisabledFill: =Self.Fill
+                        FocusedBorderThickness: =2
+                        Font: =Font.'Segoe UI'
+                        Height: =34
+                        HintText: ="ค้นหาชื่อผู้ทำรายการ (ผู้แจ้ง), รหัสเคส..."
+                        HoverBorderColor: =Self.Color
+                        HoverColor: =Self.Color
+                        HoverFill: =Self.Fill
+                        OnChange: =Set(varSearchQuery, Self.Text)
+                        Size: =11
+                        Tooltip: ="ค้นหาจากชื่อผู้ทำรายการ/ผู้แจ้ง หรือรหัสเคส"
+                        Width: =340
+                  - btn_ResetFilter:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Center
+                        BorderColor: =RGBA(0, 0, 0, 0)
+                        Color: =RGBA(255, 255, 255, 1)
+                        DisabledColor: =RGBA(186, 186, 186, 1)
+                        Fill: =RGBA(100, 116, 139, 1)
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =34
+                        OnSelect: |-
+                          =Set(varSelectedStatus, "All");
+                          Set(varSearchQuery, "");
+                          Set(varSelectedSystem, "");
+                          Reset(txt_SearchBox);
+                          Reset(cmb_SystemFilter)
+                        Size: =11
+                        Text: ="ล้างตัวกรอง"
+                        Width: =95
+            - WorkspaceContainer:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  Fill: =RGBA(248, 249, 250, 1)
+                  FillPortions: =1
+                  Height: =Parent.Height - 210
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Horizontal
+                  LayoutGap: =12
+                  LayoutMinHeight: =32
+                  LayoutMinWidth: =32
+                  PaddingBottom: =8
+                  PaddingLeft: =16
+                  PaddingRight: =16
+                  PaddingTop: =4
+                  RadiusBottomLeft: =0
+                  RadiusBottomRight: =0
+                  RadiusTopLeft: =0
+                  RadiusTopRight: =0
+                  Width: =Parent.Width
+                Children:
+                  - LeftPaneContainer:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        Fill: =RGBA(255, 255, 255, 1)
+                        FillPortions: =1
+                        Height: =Parent.Height - 16
+                        LayoutAlignItems: =LayoutAlignItems.Stretch
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutGap: =0
+                        LayoutMinHeight: =32
+                        LayoutMinWidth: =32
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        RadiusBottomLeft: =6
+                        RadiusBottomRight: =6
+                        RadiusTopLeft: =6
+                        RadiusTopRight: =6
+                        Width: =If(varShowDrawer, Parent.Width - 520, Parent.Width - 32)
+                      Children:
+                        - GridHeaderContainer:
+                            Control: GroupContainer@1.5.0
+                            Variant: AutoLayout
+                            Properties:
+                              Fill: =RGBA(1, 33, 105, 1)
+                              FillPortions: =0
+                              Height: =38
+                              LayoutAlignItems: =LayoutAlignItems.Center
+                              LayoutDirection: =LayoutDirection.Horizontal
+                              LayoutMinHeight: =20
+                              LayoutMinWidth: =32
+                              PaddingBottom: =0
+                              PaddingLeft: =12
+                              PaddingRight: =12
+                              PaddingTop: =0
+                              Width: =Parent.Width
+                            Children:
+                              - lbl_HdrCaseID:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Color: =RGBA(255, 255, 255, 1)
+                                    Font: =Font.'Segoe UI'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =36
+                                    Size: =10
+                                    Text: ="รหัสเคส"
+                                    Width: =110
+                              - lbl_HdrSystem:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Color: =RGBA(255, 255, 255, 1)
+                                    Font: =Font.'Segoe UI'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =36
+                                    Size: =10
+                                    Text: ="ระบบงาน"
+                                    Width: =130
+                              - lbl_HdrTitle:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Color: =RGBA(255, 255, 255, 1)
+                                    Font: =Font.'Segoe UI'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =36
+                                    Size: =10
+                                    Text: ="หัวข้อปัญหา"
+                                    Width: =280
+                              - lbl_HdrReporter:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Color: =RGBA(255, 255, 255, 1)
+                                    Font: =Font.'Segoe UI'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =36
+                                    Size: =10
+                                    Text: ="ผู้แจ้ง"
+                                    Width: =130
+                              - lbl_HdrCreated:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Color: =RGBA(255, 255, 255, 1)
+                                    Font: =Font.'Segoe UI'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =36
+                                    Size: =10
+                                    Text: ="วันที่แจ้ง"
+                                    Width: =120
+                              - lbl_HdrStatus:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Color: =RGBA(255, 255, 255, 1)
+                                    Font: =Font.'Segoe UI'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =36
+                                    Size: =10
+                                    Text: ="สถานะ"
+                                    Width: =110
+                              - lbl_HdrAction:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Align: =Align.Center
+                                    Color: =RGBA(255, 255, 255, 1)
+                                    Font: =Font.'Segoe UI'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =36
+                                    Size: =10
+                                    Text: ="การจัดการ"
+                                    Width: =90
+                        - Gallery1:
+                            Control: Gallery@2.15.0
+                            Variant: BrowseLayout_Vertical_TwoTextOneImageVariant_ver5.0
+                            Properties:
+                              BorderColor: =RGBA(226, 232, 240, 1)
+                              Fill: =RGBA(255, 255, 255, 1)
+                              Items: |-
+                                =SortByColumns(
+                                    Filter(
+                                        Cases,
+                                        (varSelectedStatus = "All" Or Statuscase.Value = varSelectedStatus) And
+                                        (IsBlank(cmb_SystemFilter.Selected.Value) Or SystemName = cmb_SystemFilter.Selected.Value) And
+                                        (
+                                            IsBlank(txt_SearchBox.Text) Or
+                                            StartsWith(ReporterName, txt_SearchBox.Text) Or
+                                            StartsWith(CaseID, txt_SearchBox.Text) Or
+                                            StartsWith(Title, txt_SearchBox.Text)
+                                        )
+                                    ),
+                                    "Created",
+                                    SortOrder.Descending
+                                )
+                              LayoutMinHeight: =32
+                              LayoutMinWidth: =32
+                              TemplateSize: =44
+                              Width: =Parent.Width
+                            Children:
+                              - Title1:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Color: =RGBA(1, 33, 105, 1)
+                                    DisabledColor: =RGBA(186, 186, 186, 1)
+                                    Font: =Font.'Segoe UI'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =32
+                                    OnSelect: =Set(varSelectedCase, ThisItem); Set(varShowDrawer, true)
+                                    PaddingLeft: =8
+                                    Size: =11
+                                    Text: =ThisItem.CaseID
+                                    Width: =110
+                                    X: =10
+                                    Y: =6
+                              - lbl_RowSystemVal:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Color: =RGBA(71, 85, 105, 1)
+                                    DisabledColor: =RGBA(186, 186, 186, 1)
+                                    Font: =Font.'Segoe UI'
+                                    Height: =32
+                                    OnSelect: =Set(varSelectedCase, ThisItem); Set(varShowDrawer, true)
+                                    PaddingLeft: =4
+                                    Size: =10
+                                    Text: =ThisItem.SystemName
+                                    Width: =120
+                                    X: =125
+                                    Y: =6
+                              - Subtitle1:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Color: =RGBA(15, 23, 42, 1)
+                                    DisabledColor: =RGBA(186, 186, 186, 1)
+                                    Font: =Font.'Segoe UI'
+                                    Height: =32
+                                    OnSelect: =Set(varSelectedCase, ThisItem); Set(varShowDrawer, true)
+                                    PaddingLeft: =4
+                                    Size: =10
+                                    Text: =ThisItem.Title
+                                    Width: =280
+                                    X: =255
+                                    Y: =6
+                              - lbl_RowReporterVal:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Color: =RGBA(100, 116, 139, 1)
+                                    DisabledColor: =RGBA(186, 186, 186, 1)
+                                    Font: =Font.'Segoe UI'
+                                    Height: =32
+                                    OnSelect: =Set(varSelectedCase, ThisItem); Set(varShowDrawer, true)
+                                    PaddingLeft: =4
+                                    Size: =10
+                                    Text: =Coalesce(ThisItem.ReporterName, ThisItem.Author.DisplayName)
+                                    Width: =120
+                                    X: =545
+                                    Y: =6
+                              - lbl_RowCreatedVal:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Color: =RGBA(100, 116, 139, 1)
+                                    DisabledColor: =RGBA(186, 186, 186, 1)
+                                    Font: =Font.'Segoe UI'
+                                    Height: =32
+                                    OnSelect: =Set(varSelectedCase, ThisItem); Set(varShowDrawer, true)
+                                    PaddingLeft: =4
+                                    Size: =10
+                                    Text: |-
+                                      =Text(ThisItem.Created, "dd/mm/yy hh:mm")
+                                    Width: =110
+                                    X: =675
+                                    Y: =6
+                              - StatusBadge:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Align: =Align.Center
+                                    BorderColor: =RGBA(0, 0, 0, 0)
+                                    Color: =If(ThisItem.Statuscase.Value = "Open", RGBA(71, 85, 105, 1), If(ThisItem.Statuscase.Value = "In Progress", RGBA(180, 83, 9, 1), If(ThisItem.Statuscase.Value = "Resolved", RGBA(4, 120, 87, 1), RGBA(15, 23, 42, 1))))
+                                    DisabledColor: =RGBA(186, 186, 186, 1)
+                                    Fill: =If(ThisItem.Statuscase.Value = "Open", RGBA(241, 245, 249, 1), If(ThisItem.Statuscase.Value = "In Progress", RGBA(254, 243, 199, 1), If(ThisItem.Statuscase.Value = "Resolved", RGBA(209, 250, 229, 1), RGBA(226, 232, 240, 1))))
+                                    Font: =Font.'Segoe UI'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =26
+                                    OnSelect: =Set(varSelectedCase, ThisItem); Set(varShowDrawer, true)
+                                    Size: =10
+                                    Text: =ThisItem.Statuscase.Value
+                                    Width: =95
+                                    X: =795
+                                    Y: =9
+                              - NextArrow1:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Align: =Align.Center
+                                    BorderColor: =RGBA(1, 33, 105, 1)
+                                    BorderThickness: =1
+                                    Color: =RGBA(1, 33, 105, 1)
+                                    DisabledColor: =RGBA(186, 186, 186, 1)
+                                    Fill: =RGBA(241, 245, 249, 1)
+                                    Font: =Font.'Segoe UI'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =26
+                                    OnSelect: =Set(varSelectedCase, ThisItem); Set(varShowDrawer, true)
+                                    PaddingBottom: =2
+                                    PaddingLeft: =4
+                                    PaddingRight: =4
+                                    PaddingTop: =2
+                                    Size: =10
+                                    Text: ="เปิดดู"
+                                    Tooltip: ="ดูรายละเอียดและจัดการเคส"
+                                    Width: =60
+                                    X: =900
+                                    Y: =9
+                              - Separator1:
+                                  Control: Rectangle@2.3.0
+                                  Properties:
+                                    BorderColor: =RGBA(0, 0, 0, 0)
+                                    Fill: =RGBA(241, 245, 249, 1)
+                                    Height: =1
+                                    OnSelect: =Select(Parent)
+                                    Width: =Parent.TemplateWidth
+                                    Y: =Parent.TemplateHeight - 1
+                              - Rectangle1:
+                                  Control: Rectangle@2.3.0
+                                  Properties:
+                                    BorderColor: =RGBA(0, 0, 0, 0)
+                                    Fill: =RGBA(1, 33, 105, 1)
+                                    Height: =Parent.TemplateHeight - 1
+                                    OnSelect: =Select(Parent)
+                                    Visible: =varSelectedCase.ID = ThisItem.ID
+                                    Width: =4
+                  - SideDrawerContainer:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        BorderColor: =RGBA(226, 232, 240, 1)
+                        BorderThickness: =1
+                        Fill: =RGBA(255, 255, 255, 1)
+                        FillPortions: =0
+                        Height: =Parent.Height - 16
+                        LayoutAlignItems: =LayoutAlignItems.Stretch
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutGap: =6
+                        LayoutMinHeight: =32
+                        LayoutMinWidth: =32
+                        PaddingBottom: =12
+                        PaddingLeft: =16
+                        PaddingRight: =16
+                        PaddingTop: =12
+                        RadiusBottomLeft: =6
+                        RadiusBottomRight: =6
+                        RadiusTopLeft: =6
+                        RadiusTopRight: =6
+                        Visible: =varShowDrawer
+                        Width: =480
+                      Children:
+                        - DrawerHeaderContainer:
+                            Control: GroupContainer@1.5.0
+                            Variant: AutoLayout
+                            Properties:
+                              Fill: =RGBA(1, 33, 105, 1)
+                              FillPortions: =0
+                              Height: =44
+                              LayoutAlignItems: =LayoutAlignItems.Center
+                              LayoutDirection: =LayoutDirection.Horizontal
+                              PaddingBottom: =4
+                              PaddingLeft: =12
+                              PaddingRight: =12
+                              PaddingTop: =4
+                              RadiusBottomLeft: =4
+                              RadiusBottomRight: =4
+                              RadiusTopLeft: =4
+                              RadiusTopRight: =4
+                              Width: =Parent.Width - 32
+                            Children:
+                              - lbl_DrawerHeaderTitle:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Color: =RGBA(255, 255, 255, 1)
+                                    Font: =Font.'Segoe UI'
+                                    FontWeight: =FontWeight.Bold
+                                    Height: =32
+                                    Size: =11
+                                    Text: |-
+                                      ="จัดการเคส: " & varSelectedCase.CaseID
+                                    Width: =360
+                              - btn_CloseDrawer:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Align: =Align.Center
+                                    Color: =RGBA(255, 255, 255, 1)
+                                    Fill: =RGBA(255, 255, 255, 0.2)
+                                    Font: =Font.'Segoe UI'
+                                    FontWeight: =FontWeight.Bold
+                                    Height: =28
+                                    OnSelect: |-
+                                      =Reset(cmb_ResolutionCat);
+                                      Reset(txt_ResolutionNotes);
+                                      Reset(txt_ResolutionEvidence);
+                                      Set(varShowDrawer, false)
+                                    Size: =11
+                                    Text: ="ปิด"
+                                    Width: =50
+                        - CaseSummaryBox:
+                            Control: GroupContainer@1.5.0
+                            Variant: AutoLayout
+                            Properties:
+                              Fill: =RGBA(248, 249, 250, 1)
+                              FillPortions: =0
+                              Height: =122
+                              LayoutDirection: =LayoutDirection.Vertical
+                              LayoutGap: =2
+                              PaddingBottom: =6
+                              PaddingLeft: =8
+                              PaddingRight: =8
+                              PaddingTop: =6
+                              RadiusBottomLeft: =4
+                              RadiusBottomRight: =4
+                              RadiusTopLeft: =4
+                              RadiusTopRight: =4
+                              Width: =Parent.Width - 32
+                            Children:
+                              - lbl_SummaryTitle:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Color: =RGBA(15, 23, 42, 1)
+                                    Font: =Font.'Segoe UI'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =20
+                                    Size: =10
+                                    Text: |-
+                                      ="หัวข้อ: " & varSelectedCase.Title
+                                    Width: =Parent.Width - 16
+                              - lbl_SummarySystem:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Color: =RGBA(71, 85, 105, 1)
+                                    Font: =Font.'Segoe UI'
+                                    Height: =18
+                                    Size: =9
+                                    Text: |-
+                                      ="ระบบ: " & varSelectedCase.SystemName & " | ผู้แจ้ง: " & Coalesce(varSelectedCase.ReporterName, varSelectedCase.Author.DisplayName)
+                                    Width: =Parent.Width - 16
+                              - lbl_SummaryCreated:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Color: =RGBA(100, 116, 139, 1)
+                                    Font: =Font.'Segoe UI'
+                                    Height: =18
+                                    Size: =9
+                                    Text: |-
+                                      ="วันที่แจ้ง: " & Text(varSelectedCase.Created, "dd/mm/yyyy hh:mm")
+                                    Width: =Parent.Width - 16
+                              - lbl_SummaryStatus:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Color: =If(varSelectedCase.Statuscase.Value = "Open", RGBA(71, 85, 105, 1), If(varSelectedCase.Statuscase.Value = "In Progress", RGBA(180, 83, 9, 1), RGBA(4, 120, 87, 1)))
+                                    Font: =Font.'Segoe UI'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =18
+                                    Size: =9
+                                    Text: |-
+                                      ="สถานะปัจจุบัน: " & varSelectedCase.Statuscase.Value
+                                    Width: =Parent.Width - 16
+                              - lbl_SummaryOwner:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Color: =RGBA(71, 85, 105, 1)
+                                    Font: =Font.'Segoe UI'
+                                    Height: =18
+                                    Size: =9
+                                    Text: |-
+                                      ="ผู้รับผิดชอบ: " & Coalesce(varSelectedCase.AssignedOwner, "ยังไม่มีผู้รับเคส")
+                                    Width: =Parent.Width - 16
+                        - CaseActionContainer:
+                            Control: GroupContainer@1.5.0
+                            Variant: AutoLayout
+                            Properties:
+                              Fill: =RGBA(255, 255, 255, 1)
+                              FillPortions: =0
+                              Height: =68
+                              LayoutDirection: =LayoutDirection.Vertical
+                              LayoutGap: =6
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingRight: =0
+                              PaddingTop: =2
+                              Width: =Parent.Width - 32
+                            Children:
+                              - lbl_ActionSection:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Color: =RGBA(1, 33, 105, 1)
+                                    Font: =Font.'Segoe UI'
+                                    FontWeight: =FontWeight.Bold
+                                    Height: =18
+                                    Size: =10
+                                    Text: ="การจัดการสถานะเคส (Quick Actions)"
+                                    Width: =Parent.Width
+                              - ActionButtonsRow:
+                                  Control: GroupContainer@1.5.0
+                                  Variant: AutoLayout
+                                  Properties:
+                                    Fill: =RGBA(255, 255, 255, 0)
+                                    FillPortions: =0
+                                    Height: =36
+                                    LayoutAlignItems: =LayoutAlignItems.Center
+                                    LayoutDirection: =LayoutDirection.Horizontal
+                                    LayoutGap: =8
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingRight: =0
+                                    PaddingTop: =0
+                                    Width: =Parent.Width
+                                  Children:
+                                    - btn_AssignMeDrawer:
+                                        Control: Label@2.5.1
+                                        Properties:
+                                          Align: =Align.Center
+                                          BorderColor: =If(varSelectedCase.Statuscase.Value = "In Progress", RGBA(217, 119, 6, 1), RGBA(0, 0, 0, 0))
+                                          BorderThickness: =If(varSelectedCase.Statuscase.Value = "In Progress", 1, 0)
+                                          Color: =If(varSelectedCase.Statuscase.Value = "In Progress", RGBA(180, 83, 9, 1), RGBA(255, 255, 255, 1))
+                                          DisabledColor: =RGBA(148, 163, 184, 1)
+                                          DisabledFill: =RGBA(226, 232, 240, 1)
+                                          DisplayMode: =If(varSelectedCase.Statuscase.Value = "Resolved", DisplayMode.Disabled, DisplayMode.Edit)
+                                          Fill: =If(varSelectedCase.Statuscase.Value = "In Progress", RGBA(254, 243, 199, 1), RGBA(245, 158, 11, 1))
+                                          Font: =Font.'Segoe UI'
+                                          FontWeight: =FontWeight.Bold
+                                          Height: =34
+                                          OnSelect: |-
+                                            =Patch(
+                                                Cases,
+                                                varSelectedCase,
+                                                {
+                                                    Statuscase: { Value: "In Progress" },
+                                                    AssignedOwner: Coalesce(varCurrentUser.FullName, User().FullName),
+                                                    StatusNote: "รับเคสโดย " & Coalesce(varCurrentUser.FullName, User().FullName) & " เมื่อ " & Text(Now(), "dd/mm/yyyy hh:mm")
+                                                }
+                                            );
+                                            Notify("คุณได้รับมอบหมายเคส " & varSelectedCase.CaseID & " เรียบร้อยแล้ว (สถานะ In Progress)", NotificationType.Success);
+                                            Set(varSelectedCase, LookUp(Cases, ID = varSelectedCase.ID));
+                                            Refresh(Cases)
+                                          Size: =9
+                                          Text: |-
+                                            =If(varSelectedCase.Statuscase.Value = "In Progress", "กำลังแก้ไข", "รับเคสเอง")
+                                          Tooltip: ="เปลี่ยนสถานะเคสเป็น In Progress และมอบหมายงานให้คุณ"
+                                          Width: =95
+                                    - btn_OpenAssignModal:
+                                        Control: Label@2.5.1
+                                        Properties:
+                                          Align: =Align.Center
+                                          BorderColor: =RGBA(0, 0, 0, 0)
+                                          Color: =RGBA(255, 255, 255, 1)
+                                          DisabledColor: =RGBA(148, 163, 184, 1)
+                                          DisabledFill: =RGBA(226, 232, 240, 1)
+                                          DisplayMode: =If(varSelectedCase.Statuscase.Value = "Resolved", DisplayMode.Disabled, DisplayMode.Edit)
+                                          Fill: =If(IsBlank(varSelectedCase.AssignedOwner), RGBA(1, 33, 105, 1), RGBA(2, 132, 199, 1))
+                                          Font: =Font.'Segoe UI'
+                                          FontWeight: =FontWeight.Bold
+                                          Height: =34
+                                          OnSelect: |-
+                                            =Set(varShowAssignModal, true);
+                                            Set(varAssignSelectedUser, Blank());
+                                            Reset(cmb_AssignUser);
+                                            Reset(cmb_AssignCC);
+                                            Reset(txt_AssignNote);
+                                            Set(varSendAssignEmail, true)
+                                          Size: =9
+                                          Text: |-
+                                            =If(IsBlank(varSelectedCase.AssignedOwner), "มอบหมายงาน/CC", "เปลี่ยนคน/CC")
+                                          Tooltip: ="เลือกผู้รับผิดชอบจาก M365, ระบุ CC และส่งอีเมลแจ้งเตือนอัตโนมัติ"
+                                          Width: =135
+                                    - btn_ReleaseCaseDrawer:
+                                        Control: Label@2.5.1
+                                        Properties:
+                                          Align: =Align.Center
+                                          BorderColor: =RGBA(203, 213, 225, 1)
+                                          BorderThickness: =1
+                                          Color: =RGBA(71, 85, 105, 1)
+                                          DisabledColor: =RGBA(186, 186, 186, 1)
+                                          Fill: =RGBA(241, 245, 249, 1)
+                                          Font: =Font.'Segoe UI'
+                                          FontWeight: =FontWeight.Semibold
+                                          Height: =34
+                                          OnSelect: |-
+                                            =Patch(
+                                                Cases,
+                                                varSelectedCase,
+                                                {
+                                                    Statuscase: { Value: "Open" },
+                                                    AssignedOwner: Blank(),
+                                                    StatusNote: "คืนเคสกลับสู่สถานะ Open เมื่อ " & Text(Now(), "dd/mm/yyyy hh:mm")
+                                                }
+                                            );
+                                            Notify("คืนเคส " & varSelectedCase.CaseID & " กลับสู่สถานะ Open เรียบร้อยแล้ว", NotificationType.Information);
+                                            Set(varSelectedCase, LookUp(Cases, ID = varSelectedCase.ID));
+                                            Refresh(Cases)
+                                          Size: =9
+                                          Text: ="คืนเคส (Open)"
+                                          Tooltip: ="คืนเคสกลับสู่สถานะ Open และล้างผู้รับผิดชอบ"
+                                          Visible: =varSelectedCase.Statuscase.Value = "In Progress"
+                                          Width: =105
+                                    - btn_ReopenCaseDrawer:
+                                        Control: Label@2.5.1
+                                        Properties:
+                                          Align: =Align.Center
+                                          BorderColor: =RGBA(0, 0, 0, 0)
+                                          Color: =RGBA(255, 255, 255, 1)
+                                          DisabledColor: =RGBA(186, 186, 186, 1)
+                                          Fill: =RGBA(225, 29, 72, 1)
+                                          Font: =Font.'Segoe UI'
+                                          FontWeight: =FontWeight.Bold
+                                          Height: =34
+                                          OnSelect: |-
+                                            =Patch(
+                                                Cases,
+                                                varSelectedCase,
+                                                {
+                                                    Statuscase: { Value: "In Progress" },
+                                                    StatusNote: "เปิดเคสใหม่ (Reopen) เมื่อ " & Text(Now(), "dd/mm/yyyy hh:mm")
+                                                }
+                                            );
+                                            Notify("เปิดเคส " & varSelectedCase.CaseID & " ใหม่เรียบร้อยแล้ว (สถานะ In Progress)", NotificationType.Success);
+                                            Set(varSelectedCase, LookUp(Cases, ID = varSelectedCase.ID));
+                                            Refresh(Cases)
+                                          Size: =9
+                                          Text: ="เปิดเคสใหม่ (Reopen)"
+                                          Tooltip: ="เปิดเคสที่ปิดไปแล้วใหม่ เปลี่ยนเป็นสถานะ In Progress"
+                                          Visible: =varSelectedCase.Statuscase.Value = "Resolved"
+                                          Width: =135
+                                    - btn_OpenFullDetailDrawer:
+                                        Control: Label@2.5.1
+                                        Properties:
+                                          Align: =Align.Center
+                                          BorderColor: =RGBA(1, 33, 105, 0.3)
+                                          BorderThickness: =1
+                                          Color: =RGBA(1, 33, 105, 1)
+                                          DisabledColor: =RGBA(186, 186, 186, 1)
+                                          Fill: =RGBA(1, 33, 105, 0.06)
+                                          Font: =Font.'Segoe UI'
+                                          FontWeight: =FontWeight.Semibold
+                                          Height: =34
+                                          OnSelect: |-
+                                            =Navigate(updateincident, ScreenTransition.Fade)
+                                          Size: =9
+                                          Text: ="ดู/แก้ไขฟอร์มเต็ม"
+                                          Tooltip: ="เปิดหน้าจอแก้ไขรายละเอียดเคสแบบเต็ม (updateincident)"
+                                          Width: =120
+                        - lbl_ResolutionSection:
+                            Control: Label@2.5.1
+                            Properties:
+                              Color: =RGBA(1, 33, 105, 1)
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Bold
+                              Height: =22
+                              Size: =10
+                              Text: |-
+                                =If(varSelectedCase.Statuscase.Value = "Resolved", "สรุปการปิดเคส (Resolved)", "บันทึกสรุปการแก้ไขและหลักฐานปิดเคส")
+                              Width: =Parent.Width - 32
+                        - lbl_ResolvedInfo:
+                            Control: Label@2.5.1
+                            Properties:
+                              BorderColor: =RGBA(167, 243, 208, 1)
+                              BorderThickness: =1
+                              Color: =RGBA(4, 120, 87, 1)
+                              Fill: =RGBA(209, 250, 229, 0.4)
+                              Font: =Font.'Segoe UI'
+                              Height: =60
+                              PaddingBottom: =6
+                              PaddingLeft: =8
+                              PaddingRight: =8
+                              PaddingTop: =6
+                              Size: =9
+                              Text: |-
+                                ="บันทึกการแก้ไข: " & Char(10) & Coalesce(varSelectedCase.StatusNote, "ไม่มีบันทึกเพิ่มเติม")
+                              Visible: =varSelectedCase.Statuscase.Value = "Resolved"
+                              Width: =Parent.Width - 32
+                        - lbl_CatLabel:
+                            Control: Label@2.5.1
+                            Properties:
+                              Color: =RGBA(71, 85, 105, 1)
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =18
+                              Size: =9
+                              Text: ="หมวดหมู่วิธีแก้ปัญหา *"
+                              Visible: =varSelectedCase.Statuscase.Value <> "Resolved"
+                              Width: =Parent.Width - 32
+                        - cmb_ResolutionCat:
+                            Control: Classic/ComboBox@2.4.0
+                            Properties:
+                              BorderColor: =RGBA(226, 232, 240, 1)
+                              ChevronBackground: =RGBA(35, 31, 32, 1)
+                              ChevronDisabledBackground: =RGBA(215, 210, 204, 1)
+                              ChevronDisabledFill: =RGBA(235, 233, 229, 1)
+                              ChevronFill: =RGBA(255, 255, 255, 1)
+                              ChevronHoverBackground: =ColorFade(Self.ChevronBackground, 20%)
+                              ChevronHoverFill: =Self.ChevronFill
+                              Color: =RGBA(15, 23, 42, 1)
+                              DefaultSelectedItems: =[]
+                              DisabledBorderColor: =RGBA(186, 186, 186, 1)
+                              DisabledColor: =RGBA(186, 186, 186, 1)
+                              DisabledFill: =RGBA(242, 242, 242, 1)
+                              DisplayFields: =["Value"]
+                              Font: =Font.'Segoe UI'
+                              Height: =32
+                              HoverColor: =Self.Color
+                              HoverFill: =RGBA(241, 245, 249, 1)
+                              InputTextPlaceholder: ="เลือกหมวดหมู่วิธีแก้ปัญหา..."
+                              IsSearchable: =false
+                              Items: |-
+                                =Table(
+                                    {Value: "แก้ไขข้อมูล"},
+                                    {Value: "ปรับแต่งสิทธิ์"},
+                                    {Value: "แก้ไขบั๊กโปรแกรม"},
+                                    {Value: "สอนการใช้งาน"},
+                                    {Value: "ประสานงานภายนอก"},
+                                    {Value: "อื่นๆ"}
+                                )
+                              PressedColor: =Self.Color
+                              PressedFill: =ColorFade(Self.SelectionFill, -30%)
+                              SearchFields: =["Value"]
+                              SelectMultiple: =false
+                              SelectionColor: =RGBA(255, 255, 255, 1)
+                              SelectionFill: =RGBA(1, 33, 105, 1)
+                              Size: =10
+                              Tooltip: ="เลือกหมวดหมู่วิธีแก้ปัญหา"
+                              Visible: =varSelectedCase.Statuscase.Value <> "Resolved"
+                              Width: =Parent.Width - 32
+                        - lbl_SummaryTextLabel:
+                            Control: Label@2.5.1
+                            Properties:
+                              Color: =RGBA(71, 85, 105, 1)
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =18
+                              Size: =9
+                              Text: ="สรุปแนวทางแก้ไขปัญหา (อย่างน้อย 10 ตัวอักษร) *"
+                              Visible: =varSelectedCase.Statuscase.Value <> "Resolved"
+                              Width: =Parent.Width - 32
+                        - txt_ResolutionNotes:
+                            Control: Classic/TextInput@2.3.2
+                            Properties:
+                              BorderColor: =RGBA(226, 232, 240, 1)
+                              BorderThickness: =1
+                              Color: =RGBA(15, 23, 42, 1)
+                              DisabledBorderColor: =ColorFade(Self.BorderColor, 40%)
+                              DisabledColor: =ColorFade(Self.Color, 40%)
+                              DisabledFill: =Self.Fill
+                              FocusedBorderThickness: =2
+                              Font: =Font.'Segoe UI'
+                              Height: =60
+                              HintText: ="ระบุรายละเอียดวิธีแก้ไขเพื่อปิดงาน..."
+                              HoverBorderColor: =Self.Color
+                              HoverColor: =Self.Color
+                              HoverFill: =Self.Fill
+                              Mode: =TextMode.MultiLine
+                              Size: =10
+                              Visible: =varSelectedCase.Statuscase.Value <> "Resolved"
+                              Width: =Parent.Width - 32
+                        - lbl_AttachLabel:
+                            Control: Label@2.5.1
+                            Properties:
+                              Color: =RGBA(71, 85, 105, 1)
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =18
+                              Size: =9
+                              Text: ="หลักฐานประกอบการปิดเคส (ชื่อไฟล์ หรือ ลิงก์เอกสารยืนยัน) *"
+                              Visible: =varSelectedCase.Statuscase.Value <> "Resolved"
+                              Width: =Parent.Width - 32
+                        - txt_ResolutionEvidence:
+                            Control: Classic/TextInput@2.3.2
+                            Properties:
+                              BorderColor: =RGBA(226, 232, 240, 1)
+                              BorderThickness: =1
+                              Color: =RGBA(15, 23, 42, 1)
+                              DisabledBorderColor: =ColorFade(Self.BorderColor, 40%)
+                              DisabledColor: =ColorFade(Self.Color, 40%)
+                              DisabledFill: =Self.Fill
+                              FocusedBorderThickness: =2
+                              Font: =Font.'Segoe UI'
+                              Height: =32
+                              HintText: ="ระบุชื่อไฟล์หลักฐาน หรือ ลิงก์ภาพหน้าจอ เช่น evidence-fix.png..."
+                              HoverBorderColor: =Self.Color
+                              HoverColor: =Self.Color
+                              HoverFill: =Self.Fill
+                              Size: =10
+                              Visible: =varSelectedCase.Statuscase.Value <> "Resolved"
+                              Width: =Parent.Width - 32
+                        - lbl_ValidationNote:
+                            Control: Label@2.5.1
+                            Properties:
+                              Color: =RGBA(190, 18, 60, 1)
+                              Font: =Font.'Segoe UI'
+                              Height: =20
+                              Size: =9
+                              Text: ="* ต้องเลือกหมวดหมู่, สรุป >= 10 ตัวอักษร และระบุหลักฐาน"
+                              Visible: =varSelectedCase.Statuscase.Value <> "Resolved" && !(!IsBlank(cmb_ResolutionCat.Selected.Value) && Len(Trim(txt_ResolutionNotes.Text)) >= 10 && Len(Trim(txt_ResolutionEvidence.Text)) > 0)
+                              Width: =Parent.Width - 32
+                        - btn_ConfirmResolve:
+                            Control: Label@2.5.1
+                            Properties:
+                              Align: =Align.Center
+                              BorderColor: =RGBA(0, 0, 0, 0)
+                              Color: =RGBA(255, 255, 255, 1)
+                              DisabledColor: =RGBA(148, 163, 184, 1)
+                              DisabledFill: =RGBA(226, 232, 240, 1)
+                              DisplayMode: =If(!IsBlank(cmb_ResolutionCat.Selected.Value) && Len(Trim(txt_ResolutionNotes.Text)) >= 10 && Len(Trim(txt_ResolutionEvidence.Text)) > 0, DisplayMode.Edit, DisplayMode.Disabled)
+                              Fill: =RGBA(4, 120, 87, 1)
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Bold
+                              Height: =36
+                              OnSelect: |-
+                                =Patch(
+                                    Cases,
+                                    varSelectedCase,
+                                    {
+                                        Statuscase: { Value: "Resolved" },
+                                        StatusNote: "หมวดหมู่: " & cmb_ResolutionCat.Selected.Value & Char(10) & "สรุป: " & txt_ResolutionNotes.Text & Char(10) & "หลักฐาน: " & txt_ResolutionEvidence.Text
+                                    }
+                                );
+                                Notify("บันทึกการปิดเคส " & varSelectedCase.CaseID & " สำเร็จเรียบร้อยแล้ว", NotificationType.Success);
+                                Reset(cmb_ResolutionCat);
+                                Reset(txt_ResolutionNotes);
+                                Reset(txt_ResolutionEvidence);
+                                Set(varShowDrawer, false);
+                                Set(varSelectedCase, Blank());
+                                Refresh(Cases)
+                              Size: =11
+                              Text: ="ยืนยันการปิดเคส (Resolve)"
+                              Visible: =varSelectedCase.Statuscase.Value <> "Resolved"
+                              Width: =Parent.Width - 32
+                        - btn_CancelDrawerAction:
+                            Control: Label@2.5.1
+                            Properties:
+                              Align: =Align.Center
+                              BorderColor: =RGBA(203, 213, 225, 1)
+                              BorderThickness: =1
+                              Color: =RGBA(71, 85, 105, 1)
+                              DisabledColor: =RGBA(186, 186, 186, 1)
+                              Fill: =RGBA(255, 255, 255, 1)
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =32
+                              OnSelect: |-
+                                =Reset(cmb_ResolutionCat);
+                                Reset(txt_ResolutionNotes);
+                                Reset(txt_ResolutionEvidence);
+                                Set(varShowDrawer, false)
+                              Size: =10
+                              Text: ="ปิดหน้าต่าง"
+                              Width: =Parent.Width - 32
+      - conAssignModal:
+          Control: GroupContainer@1.5.0
+          Variant: AutoLayout
+          Properties:
+            DropShadow: =DropShadow.None
+            Fill: =RGBA(15, 23, 42, 0.65)
+            Height: =Parent.Height
+            LayoutAlignItems: =LayoutAlignItems.Center
+            LayoutDirection: =LayoutDirection.Vertical
+            LayoutJustifyContent: =LayoutJustifyContent.Center
+            Visible: =varShowAssignModal
+            Width: =Parent.Width
+            X: =0
+            Y: =0
+          Children:
+            - conAssignDialog:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  BorderColor: =RGBA(226, 232, 240, 1)
+                  BorderThickness: =1
+                  DropShadow: =DropShadow.Bold
+                  Fill: =RGBA(255, 255, 255, 1)
+                  Height: =560
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutGap: =8
+                  PaddingBottom: =16
+                  PaddingLeft: =20
+                  PaddingRight: =20
+                  PaddingTop: =16
+                  RadiusBottomLeft: =8
+                  RadiusBottomRight: =8
+                  RadiusTopLeft: =8
+                  RadiusTopRight: =8
+                  Width: =540
+                  X: =(Parent.Width - 540) / 2
+                  Y: =(Parent.Height - 560) / 2
+                Children:
+                  - conAssignDialogHeader:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        Fill: =RGBA(255, 255, 255, 1)
+                        Height: =36
+                        LayoutAlignItems: =LayoutAlignItems.Center
+                        LayoutDirection: =LayoutDirection.Horizontal
+                        LayoutJustifyContent: =LayoutJustifyContent.SpaceBetween
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Width: =500
+                      Children:
+                        - lbl_AssignModalTitle:
+                            Control: Label@2.5.1
+                            Properties:
+                              Color: =RGBA(1, 33, 105, 1)
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Bold
+                              Height: =32
+                              Size: =12
+                              Text: ="มอบหมายผู้รับผิดชอบเคส (Assign / Change Owner)"
+                              Width: =450
+                        - btn_CloseAssignModal:
+                            Control: Label@2.5.1
+                            Properties:
+                              Align: =Align.Center
+                              BorderColor: =RGBA(226, 232, 240, 1)
+                              BorderThickness: =1
+                              Color: =RGBA(100, 116, 139, 1)
+                              Fill: =RGBA(248, 249, 250, 1)
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Bold
+                              Height: =28
+                              OnSelect: =Set(varShowAssignModal, false)
+                              Size: =11
+                              Text: ="✕"
+                              Tooltip: ="ปิดหน้าต่าง"
+                              Width: =32
+                  - conAssignCaseSummary:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        BorderColor: =RGBA(226, 232, 240, 1)
+                        BorderThickness: =1
+                        Fill: =RGBA(248, 249, 250, 1)
+                        Height: =68
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutGap: =2
+                        PaddingBottom: =6
+                        PaddingLeft: =10
+                        PaddingRight: =10
+                        PaddingTop: =6
+                        RadiusBottomLeft: =6
+                        RadiusBottomRight: =6
+                        RadiusTopLeft: =6
+                        RadiusTopRight: =6
+                        Width: =500
+                      Children:
+                        - lbl_ModalCaseIDTitle:
+                            Control: Label@2.5.1
+                            Properties:
+                              Color: =RGBA(15, 23, 42, 1)
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Bold
+                              Height: =20
+                              Size: =10
+                              Text: |-
+                                ="เคส: " & varSelectedCase.CaseID & " - " & varSelectedCase.Title
+                              Width: =480
+                        - lbl_ModalCaseDetails:
+                            Control: Label@2.5.1
+                            Properties:
+                              Color: =RGBA(71, 85, 105, 1)
+                              Font: =Font.'Segoe UI'
+                              Height: =18
+                              Size: =9
+                              Text: |-
+                                ="ระบบ: " & varSelectedCase.SystemName & " | ผู้แจ้ง: " & Coalesce(varSelectedCase.ReporterName, varSelectedCase.Author.DisplayName) & " | สถานะ: " & varSelectedCase.Statuscase.Value
+                              Width: =480
+                        - lbl_ModalCurrentOwner:
+                            Control: Label@2.5.1
+                            Properties:
+                              Color: =If(IsBlank(varSelectedCase.AssignedOwner), RGBA(180, 83, 9, 1), RGBA(4, 120, 87, 1))
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =18
+                              Size: =9
+                              Text: |-
+                                ="ผู้รับผิดชอบปัจจุบัน: " & Coalesce(varSelectedCase.AssignedOwner, "ยังไม่มีผู้รับเคส")
+                              Width: =480
+                  - lbl_AssigneeLabel:
+                      Control: Label@2.5.1
+                      Properties:
+                        Color: =RGBA(15, 23, 42, 1)
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =18
+                        Size: =9
+                        Text: ="เลือกผู้รับมอบหมาย (M365 User) *"
+                        Width: =500
+                  - conAssigneeRow:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        Fill: =RGBA(255, 255, 255, 0)
+                        Height: =34
+                        LayoutAlignItems: =LayoutAlignItems.Center
+                        LayoutDirection: =LayoutDirection.Horizontal
+                        LayoutGap: =8
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Width: =500
+                      Children:
+                        - cmb_AssignUser:
+                            Control: Classic/ComboBox@2.4.0
+                            Properties:
+                              BorderColor: =RGBA(226, 232, 240, 1)
+                              ChevronBackground: =RGBA(35, 31, 32, 1)
+                              ChevronDisabledBackground: =RGBA(215, 210, 204, 1)
+                              ChevronDisabledFill: =RGBA(235, 233, 229, 1)
+                              ChevronFill: =RGBA(255, 255, 255, 1)
+                              ChevronHoverBackground: =ColorFade(Self.ChevronBackground, 20%)
+                              ChevronHoverFill: =Self.ChevronFill
+                              Color: =RGBA(15, 23, 42, 1)
+                              DefaultSelectedItems: =If(!IsBlank(varAssignSelectedUser), [varAssignSelectedUser], [])
+                              DisabledBorderColor: =RGBA(186, 186, 186, 1)
+                              DisabledColor: =RGBA(186, 186, 186, 1)
+                              DisabledFill: =RGBA(242, 242, 242, 1)
+                              DisplayFields: =["DisplayName"]
+                              Font: =Font.'Segoe UI'
+                              Height: =34
+                              HoverColor: =Self.Color
+                              HoverFill: =RGBA(241, 245, 249, 1)
+                              InputTextPlaceholder: ="ค้นหาชื่อ หรือ อีเมลพนักงาน M365..."
+                              IsSearchable: =true
+                              Items: |-
+                                =Office365Users.SearchUserV2({searchTerm: Self.SearchText, isSearchTermRequired: false, top: 20}).value
+                              OnChange: =Set(varAssignSelectedUser, Self.Selected)
+                              PressedColor: =Self.Color
+                              PressedFill: =ColorFade(Self.SelectionFill, -30%)
+                              SearchFields: =["DisplayName", "Mail", "UserPrincipalName"]
+                              SelectMultiple: =false
+                              SelectionColor: =RGBA(255, 255, 255, 1)
+                              SelectionFill: =RGBA(1, 33, 105, 1)
+                              Size: =10
+                              Tooltip: ="เลือกผู้รับมอบหมายงานจาก Office 365"
+                              Width: =395
+                        - btn_AssignSelfQuick:
+                            Control: Label@2.5.1
+                            Properties:
+                              Align: =Align.Center
+                              BorderColor: =RGBA(1, 33, 105, 0.3)
+                              BorderThickness: =1
+                              Color: =RGBA(1, 33, 105, 1)
+                              Fill: =RGBA(241, 245, 249, 1)
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =34
+                              OnSelect: |-
+                                =Set(
+                                    varAssignSelectedUser,
+                                    {
+                                        DisplayName: Coalesce(varCurrentUser.FullName, User().FullName),
+                                        Mail: Coalesce(varCurrentUser.Email, User().Email),
+                                        UserPrincipalName: Coalesce(varCurrentUser.Email, User().Email)
+                                    }
+                                );
+                                Reset(cmb_AssignUser)
+                              Size: =9
+                              Text: ="ฉันเอง (Me)"
+                              Tooltip: ="เลือกตนเองเป็นผู้รับผิดชอบ"
+                              Width: =95
+                  - lbl_CCLabel:
+                      Control: Label@2.5.1
+                      Properties:
+                        Color: =RGBA(15, 23, 42, 1)
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =18
+                        Size: =9
+                        Text: ="ผู้รับสำเนา (CC) - สามารถเลือกได้หลายคน"
+                        Width: =500
+                  - cmb_AssignCC:
+                      Control: Classic/ComboBox@2.4.0
+                      Properties:
+                        BorderColor: =RGBA(226, 232, 240, 1)
+                        ChevronBackground: =RGBA(35, 31, 32, 1)
+                        ChevronDisabledBackground: =RGBA(215, 210, 204, 1)
+                        ChevronDisabledFill: =RGBA(235, 233, 229, 1)
+                        ChevronFill: =RGBA(255, 255, 255, 1)
+                        ChevronHoverBackground: =ColorFade(Self.ChevronBackground, 20%)
+                        ChevronHoverFill: =Self.ChevronFill
+                        Color: =RGBA(15, 23, 42, 1)
+                        DefaultSelectedItems: =[]
+                        DisabledBorderColor: =RGBA(186, 186, 186, 1)
+                        DisabledColor: =RGBA(186, 186, 186, 1)
+                        DisabledFill: =RGBA(242, 242, 242, 1)
+                        DisplayFields: =["DisplayName"]
+                        Font: =Font.'Segoe UI'
+                        Height: =34
+                        HoverColor: =Self.Color
+                        HoverFill: =RGBA(241, 245, 249, 1)
+                        InputTextPlaceholder: ="ค้นหาผู้รับสำเนา (CC) M365..."
+                        IsSearchable: =true
+                        Items: |-
+                          =Office365Users.SearchUserV2({searchTerm: Self.SearchText, isSearchTermRequired: false, top: 20}).value
+                        PressedColor: =Self.Color
+                        PressedFill: =ColorFade(Self.SelectionFill, -30%)
+                        SearchFields: =["DisplayName", "Mail", "UserPrincipalName"]
+                        SelectMultiple: =true
+                        SelectionColor: =RGBA(255, 255, 255, 1)
+                        SelectionFill: =RGBA(1, 33, 105, 1)
+                        Size: =10
+                        Tooltip: ="เลือกผู้รับสำเนา (CC) จาก Office 365 ได้หลายคน"
+                        Width: =500
+                  - lbl_NoteLabel:
+                      Control: Label@2.5.1
+                      Properties:
+                        Color: =RGBA(15, 23, 42, 1)
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =18
+                        Size: =9
+                        Text: ="ข้อความ / คำสั่งการมอบหมายถึงผู้รับงาน (ไม่บังคับ)"
+                        Width: =500
+                  - txt_AssignNote:
+                      Control: Classic/TextInput@2.3.2
+                      Properties:
+                        BorderColor: =RGBA(226, 232, 240, 1)
+                        BorderThickness: =1
+                        Color: =RGBA(15, 23, 42, 1)
+                        DisabledBorderColor: =ColorFade(Self.BorderColor, 40%)
+                        DisabledColor: =ColorFade(Self.Color, 40%)
+                        DisabledFill: =Self.Fill
+                        FocusedBorderThickness: =2
+                        Font: =Font.'Segoe UI'
+                        Height: =52
+                        HintText: ="ระบุข้อความหรือคำแนะนำเพิ่มเติม เช่น รบกวนช่วยตรวจสอบสิทธิ์ด่วน..."
+                        HoverBorderColor: =Self.Color
+                        HoverColor: =Self.Color
+                        HoverFill: =Self.Fill
+                        Mode: =TextMode.MultiLine
+                        Size: =9
+                        Width: =500
+                  - btn_ToggleEmailNotification:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Left
+                        BorderColor: =If(varSendAssignEmail, RGBA(1, 33, 105, 1), RGBA(203, 213, 225, 1))
+                        BorderThickness: =1
+                        Color: =If(varSendAssignEmail, RGBA(1, 33, 105, 1), RGBA(100, 116, 139, 1))
+                        Fill: =If(varSendAssignEmail, RGBA(238, 242, 255, 1), RGBA(248, 249, 250, 1))
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =32
+                        OnSelect: =Set(varSendAssignEmail, !varSendAssignEmail)
+                        PaddingLeft: =12
+                        Size: =9
+                        Text: |-
+                          =If(varSendAssignEmail, "✓ ส่งอีเมลแจ้งเตือนอัตโนมัติไปยังผู้รับมอบหมายและ CC", "✕ ไม่ส่งอีเมลแจ้งเตือน")
+                        Tooltip: ="คลิกเพื่อเปิดหรือปิดการส่งอีเมลแจ้งเตือน"
+                        Width: =500
+                  - conModalButtonsRow:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        Fill: =RGBA(255, 255, 255, 1)
+                        Height: =40
+                        LayoutAlignItems: =LayoutAlignItems.Center
+                        LayoutDirection: =LayoutDirection.Horizontal
+                        LayoutGap: =12
+                        LayoutJustifyContent: =LayoutJustifyContent.End
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =6
+                        Width: =500
+                      Children:
+                        - btn_CancelAssignModal:
+                            Control: Label@2.5.1
+                            Properties:
+                              Align: =Align.Center
+                              BorderColor: =RGBA(203, 213, 225, 1)
+                              BorderThickness: =1
+                              Color: =RGBA(71, 85, 105, 1)
+                              Fill: =RGBA(248, 249, 250, 1)
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =34
+                              OnSelect: |-
+                                =Reset(cmb_AssignUser);
+                                Reset(cmb_AssignCC);
+                                Reset(txt_AssignNote);
+                                Set(varAssignSelectedUser, Blank());
+                                Set(varShowAssignModal, false)
+                              Size: =10
+                              Text: ="ยกเลิก"
+                              Width: =90
+                        - btn_ConfirmAssignModal:
+                            Control: Label@2.5.1
+                            Properties:
+                              Align: =Align.Center
+                              Color: =RGBA(255, 255, 255, 1)
+                              DisabledColor: =RGBA(148, 163, 184, 1)
+                              DisabledFill: =RGBA(226, 232, 240, 1)
+                              DisplayMode: =If(!IsBlank(Coalesce(cmb_AssignUser.Selected.DisplayName, varAssignSelectedUser.DisplayName)), DisplayMode.Edit, DisplayMode.Disabled)
+                              Fill: =RGBA(1, 33, 105, 1)
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Bold
+                              Height: =34
+                              OnSelect: |-
+                                =If(
+                                    IsBlank(Coalesce(cmb_AssignUser.Selected.DisplayName, varAssignSelectedUser.DisplayName)),
+                                    Notify("กรุณาเลือกผู้รับมอบหมายเคสก่อนบันทึก", NotificationType.Warning),
+                                    Patch(
+                                        Cases,
+                                        varSelectedCase,
+                                        {
+                                            Statuscase: { Value: If(varSelectedCase.Statuscase.Value = "Open", "In Progress", varSelectedCase.Statuscase.Value) },
+                                            AssignedOwner: Coalesce(cmb_AssignUser.Selected.DisplayName, varAssignSelectedUser.DisplayName),
+                                            StatusNote: "มอบหมายให้ " & Coalesce(cmb_AssignUser.Selected.DisplayName, varAssignSelectedUser.DisplayName) & " โดย " & Coalesce(varCurrentUser.FullName, User().FullName) & If(!IsBlank(txt_AssignNote.Text), " | หมายเหตุ: " & txt_AssignNote.Text, "") & " เมื่อ " & Text(Now(), "dd/mm/yyyy hh:mm")
+                                        }
+                                    );
+                                    If(
+                                        varSendAssignEmail && !IsBlank(Coalesce(cmb_AssignUser.Selected.Mail, varAssignSelectedUser.Mail, cmb_AssignUser.Selected.UserPrincipalName, varAssignSelectedUser.UserPrincipalName)),
+                                        Office365Outlook.SendEmailV2(
+                                            Coalesce(cmb_AssignUser.Selected.Mail, varAssignSelectedUser.Mail, cmb_AssignUser.Selected.UserPrincipalName, varAssignSelectedUser.UserPrincipalName),
+                                            "[IT Helpdesk] ได้รับมอบหมายเคส " & varSelectedCase.CaseID & " - " & varSelectedCase.Title,
+                                            "<div style='font-family:Segoe UI,Arial,sans-serif;max-width:650px;margin:0 auto;border:1px solid #E2E8F0;border-radius:8px;overflow:hidden;background-color:#FFFFFF;'><div style='background-color:#012169;color:#FFFFFF;padding:20px 24px;'><h2 style='margin:0;font-size:18px;font-weight:600;'>แจ้งเตือนมอบหมายงาน IT Helpdesk</h2><p style='margin:4px 0 0 0;font-size:13px;color:#E2E8F0;'>ระบบติดตามเคสและสนับสนุนงานไอที (Monitor Case Helpdesk)</p></div><div style='padding:24px;color:#1E293B;'><p style='font-size:15px;margin-top:0;'>เรียน คุณ <b>" & Coalesce(cmb_AssignUser.Selected.DisplayName, varAssignSelectedUser.DisplayName, "เจ้าหน้าที่") & "</b>,</p><p style='font-size:14px;color:#475569;'>ท่านได้รับมอบหมายให้เป็นผู้รับผิดชอบเคสในระบบ IT Helpdesk โดยมีรายละเอียดดังนี้:</p><table style='width:100%;border-collapse:collapse;margin:16px 0;font-size:13px;'><tr style='border-bottom:1px solid #F1F5F9;'><td style='padding:8px 12px;font-weight:600;color:#64748B;width:140px;background-color:#F8FAFC;'>รหัสเคส (Case ID)</td><td style='padding:8px 12px;font-weight:bold;color:#012169;'>" & varSelectedCase.CaseID & "</td></tr><tr style='border-bottom:1px solid #F1F5F9;'><td style='padding:8px 12px;font-weight:600;color:#64748B;background-color:#F8FAFC;'>หัวข้อปัญหา (Title)</td><td style='padding:8px 12px;color:#0F172A;font-weight:600;'>" & varSelectedCase.Title & "</td></tr><tr style='border-bottom:1px solid #F1F5F9;'><td style='padding:8px 12px;font-weight:600;color:#64748B;background-color:#F8FAFC;'>ระบบงาน (System)</td><td style='padding:8px 12px;color:#0F172A;'>" & varSelectedCase.SystemName & "</td></tr><tr style='border-bottom:1px solid #F1F5F9;'><td style='padding:8px 12px;font-weight:600;color:#64748B;background-color:#F8FAFC;'>ระดับความสำคัญ</td><td style='padding:8px 12px;color:#0F172A;'>" & Coalesce(varSelectedCase.Priority.Value, "ปกติ") & " (" & Coalesce(varSelectedCase.Severity.Value, "P3") & ")</td></tr><tr style='border-bottom:1px solid #F1F5F9;'><td style='padding:8px 12px;font-weight:600;color:#64748B;background-color:#F8FAFC;'>ผู้แจ้งปัญหา</td><td style='padding:8px 12px;color:#0F172A;'>" & Coalesce(varSelectedCase.ReporterName, varSelectedCase.Author.DisplayName, "ไม่ระบุ") & " (" & Coalesce(varSelectedCase.ReporterEmail, "-") & ") โทร: " & Coalesce(varSelectedCase.ReporterTel, "-") & "</td></tr><tr style='border-bottom:1px solid #F1F5F9;'><td style='padding:8px 12px;font-weight:600;color:#64748B;background-color:#F8FAFC;'>มอบหมายโดย</td><td style='padding:8px 12px;color:#0F172A;'>" & Coalesce(varCurrentUser.FullName, User().FullName) & " เมื่อ " & Text(Now(), "dd/mm/yyyy hh:mm") & "</td></tr>" & If(!IsBlank(txt_AssignNote.Text), "<tr style='border-bottom:1px solid #F1F5F9;'><td style='padding:8px 12px;font-weight:600;color:#64748B;background-color:#F8FAFC;'>ข้อความเพิ่มเติม</td><td style='padding:8px 12px;color:#B45309;font-weight:600;'>" & txt_AssignNote.Text & "</td></tr>", "") & "</table><div style='background-color:#F8FAFC;border-left:4px solid #012169;padding:12px 16px;margin:16px 0;border-radius:0 4px 4px 0;'><div style='font-weight:600;font-size:13px;color:#012169;margin-bottom:4px;'>รายละเอียดปัญหา:</div><div style='font-size:13px;color:#334155;line-height:1.5;'>" & Coalesce(varSelectedCase.ProblemDetail, varSelectedCase.IssueSummary, "ไม่มีรายละเอียดเพิ่มเติม") & "</div></div><div style='margin:24px 0 16px 0;text-align:center;'><a href='https://apps.powerapps.com/play/e/default-tenant/a/c0bdc328-089a-41f2-bdaa-25968c78b060' style='display:inline-block;background-color:#012169;color:#FFFFFF;text-decoration:none;padding:10px 24px;border-radius:6px;font-size:14px;font-weight:600;'>เปิดดูเคสในระบบ Monitor Case Helpdesk</a></div></div><div style='background-color:#F1F5F9;padding:12px 24px;text-align:center;font-size:12px;color:#64748B;border-top:1px solid #E2E8F0;'>อีเมลฉบับนี้เป็นการแจ้งเตือนอัตโนมัติจากระบบ IT Helpdesk Monitor Case</div></div>",
+                                            {
+                                                Cc: Concat(cmb_AssignCC.SelectedItems, Coalesce(Mail, UserPrincipalName) & ";"),
+                                                Importance: If(varSelectedCase.Severity.Value = "P1" Or varSelectedCase.Priority.Value = "ด่วน", "High", "Normal")
+                                            }
+                                        )
+                                    );
+                                    Notify(
+                                        "มอบหมายเคส " & varSelectedCase.CaseID & " ให้ " & Coalesce(cmb_AssignUser.Selected.DisplayName, varAssignSelectedUser.DisplayName) & " สำเร็จเรียบร้อยแล้ว" & If(varSendAssignEmail, " (ส่งอีเมลแจ้งเตือนแล้ว)", ""),
+                                        NotificationType.Success
+                                    );
+                                    Set(varSelectedCase, LookUp(Cases, ID = varSelectedCase.ID));
+                                    Reset(cmb_AssignUser);
+                                    Reset(cmb_AssignCC);
+                                    Reset(txt_AssignNote);
+                                    Set(varAssignSelectedUser, Blank());
+                                    Set(varShowAssignModal, false);
+                                    Refresh(Cases)
+                                )
+                              Size: =10
+                              Text: ="ยืนยันการมอบหมาย"
+                              Width: =150

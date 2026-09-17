@@ -1,0 +1,7 @@
+mcs.metadata:
+  componentName: AI_KnowledgeBase
+  description: This knowledge source provides information found in AI_KnowledgeBase SharePoint List.
+kind: KnowledgeSourceConfiguration
+source:
+  kind: SharePointSearchSource
+  site: https://dvsins.sharepoint.com/sites/PowerAppPRD/Lists/AI_KnowledgeBase

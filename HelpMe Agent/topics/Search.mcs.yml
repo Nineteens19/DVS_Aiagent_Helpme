@@ -7,6 +7,31 @@ beginDialog:
   id: main
   priority: -1
   actions:
+    - kind: ConditionGroup
+      id: check_special_intents
+      conditions:
+        - id: cond_case_tracking
+          condition: =Or("hd-" in Lower(System.Activity.Text), "ติดตาม" in System.Activity.Text, "สถานะเคส" in System.Activity.Text, "เช็คเคส" in System.Activity.Text, "ตามเคส" in System.Activity.Text, "เคสของฉัน" in System.Activity.Text)
+          actions:
+            - kind: BeginDialog
+              id: to_case_status
+              dialog: cr616_helpMeAgentUat.topic.CaseStatus
+
+            - kind: EndDialog
+              id: end_after_case_status
+              clearTopicQueue: true
+
+        - id: cond_reopen
+          condition: =Or("reopen" in Lower(System.Activity.Text), "เปิดเคสเดิม" in System.Activity.Text, "เปิดเรื่องเดิม" in System.Activity.Text)
+          actions:
+            - kind: BeginDialog
+              id: to_reopen
+              dialog: cr616_helpMeAgentUat.topic.ReopenCase
+
+            - kind: EndDialog
+              id: end_after_reopen
+              clearTopicQueue: true
+
     - kind: SearchAndSummarizeContent
       id: search-content
       variable: Topic.Answer

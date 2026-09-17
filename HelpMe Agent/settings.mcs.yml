@@ -9,10 +9,17 @@ configuration:
 
     - channelId: Microsoft365Copilot
 
+    - id: Telephony
+      channelId: Telephony
+
+    - channelId: MsTeamsPhone
+
   settings:
     GenerativeActionsEnabled: true
 
   isAgentConnectable: true
+  publishOnCreate: false
+  publishOnImport: true
   gPTSettings:
     defaultSchemaName: cr616_helpMeAgentUat.gpt.default
 
@@ -27,6 +34,8 @@ configuration:
   recognizer:
     kind: GenerativeAIRecognizer
 
-publishedOn: 2026-09-16T07:09:36.0000000Z
+  deferredProvisioning: false
+
+publishedOn: 2026-09-16T15:41:53.0000000Z
 template: default-2.1.0
 language: 1054
