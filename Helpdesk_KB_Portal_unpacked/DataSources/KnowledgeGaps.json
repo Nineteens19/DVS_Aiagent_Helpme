@@ -1,7 +1,11 @@
 [
   {
     "ApiId": "/providers/microsoft.powerapps/apis/shared_sharepointonline",
-    "CdpRevision": true,
+    "CdpRevision": {
+      "RevisionNumber": 1,
+      "BaseUrl": "/",
+      "LastChangedTimeString": "2026-09-07T17:01:33.0520000Z"
+    },
     "ConnectedDataSourceInfoNameMapping": {
       "{FilenameWithExtension}": "File name with extension",
       "{FullPath}": "Full Path",
@@ -26,7 +30,7 @@
       "UserQuestion": "UserQuestion"
     },
     "DatasetName": "https://dvsins.sharepoint.com/sites/PowerAppPRD/",
-    "EncodeDataset": false,
+    "EncodeDataset": true,
     "IsSampleData": false,
     "IsWritable": true,
     "Name": "KnowledgeGaps",
