@@ -56,7 +56,6 @@ fs.copyFileSync(path.join(baseDir, "Header.json"), path.join(msaprDir, "msapp", 
 fs.copyFileSync(path.join(baseDir, "Properties.json"), path.join(msaprDir, "msapp", "Properties.json"));
 fs.copyFileSync(path.join(baseDir, "Resources", "PublishInfo.json"), path.join(msaprDir, "msapp", "Resources", "PublishInfo.json"));
 fs.copyFileSync(path.join(baseDir, "Controls", "1.json"), path.join(msaprDir, "msapp", "Controls", "1.json"));
-fs.copyFileSync(path.join(baseDir, "Controls", "4.json"), path.join(msaprDir, "msapp", "Controls", "4.json"));
 
 const refFiles = fs.readdirSync(path.join(baseDir, "References"));
 refFiles.forEach(f => {
@@ -79,14 +78,14 @@ import zipfile, json
 
 with zipfile.ZipFile('${MSAPP_OUT}') as z:
     names = [n.replace('\\\\', '/') for n in z.namelist()]
-    assert 'Controls/4.json' in names, 'Missing screen controls!'
+    assert 'Src/Home_KB.pa.yaml' in names, 'Missing Src/Home_KB.pa.yaml!'
     assert 'packed.json' in names, 'Missing packed.json!'
     for name in z.namelist():
         data = z.read(name)
         assert not data.startswith(b'\xef\xbb\xbf'), f'UTF-8 BOM found in {name}'
         if name.endswith('.json'):
             json.loads(data.decode('utf-8'))
-print('✅ Binary verification passed: Controls/4.json, packed.json, valid JSON, zero BOM.')
+print('✅ Binary verification passed: Src/Home_KB.pa.yaml, packed.json, valid JSON, zero BOM.')
 "
 
 # Step 5: Build Canvas App Package Zip for make.powerapps.com Import
