@@ -1,0 +1,9 @@
+[
+  {
+    "Data": "[{\"Value\":\"Sample 1\"},{\"Value\":\"Sample 2\"},{\"Value\":\"Sample 3\"}]",
+    "IsSampleData": true,
+    "IsWritable": false,
+    "Name": "ComboBoxSample",
+    "Type": "StaticDataSourceInfo"
+  }
+]

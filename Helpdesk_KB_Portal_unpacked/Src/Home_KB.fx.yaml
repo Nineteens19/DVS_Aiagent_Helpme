@@ -1,0 +1,1601 @@
+Home_KB As screen:
+    Fill: =RGBA(248, 249, 250, 1)
+    LoadingSpinnerColor: =RGBA(1, 33, 105, 1)
+
+    conAppFrame As groupContainer.verticalAutoLayoutContainer:
+        Fill: =RGBA(248, 249, 250, 1)
+        Height: =Parent.Height
+        LayoutAlignItems: =LayoutAlignItems.Stretch
+        LayoutDirection: =LayoutDirection.Vertical
+        Width: =Parent.Width
+
+        conHeader As groupContainer.horizontalAutoLayoutContainer:
+            Fill: =RGBA(1, 33, 105, 1)
+            FillPortions: =0
+            Height: =56
+            LayoutAlignItems: =LayoutAlignItems.Center
+            LayoutGap: =12
+            PaddingBottom: =8
+            PaddingLeft: =20
+            PaddingRight: =20
+            PaddingTop: =8
+
+            lbl_BrandName As label:
+                Color: =RGBA(255, 205, 0, 1)
+                Font: =Font.'Segoe UI'
+                FontWeight: =FontWeight.Bold
+                Height: =36
+                Size: =12
+                Text: ="DEVES INSURANCE"
+
+            lbl_HeaderTitle As label:
+                Color: =RGBA(255, 255, 255, 1)
+                Font: =Font.'Segoe UI'
+                FontWeight: =FontWeight.Bold
+                Height: =36
+                Size: =13
+                Text: ="Helpdesk AI Knowledge Base Management Portal"
+                Width: =420
+
+            lbl_RoleBadge As label:
+                Align: =Align.Center
+                BorderColor: =RGBA(0, 0, 0, 0)
+                Color: =If(varIsKBAdmin, RGBA(4, 120, 87, 1), RGBA(71, 85, 105, 1))
+                Fill: =If(varIsKBAdmin, RGBA(209, 250, 229, 1), RGBA(241, 245, 249, 1))
+                Font: =Font.'Segoe UI'
+                FontWeight: =FontWeight.Semibold
+                Height: =28
+                Size: =10
+                Text: =varUserRole
+                Width: =160
+
+            lbl_HeaderSync As label:
+                Color: =RGBA(255, 255, 255, 0.8)
+                Font: =Font.'Segoe UI'
+                Height: =36
+                Size: =10
+                Text: |-
+                    ="อัปเดตล่าสุด: " & Text(varLastRefreshedTime, "hh:mm:ss")
+                Width: =140
+
+            btn_GlobalRefresh As label:
+                Align: =Align.Center
+                BorderColor: =RGBA(0, 0, 0, 0)
+                Color: =RGBA(1, 33, 105, 1)
+                Fill: =RGBA(255, 205, 0, 1)
+                Font: =Font.'Segoe UI'
+                FontWeight: =FontWeight.Semibold
+                Height: =30
+                OnSelect: |-
+                    =Refresh(AI_KnowledgeBase);
+                    Refresh(SystemManuals);
+                    Refresh(Systems);
+                    Refresh(KnowledgeGaps);
+                    Set(varLastRefreshedTime, Now());
+                    Notify("รีเฟรชข้อมูล SharePoint ทั้งหมดเรียบร้อยแล้ว", NotificationType.Success)
+                Size: =10
+                Text: ="รีเฟรชข้อมูล"
+                Width: =90
+
+            lbl_UserProfile As label:
+                Align: =Align.Right
+                Color: =RGBA(255, 255, 255, 0.95)
+                Font: =Font.'Segoe UI'
+                Height: =36
+                Size: =11
+                Text: =varCurrentUser.FullName
+                Width: =280
+
+        conKPIBar As groupContainer.horizontalAutoLayoutContainer:
+            Fill: =RGBA(248, 249, 250, 1)
+            FillPortions: =0
+            Height: =74
+            LayoutGap: =12
+            LayoutJustifyContent: =LayoutJustifyContent.Center
+            PaddingBottom: =6
+            PaddingLeft: =16
+            PaddingRight: =16
+            PaddingTop: =6
+            Width: =Parent.Width
+
+            lbl_KPI_Manuals As label:
+                Align: =Align.Center
+                BorderColor: =RGBA(1, 33, 105, 1)
+                BorderThickness: =2
+                Color: =RGBA(1, 33, 105, 1)
+                Fill: =RGBA(255, 255, 255, 1)
+                Font: =Font.'Segoe UI'
+                FontWeight: =FontWeight.Semibold
+                Height: =58
+                OnSelect: =Set(varActiveTab, "MANUALS")
+                Size: =11
+                Text: |-
+                    ="คู่มือระบบที่อนุมัติ: " & Text(CountRows(Filter(SystemManuals, Not('{IsFolder}') && Coalesce(IsActive, true) = true))) & " รายการ"
+                Width: =310
+
+            lbl_KPI_QnA As label:
+                Align: =Align.Center
+                BorderColor: =RGBA(4, 120, 87, 1)
+                BorderThickness: =2
+                Color: =RGBA(4, 120, 87, 1)
+                Fill: =RGBA(209, 250, 229, 1)
+                Font: =Font.'Segoe UI'
+                FontWeight: =FontWeight.Semibold
+                Height: =58
+                OnSelect: =Set(varActiveTab, "QNA"); Set(varFilterStatus, "Active")
+                Size: =11
+                Text: |-
+                    ="Q&A เปิดใช้งาน: " & Text(CountRows(Filter(AI_KnowledgeBase, Coalesce(Is_Active.Value, Is_Active, "Active") = "Active" || Coalesce(Is_Active.Value, Is_Active, "") = "Yes"))) & " รายการ"
+                Width: =310
+
+            lbl_KPI_Gaps As label:
+                Align: =Align.Center
+                BorderColor: =RGBA(180, 83, 9, 1)
+                BorderThickness: =2
+                Color: =RGBA(180, 83, 9, 1)
+                Fill: =RGBA(254, 243, 199, 1)
+                Font: =Font.'Segoe UI'
+                FontWeight: =FontWeight.Semibold
+                Height: =58
+                OnSelect: =Set(varActiveTab, "GAPS")
+                Size: =11
+                Text: |-
+                    ="คำถามรอตอบ (Gaps): " & Text(CountRows(Filter(KnowledgeGaps, Coalesce(GapStatus.Value, GapStatus, "New") = "New"))) & " ข้อ"
+                Width: =310
+
+            lbl_KPI_Systems As label:
+                Align: =Align.Center
+                BorderColor: =RGBA(10, 53, 144, 1)
+                BorderThickness: =2
+                Color: =RGBA(10, 53, 144, 1)
+                Fill: =RGBA(239, 246, 255, 1)
+                Font: =Font.'Segoe UI'
+                FontWeight: =FontWeight.Semibold
+                Height: =58
+                Size: =11
+                Text: |-
+                    ="ระบบงานในสารบบ: " & Text(CountRows(colMasterSystems)) & " ระบบ"
+                Width: =310
+
+        conModuleTabs As groupContainer.horizontalAutoLayoutContainer:
+            BorderColor: =RGBA(226, 232, 240, 1)
+            BorderThickness: =1
+            Fill: =RGBA(255, 255, 255, 1)
+            FillPortions: =0
+            Height: =46
+            LayoutAlignItems: =LayoutAlignItems.Center
+            LayoutGap: =8
+            PaddingBottom: =4
+            PaddingLeft: =16
+            PaddingRight: =16
+            PaddingTop: =4
+            Width: =Parent.Width
+
+            btn_TabQnA As label:
+                Align: =Align.Center
+                BorderColor: =If(varActiveTab = "QNA", RGBA(1, 33, 105, 1), RGBA(226, 232, 240, 1))
+                BorderThickness: =1
+                Color: =If(varActiveTab = "QNA", RGBA(255, 255, 255, 1), RGBA(1, 33, 105, 1))
+                Fill: =If(varActiveTab = "QNA", RGBA(1, 33, 105, 1), RGBA(241, 245, 249, 1))
+                Font: =Font.'Segoe UI'
+                FontWeight: =FontWeight.Semibold
+                Height: =36
+                OnSelect: =Set(varActiveTab, "QNA"); Set(varDrawerOpen, false)
+                Size: =11
+                Text: ="1. คำถาม-คำตอบ (Q&A Knowledge Base)"
+                Width: =270
+
+            btn_TabManuals As label:
+                Align: =Align.Center
+                BorderColor: =If(varActiveTab = "MANUALS", RGBA(1, 33, 105, 1), RGBA(226, 232, 240, 1))
+                BorderThickness: =1
+                Color: =If(varActiveTab = "MANUALS", RGBA(255, 255, 255, 1), RGBA(1, 33, 105, 1))
+                Fill: =If(varActiveTab = "MANUALS", RGBA(1, 33, 105, 1), RGBA(241, 245, 249, 1))
+                Font: =Font.'Segoe UI'
+                FontWeight: =FontWeight.Semibold
+                Height: =36
+                OnSelect: =Set(varActiveTab, "MANUALS"); Set(varDrawerOpen, false)
+                Size: =11
+                Text: ="2. คู่มือระบบ (System Manuals Library)"
+                Width: =270
+
+            btn_TabGaps As label:
+                Align: =Align.Center
+                BorderColor: =If(varActiveTab = "GAPS", RGBA(1, 33, 105, 1), RGBA(226, 232, 240, 1))
+                BorderThickness: =1
+                Color: =If(varActiveTab = "GAPS", RGBA(255, 255, 255, 1), RGBA(1, 33, 105, 1))
+                Fill: =If(varActiveTab = "GAPS", RGBA(1, 33, 105, 1), RGBA(241, 245, 249, 1))
+                Font: =Font.'Segoe UI'
+                FontWeight: =FontWeight.Semibold
+                Height: =36
+                OnSelect: =Set(varActiveTab, "GAPS"); Set(varDrawerOpen, false)
+                Size: =11
+                Text: ="3. คำถามที่รอตอบ (Knowledge Gaps)"
+                Width: =270
+
+            btn_UploadManualTrigger As label:
+                Align: =Align.Center
+                BorderColor: =RGBA(0, 0, 0, 0)
+                Color: =RGBA(255, 255, 255, 1)
+                Fill: =RGBA(40, 167, 69, 1)
+                Font: =Font.'Segoe UI'
+                FontWeight: =FontWeight.Semibold
+                Height: =36
+                OnSelect: =Set(varUploadModalOpen, true)
+                Size: =11
+                Text: ="+ อัปโหลดคู่มือระบบใหม่"
+                Visible: =varIsKBAdmin && varActiveTab = "MANUALS"
+                Width: =180
+
+        conMainWorkspace As groupContainer.horizontalAutoLayoutContainer:
+            Fill: =RGBA(248, 249, 250, 1)
+            Height: =Parent.Height - 210
+            LayoutAlignItems: =LayoutAlignItems.Stretch
+            LayoutGap: =12
+            PaddingBottom: =8
+            PaddingLeft: =16
+            PaddingRight: =16
+            PaddingTop: =4
+            Width: =Parent.Width
+
+            conQnAView As groupContainer.verticalAutoLayoutContainer:
+                Fill: =RGBA(248, 249, 250, 1)
+                Height: =Parent.Height
+                LayoutAlignItems: =LayoutAlignItems.Stretch
+                LayoutDirection: =LayoutDirection.Vertical
+                LayoutGap: =8
+                Visible: =varActiveTab = "QNA"
+                Width: =If(varDrawerOpen, Parent.Width - 440, Parent.Width)
+
+                conQnAToolbar As groupContainer.horizontalAutoLayoutContainer:
+                    BorderColor: =RGBA(226, 232, 240, 1)
+                    BorderThickness: =1
+                    Fill: =RGBA(255, 255, 255, 1)
+                    FillPortions: =0
+                    Height: =44
+                    LayoutAlignItems: =LayoutAlignItems.Center
+                    LayoutGap: =8
+                    PaddingBottom: =4
+                    PaddingLeft: =12
+                    PaddingRight: =12
+                    PaddingTop: =4
+                    RadiusBottomLeft: =6
+                    RadiusBottomRight: =6
+                    RadiusTopLeft: =6
+                    RadiusTopRight: =6
+                    Width: =Parent.Width
+
+                    txt_QnASearch As text:
+                        BorderColor: =RGBA(226, 232, 240, 1)
+                        Color: =RGBA(15, 23, 42, 1)
+                        Font: =Font.'Segoe UI'
+                        Height: =32
+                        HintText: ="ค้นหาคำถาม, หัวข้อปัญหา, หรือ KB ID..."
+                        Size: =10
+
+                    dd_QnASystemFilter As combobox:
+                        BorderColor: =RGBA(226, 232, 240, 1)
+                        Height: =32
+                        Items: =colMasterSystems.Title
+                        SelectMultiple: =false
+                        Width: =200
+
+                    btn_QnASearchClear As label:
+                        Align: =Align.Center
+                        BorderColor: =RGBA(226, 232, 240, 1)
+                        BorderThickness: =1
+                        Color: =RGBA(71, 85, 105, 1)
+                        Fill: =RGBA(241, 245, 249, 1)
+                        Font: =Font.'Segoe UI'
+                        Height: =30
+                        OnSelect: =Reset(txt_QnASearch); Reset(dd_QnASystemFilter); Set(varFilterStatus, "All")
+                        Size: =10
+                        Text: ="ล้างตัวกรอง"
+                        Width: =80
+
+                    btn_QnAFilterAll As label:
+                        Align: =Align.Center
+                        BorderColor: =If(varFilterStatus = "All", RGBA(1, 33, 105, 1), RGBA(226, 232, 240, 1))
+                        BorderThickness: =1
+                        Color: =If(varFilterStatus = "All", RGBA(255, 255, 255, 1), RGBA(1, 33, 105, 1))
+                        Fill: =If(varFilterStatus = "All", RGBA(1, 33, 105, 1), RGBA(241, 245, 249, 1))
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =30
+                        OnSelect: =Set(varFilterStatus, "All")
+                        Size: =10
+                        Text: ="ทั้งหมด"
+                        Width: =70
+
+                    btn_QnAFilterActive As label:
+                        Align: =Align.Center
+                        BorderColor: =If(varFilterStatus = "Active", RGBA(4, 120, 87, 1), RGBA(226, 232, 240, 1))
+                        BorderThickness: =1
+                        Color: =If(varFilterStatus = "Active", RGBA(255, 255, 255, 1), RGBA(4, 120, 87, 1))
+                        Fill: =If(varFilterStatus = "Active", RGBA(4, 120, 87, 1), RGBA(209, 250, 229, 1))
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =30
+                        OnSelect: =Set(varFilterStatus, "Active")
+                        Size: =10
+                        Text: ="Active (เปิด)"
+                        Width: =85
+
+                    btn_QnAFilterInactive As label:
+                        Align: =Align.Center
+                        BorderColor: =If(varFilterStatus = "Inactive", RGBA(71, 85, 105, 1), RGBA(226, 232, 240, 1))
+                        BorderThickness: =1
+                        Color: =If(varFilterStatus = "Inactive", RGBA(255, 255, 255, 1), RGBA(71, 85, 105, 1))
+                        Fill: =If(varFilterStatus = "Inactive", RGBA(71, 85, 105, 1), RGBA(241, 245, 249, 1))
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =30
+                        OnSelect: =Set(varFilterStatus, "Inactive")
+                        Size: =10
+                        Text: ="Inactive (ปิด)"
+                        Width: =85
+
+                    btn_NewQnAAction As label:
+                        Align: =Align.Center
+                        Color: =RGBA(255, 255, 255, 1)
+                        Fill: =RGBA(1, 33, 105, 1)
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =32
+                        OnSelect: =Set(varDrawerMode, "NEW"); Set(varSelectedQnA, Blank()); Set(varDrawerOpen, true)
+                        Size: =10
+                        Text: ="+ เพิ่มข้อคำถาม Q&A"
+                        Visible: =varIsKBAdmin
+
+                conQnAGridHeader As groupContainer.horizontalAutoLayoutContainer:
+                    Fill: =RGBA(1, 33, 105, 1)
+                    FillPortions: =0
+                    Height: =38
+                    LayoutAlignItems: =LayoutAlignItems.Center
+                    PaddingLeft: =12
+                    PaddingRight: =12
+                    RadiusTopLeft: =6
+                    RadiusTopRight: =6
+                    Width: =Parent.Width
+
+                    lbl_HdrQID As label:
+                        Color: =RGBA(255, 255, 255, 1)
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =36
+                        Size: =10
+                        Text: ="KB ID"
+                        Width: =100
+
+                    lbl_HdrQSys As label:
+                        Color: =RGBA(255, 255, 255, 1)
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =36
+                        Size: =10
+                        Text: ="ระบบงาน"
+                        Width: =130
+
+                    lbl_HdrQTitle As label:
+                        Color: =RGBA(255, 255, 255, 1)
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =36
+                        Size: =10
+                        Text: ="หัวข้อคำถาม (Question)"
+                        Width: =290
+
+                    lbl_HdrQAns As label:
+                        Color: =RGBA(255, 255, 255, 1)
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =36
+                        Size: =10
+                        Text: ="คำตอบที่อนุมัติ (Approved Answer)"
+                        Width: =320
+
+                    lbl_HdrQCat As label:
+                        Color: =RGBA(255, 255, 255, 1)
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =36
+                        Size: =10
+                        Text: ="หมวดหมู่"
+                        Width: =110
+
+                    lbl_HdrQStat As label:
+                        Color: =RGBA(255, 255, 255, 1)
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =36
+                        Size: =10
+                        Text: ="สถานะ"
+                        Width: =80
+
+                    lbl_HdrQToggle As label:
+                        Align: =Align.Center
+                        Color: =RGBA(255, 255, 255, 1)
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =36
+                        Size: =10
+                        Text: ="สลับสถานะ"
+                        Width: =70
+
+                    lbl_HdrQAct As label:
+                        Align: =Align.Center
+                        Color: =RGBA(255, 255, 255, 1)
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =36
+                        Size: =10
+                        Text: ="การจัดการ"
+                        Width: =90
+
+                "galQnAGrid As gallery.'BrowseLayout_Vertical_TwoTextOneImageVariant_ver5.0'":
+                    BorderColor: =RGBA(226, 232, 240, 1)
+                    Fill: =RGBA(255, 255, 255, 1)
+                    Items: |-
+                        =SortByColumns(
+                            Filter(
+                                AI_KnowledgeBase,
+                                (IsBlank(txt_QnASearch.Text) Or StartsWith(Issue_Title, txt_QnASearch.Text) Or StartsWith(Title, txt_QnASearch.Text)) And
+                                (IsBlank(dd_QnASystemFilter.Selected.Value) Or System = dd_QnASystemFilter.Selected.Value) And
+                                (varFilterStatus = "All" Or (varFilterStatus = "Active" And (Coalesce(Is_Active.Value, Is_Active, "Active") = "Active" Or Coalesce(Is_Active.Value, Is_Active, "") = "Yes")) Or (varFilterStatus = "Inactive" And (Coalesce(Is_Active.Value, Is_Active, "") = "Inactive" Or Coalesce(Is_Active.Value, Is_Active, "") = "No")))
+                            ),
+                            "Created",
+                            SortOrder.Descending
+                        )
+                    TemplateSize: =44
+                    Width: =Parent.Width
+
+                    lbl_RowQID As label:
+                        Color: =RGBA(100, 116, 139, 1)
+                        Font: =Font.'Segoe UI'
+                        Height: =32
+                        PaddingLeft: =8
+                        Size: =10
+                        Text: =ThisItem.Title
+                        Width: =95
+                        X: =10
+                        Y: =6
+
+                    lbl_RowQSys As label:
+                        Color: =RGBA(71, 85, 105, 1)
+                        Font: =Font.'Segoe UI'
+                        Height: =32
+                        PaddingLeft: =4
+                        Size: =10
+                        Text: =ThisItem.System
+                        Width: =120
+                        X: =110
+                        Y: =6
+
+                    lbl_RowQTitle As label:
+                        Color: =RGBA(1, 33, 105, 1)
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =32
+                        OnSelect: =Set(varSelectedQnA, ThisItem); Set(varDrawerMode, "EDIT"); Set(varDrawerOpen, true)
+                        PaddingLeft: =4
+                        Size: =10
+                        Text: =ThisItem.Issue_Title
+                        Tooltip: ="คลิกเพื่อแก้ไขคำถาม"
+                        Width: =280
+                        X: =240
+                        Y: =6
+
+                    lbl_RowQAns As label:
+                        Color: =RGBA(15, 23, 42, 1)
+                        Font: =Font.'Segoe UI'
+                        Height: =32
+                        PaddingLeft: =4
+                        Size: =10
+                        Text: |-
+                            ="คำตอบ: " & Left(ThisItem.Approved_Answer, 65) & If(Len(ThisItem.Approved_Answer) > 65, "...", "")
+                        Width: =310
+                        X: =530
+                        Y: =6
+
+                    lbl_RowQCat As label:
+                        Color: =RGBA(100, 116, 139, 1)
+                        Font: =Font.'Segoe UI'
+                        Height: =32
+                        PaddingLeft: =4
+                        Size: =10
+                        Text: =If(IsBlank(ThisItem.Category.Value), "General", ThisItem.Category.Value)
+                        Width: =100
+                        X: =850
+                        Y: =6
+
+                    lbl_RowQStat As label:
+                        Align: =Align.Center
+                        Color: =If(Coalesce(ThisItem.Is_Active.Value, ThisItem.Is_Active, "Active") = "Active" || Coalesce(ThisItem.Is_Active.Value, ThisItem.Is_Active, "") = "Yes", RGBA(4, 120, 87, 1), RGBA(71, 85, 105, 1))
+                        Fill: =If(Coalesce(ThisItem.Is_Active.Value, ThisItem.Is_Active, "Active") = "Active" || Coalesce(ThisItem.Is_Active.Value, ThisItem.Is_Active, "") = "Yes", RGBA(209, 250, 229, 1), RGBA(241, 245, 249, 1))
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =24
+                        Size: =9
+                        Text: =If(Coalesce(ThisItem.Is_Active.Value, ThisItem.Is_Active, "Active") = "Active" || Coalesce(ThisItem.Is_Active.Value, ThisItem.Is_Active, "") = "Yes", "Active", "Inactive")
+                        Width: =70
+                        X: =960
+                        Y: =10
+
+                    btn_RowQToggle As label:
+                        Align: =Align.Center
+                        Color: =If(Coalesce(ThisItem.Is_Active.Value, ThisItem.Is_Active, "Active") = "Active" || Coalesce(ThisItem.Is_Active.Value, ThisItem.Is_Active, "") = "Yes", RGBA(180, 83, 9, 1), RGBA(4, 120, 87, 1))
+                        Fill: =If(Coalesce(ThisItem.Is_Active.Value, ThisItem.Is_Active, "Active") = "Active" || Coalesce(ThisItem.Is_Active.Value, ThisItem.Is_Active, "") = "Yes", RGBA(254, 243, 199, 1), RGBA(209, 250, 229, 1))
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =26
+                        OnSelect: |-
+                            =Patch(
+                                AI_KnowledgeBase,
+                                ThisItem,
+                                {
+                                    Is_Active: If(Coalesce(ThisItem.Is_Active.Value, ThisItem.Is_Active, "Active") = "Active" || Coalesce(ThisItem.Is_Active.Value, ThisItem.Is_Active, "") = "Yes", { Value: "Inactive" }, { Value: "Active" })
+                                }
+                            );
+                            Notify("สลับสถานะ Q&A เรียบร้อยแล้ว", NotificationType.Success)
+                        Size: =9
+                        Text: =If(Coalesce(ThisItem.Is_Active.Value, ThisItem.Is_Active, "Active") = "Active" || Coalesce(ThisItem.Is_Active.Value, ThisItem.Is_Active, "") = "Yes", "ปิด", "เปิด")
+                        Visible: =varIsKBAdmin
+                        Width: =55
+                        X: =1040
+                        Y: =9
+
+                    btn_RowQEdit As label:
+                        Align: =Align.Center
+                        Color: =RGBA(255, 255, 255, 1)
+                        Fill: =RGBA(1, 33, 105, 1)
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =26
+                        OnSelect: =Set(varSelectedQnA, ThisItem); Set(varDrawerMode, "EDIT"); Set(varDrawerOpen, true)
+                        Size: =9
+                        Text: ="แก้ไข"
+                        Visible: =varIsKBAdmin
+                        Width: =40
+                        X: =1105
+                        Y: =9
+
+                    btn_RowQDel As label:
+                        Align: =Align.Center
+                        Color: =RGBA(255, 255, 255, 1)
+                        Fill: =RGBA(220, 53, 69, 1)
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =26
+                        OnSelect: |-
+                            =Set(varSelectedQnA, ThisItem);
+                            Set(varConfirmAction, "DELETE_QNA");
+                            Set(varConfirmMessage, "คุณแน่ใจหรือไม่ว่าต้องการลบคำถาม: '" & ThisItem.Issue_Title & "' ?");
+                            Set(varShowConfirmModal, true)
+                        Size: =9
+                        Text: ="ลบ"
+                        Visible: =varIsKBAdmin
+                        Width: =35
+                        X: =1150
+                        Y: =9
+
+            conManualsView As groupContainer.horizontalAutoLayoutContainer:
+                Fill: =RGBA(248, 249, 250, 1)
+                Height: =Parent.Height
+                LayoutAlignItems: =LayoutAlignItems.Stretch
+                LayoutGap: =12
+                Visible: =varActiveTab = "MANUALS"
+                Width: =Parent.Width
+
+                conFoldersPane As groupContainer.verticalAutoLayoutContainer:
+                    BorderColor: =RGBA(226, 232, 240, 1)
+                    BorderThickness: =1
+                    Fill: =RGBA(255, 255, 255, 1)
+                    FillPortions: =0
+                    Height: =Parent.Height - 16
+                    LayoutAlignItems: =LayoutAlignItems.Stretch
+                    LayoutDirection: =LayoutDirection.Vertical
+                    LayoutGap: =6
+                    PaddingBottom: =10
+                    PaddingLeft: =10
+                    PaddingRight: =10
+                    PaddingTop: =10
+                    RadiusBottomLeft: =6
+                    RadiusBottomRight: =6
+                    RadiusTopLeft: =6
+                    RadiusTopRight: =6
+                    Width: =280
+
+                    lbl_FoldersHdr As label:
+                        Color: =RGBA(1, 33, 105, 1)
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Bold
+                        Height: =28
+                        Size: =11
+                        Text: ="โฟลเดอร์ระบบงาน (Systems)"
+                        Width: =260
+
+                    txt_FolderSearch As text:
+                        BorderColor: =RGBA(226, 232, 240, 1)
+                        Color: =RGBA(15, 23, 42, 1)
+                        Font: =Font.'Segoe UI'
+                        Height: =32
+                        HintText: ="ค้นหาชื่อระบบ..."
+                        Size: =10
+                        Width: =260
+
+                    btn_FolderAllSelect As label:
+                        Align: =Align.Center
+                        BorderColor: =If(IsBlank(varSelectedSystemFolder), RGBA(1, 33, 105, 1), RGBA(226, 232, 240, 1))
+                        BorderThickness: =1
+                        Color: =If(IsBlank(varSelectedSystemFolder), RGBA(255, 255, 255, 1), RGBA(1, 33, 105, 1))
+                        Fill: =If(IsBlank(varSelectedSystemFolder), RGBA(1, 33, 105, 1), RGBA(241, 245, 249, 1))
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =32
+                        OnSelect: =Set(varSelectedSystemFolder, Blank())
+                        Size: =10
+                        Text: ="แสดงคู่มือทุกระบบงาน"
+                        Width: =260
+
+                    "galSystemFolders As gallery.'BrowseLayout_Vertical_TwoTextOneImageVariant_ver5.0'":
+                        BorderColor: =RGBA(226, 232, 240, 1)
+                        Fill: =RGBA(255, 255, 255, 1)
+                        Items: |-
+                            =Filter(
+                                colMasterSystems,
+                                IsBlank(txt_FolderSearch.Text) Or StartsWith(Title, txt_FolderSearch.Text)
+                            )
+                        TemplateSize: =36
+                        Width: =260
+
+                        lbl_FolderName As label:
+                            Color: =If(varSelectedSystemFolder = ThisItem.Title, RGBA(1, 33, 105, 1), RGBA(30, 41, 59, 1))
+                            Fill: =If(varSelectedSystemFolder = ThisItem.Title, RGBA(254, 243, 199, 1), RGBA(255, 255, 255, 1))
+                            Font: =Font.'Segoe UI'
+                            FontWeight: =If(varSelectedSystemFolder = ThisItem.Title, FontWeight.Bold, FontWeight.Normal)
+                            Height: =30
+                            OnSelect: =Set(varSelectedSystemFolder, ThisItem.Title)
+                            PaddingLeft: =8
+                            Size: =10
+                            Text: =ThisItem.Title
+                            Width: =240
+                            X: =4
+                            Y: =3
+
+                conDocsPane As groupContainer.verticalAutoLayoutContainer:
+                    BorderColor: =RGBA(226, 232, 240, 1)
+                    BorderThickness: =1
+                    Fill: =RGBA(255, 255, 255, 1)
+                    Height: =Parent.Height - 16
+                    LayoutAlignItems: =LayoutAlignItems.Stretch
+                    LayoutDirection: =LayoutDirection.Vertical
+                    RadiusBottomLeft: =6
+                    RadiusBottomRight: =6
+                    RadiusTopLeft: =6
+                    RadiusTopRight: =6
+                    Width: =Parent.Width - 312
+
+                    conDocsToolbar As groupContainer.horizontalAutoLayoutContainer:
+                        Fill: =RGBA(255, 255, 255, 1)
+                        FillPortions: =0
+                        Height: =42
+                        LayoutAlignItems: =LayoutAlignItems.Center
+                        LayoutGap: =8
+                        PaddingBottom: =4
+                        PaddingLeft: =12
+                        PaddingRight: =12
+                        PaddingTop: =4
+                        Width: =Parent.Width
+
+                        lbl_DocViewTitle As label:
+                            Color: =RGBA(1, 33, 105, 1)
+                            Font: =Font.'Segoe UI'
+                            FontWeight: =FontWeight.Bold
+                            Height: =34
+                            Size: =11
+                            Text: |-
+                                ="ระบบ: " & If(IsBlank(varSelectedSystemFolder), "ทุกระบบงาน", varSelectedSystemFolder)
+                            Width: =320
+
+                        btn_DocFilterAll As label:
+                            Align: =Align.Center
+                            BorderColor: =RGBA(226, 232, 240, 1)
+                            BorderThickness: =1
+                            Color: =If(varFilterStatus = "All", RGBA(255, 255, 255, 1), RGBA(1, 33, 105, 1))
+                            Fill: =If(varFilterStatus = "All", RGBA(1, 33, 105, 1), RGBA(241, 245, 249, 1))
+                            Font: =Font.'Segoe UI'
+                            FontWeight: =FontWeight.Semibold
+                            Height: =30
+                            OnSelect: =Set(varFilterStatus, "All")
+                            Size: =10
+                            Text: ="ทั้งหมด"
+                            Width: =75
+
+                        btn_DocFilterApproved As label:
+                            Align: =Align.Center
+                            BorderColor: =RGBA(226, 232, 240, 1)
+                            BorderThickness: =1
+                            Color: =If(varFilterStatus = "Approved", RGBA(255, 255, 255, 1), RGBA(4, 120, 87, 1))
+                            Fill: =If(varFilterStatus = "Approved", RGBA(4, 120, 87, 1), RGBA(209, 250, 229, 1))
+                            Font: =Font.'Segoe UI'
+                            FontWeight: =FontWeight.Semibold
+                            Height: =30
+                            OnSelect: =Set(varFilterStatus, "Approved")
+                            Size: =10
+                            Text: ="เฉพาะที่อนุมัติ"
+                            Width: =100
+
+                    conDocsGridHeader As groupContainer.horizontalAutoLayoutContainer:
+                        Fill: =RGBA(1, 33, 105, 1)
+                        FillPortions: =0
+                        Height: =38
+                        LayoutAlignItems: =LayoutAlignItems.Center
+                        PaddingLeft: =12
+                        PaddingRight: =12
+                        Width: =Parent.Width
+
+                        lbl_HdrDocName As label:
+                            Color: =RGBA(255, 255, 255, 1)
+                            Font: =Font.'Segoe UI'
+                            FontWeight: =FontWeight.Semibold
+                            Height: =36
+                            Size: =10
+                            Text: ="ชื่อไฟล์คู่มือระบบ"
+                            Width: =320
+
+                        lbl_HdrDocSystem As label:
+                            Color: =RGBA(255, 255, 255, 1)
+                            Font: =Font.'Segoe UI'
+                            FontWeight: =FontWeight.Semibold
+                            Height: =36
+                            Size: =10
+                            Text: ="ระบบงาน"
+                            Width: =140
+
+                        lbl_HdrDocType As label:
+                            Color: =RGBA(255, 255, 255, 1)
+                            Font: =Font.'Segoe UI'
+                            FontWeight: =FontWeight.Semibold
+                            Height: =36
+                            Size: =10
+                            Text: ="ประเภทเอกสาร"
+                            Width: =130
+
+                        lbl_HdrDocModified As label:
+                            Color: =RGBA(255, 255, 255, 1)
+                            Font: =Font.'Segoe UI'
+                            FontWeight: =FontWeight.Semibold
+                            Height: =36
+                            Size: =10
+                            Text: ="วันที่อัปเดต"
+                            Width: =120
+
+                        lbl_HdrDocStatus As label:
+                            Color: =RGBA(255, 255, 255, 1)
+                            Font: =Font.'Segoe UI'
+                            FontWeight: =FontWeight.Semibold
+                            Height: =36
+                            Size: =10
+                            Text: ="สถานะ AI"
+                            Width: =100
+
+                        lbl_HdrDocAction As label:
+                            Align: =Align.Center
+                            Color: =RGBA(255, 255, 255, 1)
+                            Font: =Font.'Segoe UI'
+                            FontWeight: =FontWeight.Semibold
+                            Height: =36
+                            Size: =10
+                            Text: ="การจัดการ"
+                            Width: =120
+
+                    "galManualsList As gallery.'BrowseLayout_Vertical_TwoTextOneImageVariant_ver5.0'":
+                        BorderColor: =RGBA(226, 232, 240, 1)
+                        Fill: =RGBA(255, 255, 255, 1)
+                        Items: |-
+                            =SortByColumns(
+                                Filter(
+                                    SystemManuals,
+                                    Not('{IsFolder}') And
+                                    (IsBlank(varSelectedSystemFolder) Or SystemName = varSelectedSystemFolder) And
+                                    (varFilterStatus = "All" Or (varFilterStatus = "Approved" And Coalesce(IsActive, true) = true))
+                                ),
+                                "Modified",
+                                SortOrder.Descending
+                            )
+                        TemplateSize: =44
+                        Width: =Parent.Width
+
+                        lbl_DocNameVal As label:
+                            Color: =RGBA(1, 33, 105, 1)
+                            Font: =Font.'Segoe UI'
+                            FontWeight: =FontWeight.Semibold
+                            Height: =32
+                            OnSelect: |-
+                                =Launch(Coalesce(ThisItem.'{Link}', ThisItem.'{Thumbnail}'.Large, "https://dvsins.sharepoint.com/sites/PowerAppPRD/SystemManuals"))
+                            PaddingLeft: =8
+                            Size: =10
+                            Text: =ThisItem.'{Name}'
+                            Tooltip: ="คลิกเพื่อเปิดดูไฟล์คู่มือ"
+                            Width: =310
+                            X: =12
+                            Y: =6
+
+                        lbl_DocSystemVal As label:
+                            Color: =RGBA(71, 85, 105, 1)
+                            Font: =Font.'Segoe UI'
+                            Height: =32
+                            PaddingLeft: =4
+                            Size: =10
+                            Text: =ThisItem.SystemName
+                            Width: =130
+                            X: =332
+                            Y: =6
+
+                        lbl_DocTypeVal As label:
+                            Color: =RGBA(100, 116, 139, 1)
+                            Font: =Font.'Segoe UI'
+                            Height: =32
+                            PaddingLeft: =4
+                            Size: =10
+                            Text: =If(IsBlank(ThisItem.DocType.Value), "Manual", ThisItem.DocType.Value)
+                            Width: =120
+                            X: =472
+                            Y: =6
+
+                        lbl_DocModVal As label:
+                            Color: =RGBA(100, 116, 139, 1)
+                            Font: =Font.'Segoe UI'
+                            Height: =32
+                            PaddingLeft: =4
+                            Size: =10
+                            Text: |-
+                                =Text(ThisItem.Modified, "dd/mm/yyyy hh:mm")
+                            Width: =110
+                            X: =602
+                            Y: =6
+
+                        lbl_DocStatusBadge As label:
+                            Align: =Align.Center
+                            Color: =If(ThisItem.IsActive = true || IsBlank(ThisItem.IsActive), RGBA(4, 120, 87, 1), RGBA(71, 85, 105, 1))
+                            Fill: =If(ThisItem.IsActive = true || IsBlank(ThisItem.IsActive), RGBA(209, 250, 229, 1), RGBA(241, 245, 249, 1))
+                            Font: =Font.'Segoe UI'
+                            FontWeight: =FontWeight.Semibold
+                            Height: =24
+                            Size: =9
+                            Text: =If(ThisItem.IsActive = true || IsBlank(ThisItem.IsActive), "Approved", "Draft")
+                            Width: =80
+                            X: =722
+                            Y: =10
+
+                        btn_DocOpenLink As label:
+                            Align: =Align.Center
+                            BorderColor: =RGBA(1, 33, 105, 1)
+                            BorderThickness: =1
+                            Color: =RGBA(1, 33, 105, 1)
+                            Fill: =RGBA(255, 255, 255, 1)
+                            Font: =Font.'Segoe UI'
+                            FontWeight: =FontWeight.Semibold
+                            Height: =26
+                            OnSelect: |-
+                                =Launch(Coalesce(ThisItem.'{Link}', ThisItem.'{Thumbnail}'.Large, "https://dvsins.sharepoint.com/sites/PowerAppPRD/SystemManuals"))
+                            Size: =9
+                            Text: ="เปิดไฟล์"
+                            Width: =50
+                            X: =812
+                            Y: =9
+
+                        btn_DocToggleStatus As label:
+                            Align: =Align.Center
+                            BorderColor: =RGBA(226, 232, 240, 1)
+                            BorderThickness: =1
+                            Color: =RGBA(255, 255, 255, 1)
+                            Fill: =If(ThisItem.IsActive = true || IsBlank(ThisItem.IsActive), RGBA(220, 53, 69, 1), RGBA(40, 167, 69, 1))
+                            Font: =Font.'Segoe UI'
+                            FontWeight: =FontWeight.Semibold
+                            Height: =26
+                            OnSelect: |-
+                                =Patch(SystemManuals, ThisItem, {IsActive: Not(Coalesce(ThisItem.IsActive, true))});
+                                Notify("ปรับปรุงสถานะคู่มือเรียบร้อยแล้ว", NotificationType.Success)
+                            Size: =9
+                            Text: =If(ThisItem.IsActive = true || IsBlank(ThisItem.IsActive), "ระงับ", "อนุมัติ")
+                            Visible: =varIsKBAdmin
+                            Width: =50
+                            X: =870
+                            Y: =9
+
+            conGapsView As groupContainer.verticalAutoLayoutContainer:
+                Fill: =RGBA(248, 249, 250, 1)
+                Height: =Parent.Height
+                LayoutAlignItems: =LayoutAlignItems.Stretch
+                LayoutDirection: =LayoutDirection.Vertical
+                LayoutGap: =8
+                Visible: =varActiveTab = "GAPS"
+                Width: =If(varDrawerOpen, Parent.Width - 440, Parent.Width)
+
+                conGapsToolbar As groupContainer.horizontalAutoLayoutContainer:
+                    BorderColor: =RGBA(226, 232, 240, 1)
+                    BorderThickness: =1
+                    Fill: =RGBA(255, 255, 255, 1)
+                    FillPortions: =0
+                    Height: =44
+                    LayoutAlignItems: =LayoutAlignItems.Center
+                    LayoutGap: =8
+                    PaddingBottom: =4
+                    PaddingLeft: =12
+                    PaddingRight: =12
+                    PaddingTop: =4
+                    RadiusBottomLeft: =6
+                    RadiusBottomRight: =6
+                    RadiusTopLeft: =6
+                    RadiusTopRight: =6
+                    Width: =Parent.Width
+
+                    txt_GapsSearch As text:
+                        BorderColor: =RGBA(226, 232, 240, 1)
+                        Color: =RGBA(15, 23, 42, 1)
+                        Font: =Font.'Segoe UI'
+                        Height: =32
+                        HintText: ="ค้นหาคำถามที่ AI ตอบไม่ได้, ชื่อระบบ, หรือ Case ID..."
+                        Size: =10
+
+                    lbl_GapsFilterPrompt As label:
+                        Color: =RGBA(100, 116, 139, 1)
+                        Font: =Font.'Segoe UI'
+                        Height: =30
+                        Size: =10
+                        Text: |-
+                            ="สถานะ:"
+                        Width: =45
+
+                    btn_GapsFilterAll As label:
+                        Align: =Align.Center
+                        BorderColor: =If(varGapsFilter = "All", RGBA(1, 33, 105, 1), RGBA(226, 232, 240, 1))
+                        BorderThickness: =1
+                        Color: =If(varGapsFilter = "All", RGBA(255, 255, 255, 1), RGBA(1, 33, 105, 1))
+                        Fill: =If(varGapsFilter = "All", RGBA(1, 33, 105, 1), RGBA(241, 245, 249, 1))
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =30
+                        OnSelect: =Set(varGapsFilter, "All")
+                        Size: =10
+                        Text: ="ทั้งหมด"
+                        Width: =70
+
+                    btn_GapsFilterNew As label:
+                        Align: =Align.Center
+                        BorderColor: =If(varGapsFilter = "New", RGBA(180, 83, 9, 1), RGBA(226, 232, 240, 1))
+                        BorderThickness: =1
+                        Color: =If(varGapsFilter = "New", RGBA(255, 255, 255, 1), RGBA(180, 83, 9, 1))
+                        Fill: =If(varGapsFilter = "New", RGBA(180, 83, 9, 1), RGBA(254, 243, 199, 1))
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =30
+                        OnSelect: =Set(varGapsFilter, "New")
+                        Size: =10
+                        Text: ="รอตอบ (New)"
+                        Width: =95
+
+                    btn_GapsFilterResolved As label:
+                        Align: =Align.Center
+                        BorderColor: =If(varGapsFilter = "Resolved", RGBA(4, 120, 87, 1), RGBA(226, 232, 240, 1))
+                        BorderThickness: =1
+                        Color: =If(varGapsFilter = "Resolved", RGBA(255, 255, 255, 1), RGBA(4, 120, 87, 1))
+                        Fill: =If(varGapsFilter = "Resolved", RGBA(4, 120, 87, 1), RGBA(209, 250, 229, 1))
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =30
+                        OnSelect: =Set(varGapsFilter, "Resolved")
+                        Size: =10
+                        Text: ="แปลงเป็น Q&A แล้ว"
+                        Width: =130
+
+                    lbl_GapsCountNotice As label:
+                        Align: =Align.Right
+                        Color: =RGBA(100, 116, 139, 1)
+                        Font: =Font.'Segoe UI'
+                        Height: =30
+                        Size: =10
+                        Text: ="แสดงคำถามที่ยังไม่มีคำตอบใน KB เพื่อแปลงเป็นข้อมูลทางการ"
+                        Width: =420
+
+                conGapsGridHeader As groupContainer.horizontalAutoLayoutContainer:
+                    Fill: =RGBA(1, 33, 105, 1)
+                    FillPortions: =0
+                    Height: =38
+                    LayoutAlignItems: =LayoutAlignItems.Center
+                    PaddingLeft: =12
+                    PaddingRight: =12
+                    RadiusTopLeft: =6
+                    RadiusTopRight: =6
+                    Width: =Parent.Width
+
+                    lbl_HdrGapFreq As label:
+                        Color: =RGBA(255, 255, 255, 1)
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =36
+                        Size: =10
+                        Text: ="ความถี่"
+                        Width: =85
+
+                    lbl_HdrGapSys As label:
+                        Color: =RGBA(255, 255, 255, 1)
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =36
+                        Size: =10
+                        Text: ="ระบบงานที่ตรวจพบ"
+                        Width: =140
+
+                    lbl_HdrGapTitle As label:
+                        Color: =RGBA(255, 255, 255, 1)
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =36
+                        Size: =10
+                        Text: ="ข้อความคำถามจากผู้ใช้งาน (Unanswered Query)"
+                        Width: =430
+
+                    lbl_HdrGapCase As label:
+                        Color: =RGBA(255, 255, 255, 1)
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =36
+                        Size: =10
+                        Text: ="Case อ้างอิง"
+                        Width: =120
+
+                    lbl_HdrGapStat As label:
+                        Color: =RGBA(255, 255, 255, 1)
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =36
+                        Size: =10
+                        Text: ="สถานะ"
+                        Width: =90
+
+                    lbl_HdrGapAction As label:
+                        Align: =Align.Center
+                        Color: =RGBA(255, 255, 255, 1)
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =36
+                        Size: =10
+                        Text: ="การจัดการ (1-Click)"
+                        Width: =140
+
+                "galGapsGrid As gallery.'BrowseLayout_Vertical_TwoTextOneImageVariant_ver5.0'":
+                    BorderColor: =RGBA(226, 232, 240, 1)
+                    Fill: =RGBA(255, 255, 255, 1)
+                    Items: |-
+                        =SortByColumns(
+                            Filter(
+                                KnowledgeGaps,
+                                (IsBlank(txt_GapsSearch.Text) Or StartsWith(Title, txt_GapsSearch.Text) Or StartsWith(SystemGuess, txt_GapsSearch.Text) Or StartsWith(RelatedCaseID, txt_GapsSearch.Text) Or StartsWith(UserQuestion, txt_GapsSearch.Text)) And
+                                (
+                                    varGapsFilter = "All" Or
+                                    (varGapsFilter = "All" Or (varGapsFilter = "New" And (Coalesce(GapStatus.Value, GapStatus, "New") = "New")) Or (varGapsFilter = "Resolved" And (Coalesce(GapStatus.Value, GapStatus, "") = "Added to KB" Or Coalesce(GapStatus.Value, GapStatus, "") = "Reviewed")))
+                                )
+                            ),
+                            "Created",
+                            SortOrder.Descending
+                        )
+                    TemplateSize: =44
+                    Width: =Parent.Width
+
+                    lbl_RowGapFreq As label:
+                        Align: =Align.Center
+                        BorderColor: =RGBA(254, 243, 199, 1)
+                        Color: =RGBA(180, 83, 9, 1)
+                        Fill: =RGBA(254, 243, 199, 1)
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =26
+                        Size: =9
+                        Text: =Text(Coalesce(ThisItem.Frequency, 1)) & " ครั้ง"
+                        Width: =75
+                        X: =10
+                        Y: =9
+
+                    lbl_RowGapSys As label:
+                        Align: =Align.Center
+                        BorderColor: =RGBA(219, 234, 254, 1)
+                        Color: =RGBA(10, 53, 144, 1)
+                        Fill: =RGBA(239, 246, 255, 1)
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =26
+                        Size: =9
+                        Text: =Coalesce(ThisItem.SystemGuess, "General")
+                        Width: =130
+                        X: =95
+                        Y: =9
+
+                    lbl_RowGapTitle As label:
+                        Color: =RGBA(15, 23, 42, 1)
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =32
+                        PaddingLeft: =4
+                        Size: =10
+                        Text: =ThisItem.Title
+                        Width: =420
+                        X: =235
+                        Y: =6
+
+                    lbl_RowGapCase As label:
+                        Color: =RGBA(100, 116, 139, 1)
+                        Font: =Font.'Segoe UI'
+                        Height: =30
+                        PaddingLeft: =4
+                        Size: =10
+                        Text: =Coalesce(ThisItem.RelatedCaseID, "-")
+                        Width: =110
+                        X: =665
+                        Y: =7
+
+                    lbl_RowGapStatus As label:
+                        Align: =Align.Center
+                        BorderColor: =If(Coalesce(ThisItem.GapStatus.Value, ThisItem.GapStatus, "") = "Added to KB" || Coalesce(ThisItem.GapStatus.Value, ThisItem.GapStatus, "") = "Reviewed", RGBA(209, 250, 229, 1), RGBA(254, 243, 199, 1))
+                        Color: =If(Coalesce(ThisItem.GapStatus.Value, ThisItem.GapStatus, "") = "Added to KB" || Coalesce(ThisItem.GapStatus.Value, ThisItem.GapStatus, "") = "Reviewed", RGBA(4, 120, 87, 1), RGBA(180, 83, 9, 1))
+                        Fill: =If(Coalesce(ThisItem.GapStatus.Value, ThisItem.GapStatus, "") = "Added to KB" || Coalesce(ThisItem.GapStatus.Value, ThisItem.GapStatus, "") = "Reviewed", RGBA(209, 250, 229, 1), RGBA(254, 243, 199, 1))
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =26
+                        Size: =9
+                        Text: =If(Coalesce(ThisItem.GapStatus.Value, ThisItem.GapStatus, "") = "Added to KB" || Coalesce(ThisItem.GapStatus.Value, ThisItem.GapStatus, "") = "Reviewed", "แปลงแล้ว", "รอตอบ")
+                        Width: =80
+                        X: =785
+                        Y: =9
+
+                    btn_RowConvertGap As label:
+                        Align: =Align.Center
+                        Color: =RGBA(255, 255, 255, 1)
+                        Fill: =RGBA(40, 167, 69, 1)
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =26
+                        OnSelect: |-
+                            =Set(varSelectedGap, ThisItem);
+                            Set(varDrawerMode, "NEW_FROM_GAP");
+                            Set(varDrawerOpen, true)
+                        Size: =9
+                        Text: ="แปลงเป็น Q&A"
+                        Visible: =varIsKBAdmin && (Coalesce(ThisItem.GapStatus.Value, ThisItem.GapStatus, "") <> "Added to KB" && Coalesce(ThisItem.GapStatus.Value, ThisItem.GapStatus, "") <> "Reviewed")
+                        Width: =110
+                        X: =875
+                        Y: =9
+
+                    lbl_RowGapDone As label:
+                        Align: =Align.Center
+                        Color: =RGBA(100, 116, 139, 1)
+                        Font: =Font.'Segoe UI'
+                        Height: =26
+                        Size: =9
+                        Text: ="บันทึกใน KB แล้ว"
+                        Visible: =Coalesce(ThisItem.GapStatus.Value, ThisItem.GapStatus, "") = "Added to KB" || Coalesce(ThisItem.GapStatus.Value, ThisItem.GapStatus, "") = "Reviewed"
+                        Width: =110
+                        X: =875
+                        Y: =9
+
+        conStatusFooter As groupContainer.horizontalAutoLayoutContainer:
+            Fill: =RGBA(1, 33, 105, 1)
+            FillPortions: =0
+            Height: =26
+            LayoutAlignItems: =LayoutAlignItems.Center
+            PaddingLeft: =16
+            PaddingRight: =16
+            Width: =Parent.Width
+
+            lbl_FooterInfo As label:
+                Color: =RGBA(255, 255, 255, 0.75)
+                Font: =Font.'Segoe UI'
+                Height: =24
+                Size: =9
+                Text: |-
+                    ="Deves Helpdesk AI Knowledge Portal | Desktop 16:9 Standard | 100% Server-Side Delegable (Zero Delegation Warning)"
+                Width: =700
+
+            lbl_FooterAuth As label:
+                Align: =Align.Right
+                Color: =RGBA(255, 255, 255, 0.75)
+                Font: =Font.'Segoe UI'
+                Height: =24
+                Size: =9
+                Text: |-
+                    ="ผู้ใช้งาน: " & varCurrentUser.FullName & " (" & varUserRole & ")"
+                Width: =Parent.Width - 720
+
+    conSlideDrawer As groupContainer.verticalAutoLayoutContainer:
+        BorderColor: =RGBA(203, 213, 225, 1)
+        BorderThickness: =1
+        DropShadow: =DropShadow.Bold
+        Fill: =RGBA(255, 255, 255, 1)
+        Height: =Parent.Height
+        LayoutAlignItems: =LayoutAlignItems.Stretch
+        LayoutDirection: =LayoutDirection.Vertical
+        LayoutGap: =8
+        PaddingBottom: =16
+        PaddingLeft: =16
+        PaddingRight: =16
+        Visible: =varDrawerOpen
+        Width: =430
+        X: =Parent.Width - 430
+
+        conDrawerHeader As groupContainer.horizontalAutoLayoutContainer:
+            Fill: =RGBA(1, 33, 105, 1)
+            FillPortions: =0
+            Height: =52
+            LayoutAlignItems: =LayoutAlignItems.Center
+            PaddingLeft: =16
+            PaddingRight: =16
+            Width: =Parent.Width
+
+            lbl_DrawerTitle As label:
+                Color: =RGBA(255, 255, 255, 1)
+                Font: =Font.'Segoe UI'
+                FontWeight: =FontWeight.Bold
+                Height: =36
+                Size: =12
+                Text: =If(varDrawerMode = "NEW", "เพิ่มคำถาม-คำตอบใหม่ (New Q&A)", If(varDrawerMode = "NEW_FROM_GAP", "แปลงคำถามเป็น Q&A (Convert Gap to KB)", "แก้ไขข้อมูล Q&A (Edit Q&A)"))
+                Width: =330
+
+            btn_DrawerClose As label:
+                Align: =Align.Center
+                Color: =RGBA(255, 255, 255, 0.9)
+                Font: =Font.'Segoe UI'
+                FontWeight: =FontWeight.Bold
+                Height: =32
+                OnSelect: =Set(varDrawerOpen, false)
+                Size: =12
+                Text: ="X"
+                Width: =36
+
+        lbl_PromptQuestion As label:
+            Color: =RGBA(15, 23, 42, 1)
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Semibold
+            Height: =22
+            Size: =10
+            Text: ="คำถาม / หัวข้อปัญหา (Question / Issue Title) *"
+            Width: =390
+
+        txt_DrawerQuestion As text:
+            BorderColor: =RGBA(226, 232, 240, 1)
+            Default: =If(varDrawerMode = "NEW_FROM_GAP", Coalesce(varSelectedGap.UserQuestion, varSelectedGap.Title, ""), If(varDrawerMode = "EDIT", varSelectedQnA.Issue_Title, ""))
+            Font: =Font.'Segoe UI'
+            Height: =34
+            HintText: ="พิมพ์คำถามหลัก..."
+            Size: =10
+            Width: =390
+
+        lbl_PromptSystem As label:
+            Color: =RGBA(15, 23, 42, 1)
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Semibold
+            Height: =22
+            Size: =10
+            Text: ="ระบบงานที่เกี่ยวข้อง (System Name) *"
+            Width: =390
+
+        dd_DrawerSystem As combobox:
+            BorderColor: =RGBA(226, 232, 240, 1)
+            DefaultSelectedItems: =If(varDrawerMode = "NEW_FROM_GAP" && !IsBlank(varSelectedGap.SystemGuess), [varSelectedGap.SystemGuess], If(varDrawerMode = "EDIT" && !IsBlank(varSelectedQnA.System), [varSelectedQnA.System], []))
+            Height: =34
+            Items: =colMasterSystems.Title
+            SelectMultiple: =false
+            Width: =390
+
+        lbl_PromptAnswer As label:
+            Color: =RGBA(15, 23, 42, 1)
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Semibold
+            Height: =22
+            Size: =10
+            Text: ="คำตอบและขั้นตอนที่อนุมัติแล้ว (Approved Answer) *"
+            Width: =390
+
+        txt_DrawerAnswer As text:
+            BorderColor: =RGBA(226, 232, 240, 1)
+            Default: =If(varDrawerMode = "EDIT", varSelectedQnA.Approved_Answer, "")
+            Font: =Font.'Segoe UI'
+            Height: =120
+            HintText: ="ระบุขั้นตอนและคำตอบที่ถูกต้อง..."
+            Mode: =TextMode.MultiLine
+            Size: =10
+            Width: =390
+
+        lbl_PromptReqInfo As label:
+            Color: =RGBA(15, 23, 42, 1)
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Semibold
+            Height: =22
+            Size: =10
+            Text: ="ข้อมูลที่จำเป็นต้องขอจากผู้ใช้ (Required Information)"
+            Width: =390
+
+        txt_DrawerReqInfo As text:
+            BorderColor: =RGBA(226, 232, 240, 1)
+            Default: |-
+                =If(varDrawerMode = "NEW_FROM_GAP" && !IsBlank(varSelectedGap.RelatedCaseID), "อ้างอิง Case: " & varSelectedGap.RelatedCaseID, If(varDrawerMode = "EDIT", varSelectedQnA.Required_Information, ""))
+            Font: =Font.'Segoe UI'
+            Height: =60
+            HintText: ="เช่น เลขกรมธรรม์, รหัสพนักงาน (ถ้ามี)..."
+            Mode: =TextMode.MultiLine
+            Size: =10
+            Width: =390
+
+        conDrawerButtons As groupContainer.horizontalAutoLayoutContainer:
+            Fill: =RGBA(255, 255, 255, 1)
+            Height: =48
+            LayoutAlignItems: =LayoutAlignItems.Center
+            LayoutGap: =12
+            LayoutJustifyContent: =LayoutJustifyContent.End
+            PaddingTop: =8
+            Width: =390
+
+            btn_DrawerCancel As label:
+                Align: =Align.Center
+                BorderColor: =RGBA(203, 213, 225, 1)
+                BorderThickness: =1
+                Color: =RGBA(71, 85, 105, 1)
+                Fill: =RGBA(248, 249, 250, 1)
+                Font: =Font.'Segoe UI'
+                FontWeight: =FontWeight.Semibold
+                Height: =34
+                OnSelect: =Set(varDrawerOpen, false)
+                Size: =10
+                Text: ="ยกเลิก"
+                Width: =90
+
+            btn_DrawerSave As label:
+                Align: =Align.Center
+                Color: =RGBA(255, 255, 255, 1)
+                Fill: =RGBA(1, 33, 105, 1)
+                Font: =Font.'Segoe UI'
+                FontWeight: =FontWeight.Semibold
+                Height: =34
+                OnSelect: |-
+                    =If(
+                        IsBlank(txt_DrawerQuestion.Text) Or IsBlank(txt_DrawerAnswer.Text),
+                        Notify("กรุณากรอกคำถามและคำตอบที่อนุมัติให้ครบถ้วน", NotificationType.Error),
+                        If(
+                            varDrawerMode = "NEW_FROM_GAP",
+                            Patch(
+                                AI_KnowledgeBase,
+                                Defaults(AI_KnowledgeBase),
+                                {
+                                    Title: "KB-" & Text(Now(), "yyyymmddhhmmss"),
+                                    Issue_Title: txt_DrawerQuestion.Text,
+                                    System: If(IsBlank(dd_DrawerSystem.Selected.Value), "General", dd_DrawerSystem.Selected.Value),
+                                    Approved_Answer: txt_DrawerAnswer.Text,
+                                    Required_Information: txt_DrawerReqInfo.Text,
+                                    Review_Status: { Value: "Approved" },
+                                    Is_Active: { Value: "Active" }
+                                }
+                            );
+                            Patch(
+                                KnowledgeGaps,
+                                varSelectedGap,
+                                {
+                                    GapStatus: {Value: "Added to KB"}
+                                }
+                            );
+                            Set(varDrawerOpen, false);
+                            Notify("แปลงคำถามเข้าสู่ Q&A Knowledge Base สำเร็จแล้ว", NotificationType.Success),
+                            If(
+                                varDrawerMode = "NEW",
+                                Patch(
+                                    AI_KnowledgeBase,
+                                    Defaults(AI_KnowledgeBase),
+                                    {
+                                        Title: "KB-" & Text(Now(), "yyyymmddhhmmss"),
+                                        Issue_Title: txt_DrawerQuestion.Text,
+                                        System: If(IsBlank(dd_DrawerSystem.Selected.Value), "General", dd_DrawerSystem.Selected.Value),
+                                        Approved_Answer: txt_DrawerAnswer.Text,
+                                        Required_Information: txt_DrawerReqInfo.Text,
+                                        Review_Status: { Value: "Approved" },
+                                        Is_Active: { Value: "Active" }
+                                    }
+                                );
+                                Set(varDrawerOpen, false);
+                                Notify("บันทึกข้อมูล Q&A เรียบร้อยแล้ว", NotificationType.Success),
+                                Patch(
+                                    AI_KnowledgeBase,
+                                    varSelectedQnA,
+                                    {
+                                        Issue_Title: txt_DrawerQuestion.Text,
+                                        System: If(IsBlank(dd_DrawerSystem.Selected.Value), varSelectedQnA.System, dd_DrawerSystem.Selected.Value),
+                                        Approved_Answer: txt_DrawerAnswer.Text,
+                                        Required_Information: txt_DrawerReqInfo.Text
+                                    }
+                                );
+                                Set(varDrawerOpen, false);
+                                Notify("บันทึกการแก้ไข Q&A เรียบร้อยแล้ว", NotificationType.Success)
+                            )
+                        )
+                    )
+                Size: =10
+                Text: ="บันทึกข้อมูล"
+                Width: =120
+
+    conConfirmModal As groupContainer.autoLayoutContainer:
+        Fill: =RGBA(15, 23, 42, 0.6)
+        Height: =Parent.Height
+        Visible: =varShowConfirmModal
+        Width: =Parent.Width
+
+        conConfirmDialog As groupContainer.verticalAutoLayoutContainer:
+            BorderColor: =RGBA(226, 232, 240, 1)
+            BorderThickness: =1
+            DropShadow: =DropShadow.Bold
+            Fill: =RGBA(255, 255, 255, 1)
+            LayoutAlignItems: =LayoutAlignItems.Stretch
+            LayoutDirection: =LayoutDirection.Vertical
+            LayoutGap: =12
+            PaddingBottom: =16
+            PaddingLeft: =20
+            PaddingRight: =20
+            PaddingTop: =16
+            RadiusBottomLeft: =8
+            RadiusBottomRight: =8
+            RadiusTopLeft: =8
+            RadiusTopRight: =8
+            Width: =460
+            X: =(Parent.Width - 460) / 2
+            Y: =(Parent.Height - 200) / 2
+
+            lbl_ConfirmTitle As label:
+                Color: =RGBA(1, 33, 105, 1)
+                Font: =Font.'Segoe UI'
+                FontWeight: =FontWeight.Bold
+                Height: =28
+                Size: =12
+                Text: ="ยืนยันการทำรายการ (Confirmation)"
+                Width: =420
+
+            lbl_ConfirmBody As label:
+                Color: =RGBA(51, 65, 85, 1)
+                Font: =Font.'Segoe UI'
+                Height: =50
+                Size: =10
+                Text: =varConfirmMessage
+                Width: =420
+
+            conConfirmActions As groupContainer.horizontalAutoLayoutContainer:
+                Fill: =RGBA(255, 255, 255, 1)
+                Height: =40
+                LayoutAlignItems: =LayoutAlignItems.Center
+                LayoutGap: =12
+                LayoutJustifyContent: =LayoutJustifyContent.End
+                PaddingTop: =4
+                Width: =420
+
+                btn_ConfirmCancel As label:
+                    Align: =Align.Center
+                    BorderColor: =RGBA(203, 213, 225, 1)
+                    BorderThickness: =1
+                    Color: =RGBA(71, 85, 105, 1)
+                    Fill: =RGBA(248, 249, 250, 1)
+                    Font: =Font.'Segoe UI'
+                    FontWeight: =FontWeight.Semibold
+                    Height: =32
+                    OnSelect: =Set(varShowConfirmModal, false)
+                    Size: =10
+                    Text: ="ยกเลิก"
+                    Width: =80
+
+                btn_ConfirmOk As label:
+                    Align: =Align.Center
+                    Color: =RGBA(255, 255, 255, 1)
+                    Fill: =RGBA(220, 53, 69, 1)
+                    Font: =Font.'Segoe UI'
+                    FontWeight: =FontWeight.Semibold
+                    Height: =32
+                    OnSelect: |-
+                        =Remove(AI_KnowledgeBase, varSelectedQnA);
+                        Set(varShowConfirmModal, false);
+                        Notify("ลบข้อคำถาม Q&A เรียบร้อยแล้ว", NotificationType.Success)
+                    Size: =10
+                    Text: ="ยืนยันการลบ"
+                    Width: =110
+
+    conUploadModal As groupContainer.autoLayoutContainer:
+        Fill: =RGBA(15, 23, 42, 0.6)
+        Height: =Parent.Height
+        Visible: =varUploadModalOpen
+        Width: =Parent.Width
+
+        conUploadDialog As groupContainer.verticalAutoLayoutContainer:
+            BorderColor: =RGBA(226, 232, 240, 1)
+            BorderThickness: =1
+            DropShadow: =DropShadow.Bold
+            Fill: =RGBA(255, 255, 255, 1)
+            Height: =320
+            LayoutAlignItems: =LayoutAlignItems.Stretch
+            LayoutDirection: =LayoutDirection.Vertical
+            LayoutGap: =12
+            PaddingBottom: =20
+            PaddingLeft: =24
+            PaddingRight: =24
+            PaddingTop: =20
+            RadiusBottomLeft: =8
+            RadiusBottomRight: =8
+            RadiusTopLeft: =8
+            RadiusTopRight: =8
+            Width: =540
+            X: =(Parent.Width - 540) / 2
+            Y: =(Parent.Height - 320) / 2
+
+            lbl_UploadTitle As label:
+                Color: =RGBA(1, 33, 105, 1)
+                Font: =Font.'Segoe UI'
+                FontWeight: =FontWeight.Bold
+                Height: =32
+                Size: =13
+                Text: ="อัปโหลดคู่มือระบบใหม่ (Upload System Manual)"
+                Width: =490
+
+            lbl_UploadInstruction As label:
+                Color: =RGBA(71, 85, 105, 1)
+                Font: =Font.'Segoe UI'
+                Size: =10
+                Text: ="การอัปโหลดไฟล์คู่มือระบบ ให้ระบุชื่อระบบที่เกี่ยวข้องเพื่อจัดเก็บเข้าโฟลเดอร์ และกำหนดสถานะเป็น Approved เพื่อให้ AI สแกนใช้งานได้ทันที"
+                Width: =490
+
+            lbl_UploadSysPrompt As label:
+                Color: =RGBA(15, 23, 42, 1)
+                Font: =Font.'Segoe UI'
+                FontWeight: =FontWeight.Semibold
+                Height: =24
+                Size: =10
+                Text: |-
+                    ="เลือกระบบงานที่ต้องการอัปโหลดคู่มือ:"
+                Width: =490
+
+            dd_UploadSystem As combobox:
+                BorderColor: =RGBA(226, 232, 240, 1)
+                Height: =36
+                Items: =colMasterSystems.Title
+                SelectMultiple: =false
+                Width: =490
+
+            conUploadButtons As groupContainer.horizontalAutoLayoutContainer:
+                Fill: =RGBA(255, 255, 255, 1)
+                Height: =44
+                LayoutAlignItems: =LayoutAlignItems.Center
+                LayoutGap: =12
+                LayoutJustifyContent: =LayoutJustifyContent.End
+                PaddingTop: =8
+                Width: =490
+
+                btn_UploadCancel As label:
+                    Align: =Align.Center
+                    BorderColor: =RGBA(203, 213, 225, 1)
+                    BorderThickness: =1
+                    Color: =RGBA(71, 85, 105, 1)
+                    Fill: =RGBA(248, 249, 250, 1)
+                    Font: =Font.'Segoe UI'
+                    FontWeight: =FontWeight.Semibold
+                    Height: =34
+                    OnSelect: =Set(varUploadModalOpen, false)
+                    Size: =10
+                    Text: ="ยกเลิก"
+                    Width: =90
+
+                btn_UploadProceed As label:
+                    Align: =Align.Center
+                    Color: =RGBA(255, 255, 255, 1)
+                    Fill: =RGBA(1, 33, 105, 1)
+                    Font: =Font.'Segoe UI'
+                    FontWeight: =FontWeight.Semibold
+                    Height: =34
+                    OnSelect: |-
+                        =Set(varUploadModalOpen, false);
+                        Launch("https://dvsins.sharepoint.com/sites/PowerAppPRD/SystemManuals/" & If(IsBlank(dd_UploadSystem.Selected.Value), "", dd_UploadSystem.Selected.Value));
+                        Notify("เปิด Document Library สำหรับวางไฟล์เรียบร้อยแล้ว", NotificationType.Information)
+                    Size: =10
+                    Text: ="เปิดโฟลเดอร์เพื่อวางไฟล์คู่มือ"
+                    Width: =200
+

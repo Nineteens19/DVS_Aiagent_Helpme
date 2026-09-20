@@ -1,0 +1,9 @@
+[
+  {
+    "Data": "[{\"SampleImage\":\"sample-image\",\"SampleText\":\"Sample Text\"}]",
+    "IsSampleData": true,
+    "IsWritable": false,
+    "Name": "CustomGallerySample",
+    "Type": "StaticDataSourceInfo"
+  }
+]

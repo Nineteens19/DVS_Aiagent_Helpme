@@ -1,0 +1,43 @@
+[
+  {
+    "ApiId": "/providers/microsoft.powerapps/apis/shared_sharepointonline",
+    "CdpRevision": true,
+    "ConnectedDataSourceInfoNameMapping": {
+      "{FilenameWithExtension}": "File name with extension",
+      "{FullPath}": "Full Path",
+      "{HasAttachments}": "Has attachments",
+      "{Identifier}": "Identifier",
+      "{IsFolder}": "Is folder",
+      "{Link}": "Link to item",
+      "{Name}": "Name",
+      "{Path}": "Folder path",
+      "{Thumbnail}": "Thumbnail",
+      "{VersionNumber}": "Version number",
+      "Action_Type": "Action_Type",
+      "Approved_Answer": "Approved_Answer",
+      "Author": "Created By",
+      "Category": "Category",
+      "Created": "Created",
+      "Editor": "Modified By",
+      "Escalation_Rule": "Escalation_Rule",
+      "Followup_Question": "Followup_Question",
+      "ID": "ID",
+      "Is_Active": "Is_Active",
+      "Issue_Title": "Issue_Title",
+      "KB_ID": "KB_ID",
+      "Keywords": "Keywords",
+      "Modified": "Modified",
+      "Owner": "Owner",
+      "Required_Information": "Required_Information",
+      "Review_Status": "Review_Status",
+      "System": "System",
+      "Title": "Title"
+    },
+    "DatasetName": "https://dvsins.sharepoint.com/sites/PowerAppPRD/",
+    "EncodeDataset": false,
+    "IsSampleData": false,
+    "IsWritable": true,
+    "Name": "AI_KnowledgeBase",
+    "Type": "ConnectedDataSourceInfo"
+  }
+]

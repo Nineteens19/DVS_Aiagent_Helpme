@@ -1,0 +1,36 @@
+[
+  {
+    "ApiId": "/providers/microsoft.powerapps/apis/shared_sharepointonline",
+    "CdpRevision": true,
+    "ConnectedDataSourceInfoNameMapping": {
+      "{FilenameWithExtension}": "File name with extension",
+      "{FullPath}": "Full Path",
+      "{HasAttachments}": "Has attachments",
+      "{Identifier}": "Identifier",
+      "{IsFolder}": "Is folder",
+      "{Link}": "Link to item",
+      "{Name}": "Name",
+      "{Path}": "Folder path",
+      "{Thumbnail}": "Thumbnail",
+      "{VersionNumber}": "Version number",
+      "Author": "Created By",
+      "Created": "Created",
+      "DocType": "DocType",
+      "Editor": "Modified By",
+      "EncodedAbsUrl": "EncodedAbsUrl",
+      "FileLeafRef": "FileLeafRef",
+      "ID": "ID",
+      "IsActive": "IsActive",
+      "Keywords": "Keywords",
+      "Modified": "Modified",
+      "SystemName": "SystemName",
+      "Title": "Title"
+    },
+    "DatasetName": "https://dvsins.sharepoint.com/sites/PowerAppPRD/",
+    "EncodeDataset": false,
+    "IsSampleData": false,
+    "IsWritable": true,
+    "Name": "SystemManuals",
+    "Type": "ConnectedDataSourceInfo"
+  }
+]

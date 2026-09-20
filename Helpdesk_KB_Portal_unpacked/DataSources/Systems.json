@@ -1,0 +1,33 @@
+[
+  {
+    "ApiId": "/providers/microsoft.powerapps/apis/shared_sharepointonline",
+    "CdpRevision": true,
+    "ConnectedDataSourceInfoNameMapping": {
+      "{FilenameWithExtension}": "File name with extension",
+      "{FullPath}": "Full Path",
+      "{HasAttachments}": "Has attachments",
+      "{Identifier}": "Identifier",
+      "{IsFolder}": "Is folder",
+      "{Link}": "Link to item",
+      "{Name}": "Name",
+      "{Path}": "Folder path",
+      "{Thumbnail}": "Thumbnail",
+      "{VersionNumber}": "Version number",
+      "Author": "Created By",
+      "Code": "Code",
+      "Created": "Created",
+      "DisplayOrder": "DisplayOrder",
+      "Editor": "Modified By",
+      "ID": "ID",
+      "IsActive": "IsActive",
+      "Modified": "Modified",
+      "Title": "Title"
+    },
+    "DatasetName": "https://dvsins.sharepoint.com/sites/PowerAppPRD/",
+    "EncodeDataset": false,
+    "IsSampleData": false,
+    "IsWritable": true,
+    "Name": "Systems",
+    "Type": "ConnectedDataSourceInfo"
+  }
+]

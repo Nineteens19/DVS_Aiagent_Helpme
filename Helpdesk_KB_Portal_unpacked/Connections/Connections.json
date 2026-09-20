@@ -1,0 +1,36 @@
+{
+  "08694c9c-c68a-4200-ab74-fb3d74b2a8f6": {
+    "connectionRef": {
+      "displayName": "SharePoint",
+      "iconUri": "https://conn-afd-prod-endpoint-bmc9bqahasf3grgk.b01.azurefd.net/releases/v1.0.1769/1.0.1769.4361/sharepointonline/icon.png",
+      "id": "/providers/microsoft.powerapps/apis/shared_sharepointonline"
+    },
+    "datasets": {
+      "https://dvsins.sharepoint.com/sites/PowerAppPRD/": {
+        "dataSources": {
+          "AI_KnowledgeBase": {
+            "tableName": "95e5e09d-6d20-4811-8833-820cef88fe98"
+          },
+          "KnowledgeGaps": {
+            "tableName": "9beb45a0-08e2-4717-8eee-5b80bd218005"
+          },
+          "SystemManuals": {
+            "tableName": "SystemManuals"
+          },
+          "Systems": {
+            "tableName": "37a7b3db-d9ef-4cf8-b3f7-920f0ee3ee9a"
+          }
+        }
+      }
+    },
+    "dataSources": [
+      "AI_KnowledgeBase",
+      "SystemManuals",
+      "Systems",
+      "KnowledgeGaps"
+    ],
+    "dependencies": {},
+    "dependents": [],
+    "id": "08694c9c-c68a-4200-ab74-fb3d74b2a8f6"
+  }
+}

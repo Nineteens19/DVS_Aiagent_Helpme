@@ -1,8 +1,8 @@
 {
   "Author": "Deves IT Helpdesk Team",
   "Name": "Helpdesk_KB_Portal",
-  "Id": "d748f93e-7c15-46b2-9a3b-28f09b55e812",
-  "FileID": "d748f93e-7c15-46b2-9a3b-28f09b55e812",
+  "Id": "b37d3799-cb5a-41cf-bf8d-d266730c46b4",
+  "FileID": "b37d3799-cb5a-41cf-bf8d-d266730c46b4",
   "LocalConnectionReferences": "{\"08694c9c-c68a-4200-ab74-fb3d74b2a8f6\":{\"id\":\"08694c9c-c68a-4200-ab74-fb3d74b2a8f6\",\"connectionInstanceId\":\"/providers/microsoft.powerapps/apis/shared_sharepointonline/connections/shared-sharepointonl-82010d49-5f3b-441e-a526-f8bb8d2f3250\",\"dataSources\":[\"AI_KnowledgeBase\",\"SystemManuals\",\"Systems\",\"KnowledgeGaps\"],\"datasets\":{\"https://dvsins.sharepoint.com/sites/PowerAppPRD/\":{\"dataSources\":{\"AI_KnowledgeBase\":{\"tableName\":\"95e5e09d-6d20-4811-8833-820cef88fe98\"},\"SystemManuals\":{\"tableName\":\"SystemManuals\"},\"Systems\":{\"tableName\":\"37a7b3db-d9ef-4cf8-b3f7-920f0ee3ee9a\"},\"KnowledgeGaps\":{\"tableName\":\"9beb45a0-08e2-4717-8eee-5b80bd218005\"}}}},\"dependencies\":{},\"dependents\":[],\"connectionRef\":{\"id\":\"/providers/microsoft.powerapps/apis/shared_sharepointonline\",\"displayName\":\"SharePoint\",\"iconUri\":\"https://conn-afd-prod-endpoint-bmc9bqahasf3grgk.b01.azurefd.net/releases/v1.0.1769/1.0.1769.4361/sharepointonline/icon.png\"}}}",
   "LocalDatabaseReferences": "",
   "LibraryDependencies": "[]",
@@ -113,17 +113,17 @@
   "ConnectionString": "",
   "EnableInstrumentation": false,
   "ControlCount": {
-    "screen": 2,
-    "groupContainer": 12,
-    "label": 54,
-    "text": 8,
+    "screen": 1,
+    "groupContainer": 26,
+    "label": 92,
+    "text": 6,
     "combobox": 3,
-    "gallery": 1,
-    "galleryTemplate": 1,
-    "rectangle": 2,
-    "icon": 1,
-    "form": 1,
-    "typedDataCard": 9
+    "gallery": 4,
+    "galleryTemplate": 4,
+    "rectangle": 0,
+    "icon": 0,
+    "form": 0,
+    "typedDataCard": 0
   },
   "DeserializationLoadTime": 1.0199318,
   "AnalysisLoadTime": 1.071348

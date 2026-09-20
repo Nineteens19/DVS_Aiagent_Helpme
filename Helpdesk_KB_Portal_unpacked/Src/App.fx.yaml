@@ -1,0 +1,99 @@
+App As appinfo:
+    BackEnabled: =true
+    OnStart: |-
+        =Set(
+            varCurrentUser,
+            {
+                Email: User().Email,
+                FullName: User().FullName,
+                Image: User().Image
+            }
+        );
+        Set(
+            varIsKBAdmin,
+            true
+        );
+        Set(
+            varUserRole,
+            If(varIsKBAdmin, "KB Administrator", "Viewer (Read-Only)")
+        );
+        ClearCollect(
+            colMasterSystems,
+            Sort(
+                Filter(
+                    Systems,
+                    Coalesce(IsActive, true) = true
+                ),
+                DisplayOrder,
+                SortOrder.Ascending
+            )
+        );
+        If(
+            CountRows(colMasterSystems) = 0,
+            ClearCollect(
+                colMasterSystems,
+                { Title: "DSS", DisplayOrder: 1 },
+                { Title: "Renewal Motor", DisplayOrder: 2 },
+                { Title: "PCS", DisplayOrder: 3 },
+                { Title: "Polisy 400", DisplayOrder: 4 },
+                { Title: "CMI", DisplayOrder: 5 },
+                { Title: "General", DisplayOrder: 6 }
+            )
+        );
+        Set(varActiveTab, "QNA");
+        Set(varDrawerOpen, false);
+        Set(varDrawerMode, "NEW");
+        Set(varSelectedQnA, Blank());
+        Set(varSelectedSystemFolder, Blank());
+        Set(varSearchQnA, "");
+        Set(varFilterSystem, "All");
+        Set(varFilterStatus, "All");
+        Set(varGapsFilter, "All");
+        Set(varSelectedGap, Blank());
+        Set(varShowConfirmModal, false);
+        Set(varConfirmAction, "");
+        Set(varConfirmTargetId, Blank());
+        Set(varConfirmMessage, "");
+        Set(varUploadModalOpen, false);
+        Set(varNotificationMsg, "");
+        Set(varLastRefreshedTime, Now());
+        Set(gblColorPrimary, ColorValue("#012169"));
+        Set(gblColorPrimaryHover, ColorValue("#0A3590"));
+        Set(gblColorSecondary, ColorValue("#FFCD00"));
+        Set(gblColorBg, ColorValue("#F8F9FA"));
+        Set(gblColorSurface, ColorValue("#FFFFFF"));
+        Set(gblColorBorder, ColorValue("#E2E8F0"));
+        Set(gblColorTextPrimary, ColorValue("#0F172A"));
+        Set(gblColorTextSecondary, ColorValue("#64748B"));
+        Set(gblColorApprovedBg, ColorValue("#D1FAE5"));
+        Set(gblColorApprovedText, ColorValue("#047857"));
+        Set(gblColorDraftBg, ColorValue("#F1F5F9"));
+        Set(gblColorDraftText, ColorValue("#475569"));
+        Set(gblColorReviewBg, ColorValue("#FEF3C7"));
+        Set(gblColorReviewText, ColorValue("#B45309"));
+        Set(gblColorAlertBg, ColorValue("#FFE4E6"));
+        Set(gblColorAlertText, ColorValue("#BE123C"));
+        ClearCollect(
+            colDevesTheme,
+            {
+                Primary: RGBA(1, 33, 105, 1),
+                Secondary: RGBA(255, 205, 0, 1),
+                Background: RGBA(248, 249, 250, 1),
+                Success: RGBA(40, 167, 69, 1),
+                Danger: RGBA(220, 53, 69, 1),
+                Warning: RGBA(253, 126, 20, 1),
+                Info: RGBA(23, 162, 184, 1),
+                Text: RGBA(33, 37, 41, 1),
+                TextMuted: RGBA(108, 117, 125, 1),
+                Border: RGBA(222, 226, 230, 1)
+            }
+        );
+    Theme: =PowerAppsTheme
+
+    Host As hostControl.DefaultHostControlVariant:
+        OnCancel: =false
+        OnEdit: =false
+        OnNew: =false
+        OnSave: =false
+        OnView: =false
+
