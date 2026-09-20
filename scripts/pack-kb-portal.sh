@@ -42,52 +42,48 @@ fi
 echo "--> Compiling fully-hydrated AST (6,489 rules across 136 controls)..."
 NODE_PATH="${REPO_ROOT}/scratch/node_modules" node "${REPO_ROOT}/scripts/compile-hydrated-kb.js"
 
-# Step 3: Package .msapp binary with native Power Apps Studio structure
-echo "--> Packaging Helpdesk_KB_Portal.msapp binary..."
+# Step 3: Prepare SourceCode directory and pack with PAC CLI
+echo "--> Preparing SourceCode directory for PAC CLI packaging..."
+SRC_DIR="${REPO_ROOT}/scratch/sourcecode_build"
+rm -rf "${SRC_DIR}"
+mkdir -p "${SRC_DIR}/Src"
+
+# Copy msapr files into a valid msapr container
 python3 -c "
 import zipfile, os
 
-msapp_path = '${MSAPP_OUT}'
-if os.path.exists(msapp_path):
-    os.remove(msapp_path)
-
-with zipfile.ZipFile(msapp_path, 'w', zipfile.ZIP_DEFLATED) as z:
+msapr_path = '${SRC_DIR}/Helpdesk_KB_Portal.msapr'
+with zipfile.ZipFile(msapr_path, 'w', zipfile.ZIP_DEFLATED) as z:
+    z.writestr('msapr-header.json', '{\"MsaprStructureVersion\":\"0.1\",\"UnpackedConfiguration\":{\"ContentTypes\":[\"PaYamlSourceCode\"]}}')
     with open('${REPO_ROOT}/Helpdesk_KB_Portal/Header.json', 'rb') as f:
-        z.writestr('Header.json', f.read())
+        z.writestr('msapp/Header.json', f.read())
     with open('${REPO_ROOT}/Helpdesk_KB_Portal/Properties.json', 'rb') as f:
-        z.writestr('Properties.json', f.read())
+        z.writestr('msapp/Properties.json', f.read())
     with open('${REPO_ROOT}/Helpdesk_KB_Portal/Controls/1.json', 'rb') as f:
-        z.writestr('Controls\\\\1.json', f.read())
+        z.writestr('msapp/Controls/1.json', f.read())
     with open('${REPO_ROOT}/scratch/hydrated_c4.json', 'rb') as f:
-        z.writestr('Controls\\\\4.json', f.read())
+        z.writestr('msapp/Controls/4.json', f.read())
     with open('${REPO_ROOT}/Helpdesk_KB_Portal/References/Themes.json', 'rb') as f:
-        z.writestr('References\\\\Themes.json', f.read())
+        z.writestr('msapp/References/Themes.json', f.read())
     with open('${REPO_ROOT}/Helpdesk_KB_Portal/References/DataSources.json', 'rb') as f:
-        z.writestr('References\\\\DataSources.json', f.read())
+        z.writestr('msapp/References/DataSources.json', f.read())
     with open('${REPO_ROOT}/Helpdesk_KB_Portal/References/ModernThemes.json', 'rb') as f:
-        z.writestr('References\\\\ModernThemes.json', f.read())
+        z.writestr('msapp/References/ModernThemes.json', f.read())
     with open('${REPO_ROOT}/Helpdesk_KB_Portal/References/Resources.json', 'rb') as f:
-        z.writestr('References\\\\Resources.json', f.read())
+        z.writestr('msapp/References/Resources.json', f.read())
     with open('${REPO_ROOT}/Helpdesk_KB_Portal/References/Templates.json', 'rb') as f:
-        z.writestr('References\\\\Templates.json', f.read())
+        z.writestr('msapp/References/Templates.json', f.read())
     with open('${REPO_ROOT}/Helpdesk_KB_Portal/Resources/PublishInfo.json', 'rb') as f:
-        z.writestr('Resources\\\\PublishInfo.json', f.read())
-    with open('${REPO_ROOT}/Helpdesk_KB_Portal/Src/_EditorState.pa.yaml', 'rb') as f:
-        z.writestr('Src\\\\_EditorState.pa.yaml', f.read())
-    with open('${REPO_ROOT}/Helpdesk_KB_Portal/Src/Home_KB.pa.yaml', 'rb') as f:
-        z.writestr('Src\\\\Home_KB.pa.yaml', f.read())
-    with open('${REPO_ROOT}/Helpdesk_KB_Portal/Src/App.pa.yaml', 'rb') as f:
-        z.writestr('Src\\\\App.pa.yaml', f.read())
+        z.writestr('msapp/Resources/PublishInfo.json', f.read())
 "
-echo "✅ Canvas App packed: ${MSAPP_OUT}"
 
-# Step 4: Validate integrity with PAC CLI unpack
-TMP_UNPACK="$(mktemp -d)"
-trap 'rm -rf "${TMP_UNPACK}"' EXIT
+cp "${REPO_ROOT}/Helpdesk_KB_Portal/Src/App.pa.yaml" "${SRC_DIR}/Src/"
+cp "${REPO_ROOT}/Helpdesk_KB_Portal/Src/Home_KB.pa.yaml" "${SRC_DIR}/Src/"
+cp "${REPO_ROOT}/Helpdesk_KB_Portal/Src/_EditorState.pa.yaml" "${SRC_DIR}/Src/"
 
-echo "--> Validating .msapp integrity via pac canvas unpack..."
-"${PAC_BIN}" canvas unpack --msapp "${MSAPP_OUT}" --sources "${TMP_UNPACK}" --layout SourceCode --overwrite
-echo "✅ Unpack validation succeeded!"
+echo "--> Packing .msapp via PAC CLI..."
+"${PAC_BIN}" canvas pack --sources "${SRC_DIR}" --msapp "${MSAPP_OUT}" --layout SourceCode --overwrite
+echo "✅ Canvas App packed successfully via PAC CLI: ${MSAPP_OUT}"
 
 # Step 5: Build Canvas App Package Zip for make.powerapps.com Import
 echo "--> Building Helpdesk_KB_Portal_Package.zip..."
